@@ -1,0 +1,297 @@
+/*
+ * SPDX-License-Identifier: LicenseRef-w3c-3-clause-bsd-license-2008 OR LicenseRef-w3c-test-suite-license-2023
+ */
+
+import {
+  createDeriveRequestBody,
+  createExchangeRequest,
+  createPresentationRequestBody,
+  createRequestBody,
+  createVerifyRequestBody,
+  createVerifyVpRequestBody,
+  createWorkflowRequest
+} from './mock.data.js';
+import {
+  extractCreatedPresentation,
+  extractIssuedCredential,
+  extractLocationResourceId
+} from './response.js';
+import {
+  resolveCallbackUrl,
+  resolveCredentialResourceUrl,
+  resolveDeriveCredentialUrl,
+  resolveInteractionStartUrl,
+  resolvePresentationResourceUrl,
+  resolveVerifierResourceUrl,
+  resolveWorkflowResourceUrl,
+  resolveWorkflowsBaseUrl
+} from './helpers.js';
+
+export class TestEndpoints {
+  constructor({implementation, tag}) {
+    this.implementation = implementation;
+    this.tag = tag;
+    this.issuer = implementation.issuers?.find(
+      issuer => issuer.tags.has(tag)) || null;
+    this.verifier = implementation.verifiers?.find(
+      verifier => verifier.tags.has(tag)) || null;
+    this.vpVerifier = implementation.vpVerifiers?.find(
+      vpVerifier => vpVerifier.tags.has(tag)) || null;
+    this.holder = implementation.holders?.find(
+      holder => holder.tags.has(tag)) || null;
+    this.workflow = implementation.workflows?.find(
+      workflow => workflow.tags.has(tag)) || null;
+    this.interaction = implementation.interactions?.find(
+      interaction => interaction.tags.has(tag)) || null;
+  }
+
+  async issue(credential) {
+    const {issuedVc} = await this.issueCredential(credential);
+    return issuedVc;
+  }
+
+  async issueCredential(credential) {
+    const issueBody = createRequestBody({issuer: this.issuer, vc: credential});
+    const {data, result, error} = await this.issuer.post({json: issueBody});
+    return {
+      issuedVc: extractIssuedCredential(data),
+      result,
+      error
+    };
+  }
+
+  credentialResourceUrl(credentialId) {
+    return resolveCredentialResourceUrl(
+      this.issuer.settings.endpoint,
+      credentialId
+    );
+  }
+
+  async getCredential(credentialId) {
+    const url = this.credentialResourceUrl(credentialId);
+    const {data, result, error} = await this.issuer.get({url});
+    return {
+      credential: extractIssuedCredential(data),
+      result,
+      error
+    };
+  }
+
+  async deleteCredential(credentialId) {
+    const url = this.credentialResourceUrl(credentialId);
+    const {headers: _headers = {}, oauth2} = this.issuer.settings;
+    const {makeHttpsRequest} = await import(
+      'vc-test-suite-implementations/lib/requests.js'
+    );
+    const {data, result, error} = await makeHttpsRequest({
+      url,
+      method: 'DELETE',
+      headers: _headers,
+      oauth2
+    });
+    return {data, result, error};
+  }
+
+  async verify(vc, options) {
+    const {data} = await this.verifyCredential(vc, options);
+    return data;
+  }
+
+  async verifyCredential(vc, options) {
+    const verifyBody = createVerifyRequestBody({
+      verifier: this.verifier, vc, options
+    });
+    const {data, result, error} = await this.verifier.post({json: verifyBody});
+    if(error) {
+      throw error;
+    }
+    return {data, result};
+  }
+
+  async createPresentation({issuedVc, presentation, options} = {}) {
+    const body = createPresentationRequestBody({
+      holder: this.holder,
+      vcs: [issuedVc],
+      presentation,
+      options
+    });
+    const {data, result, error} = await this.holder.post({json: body});
+    return {
+      verifiablePresentation: extractCreatedPresentation(data),
+      result,
+      error
+    };
+  }
+
+  presentationsCollectionUrl() {
+    return resolvePresentationResourceUrl(this.holder.settings.endpoint);
+  }
+
+  presentationResourceUrl(presentationId) {
+    return resolvePresentationResourceUrl(
+      this.holder.settings.endpoint,
+      presentationId
+    );
+  }
+
+  async deriveCredential(vc, options) {
+    const url = resolveDeriveCredentialUrl(this.holder.settings.endpoint);
+    const body = createDeriveRequestBody({
+      holder: this.holder,
+      vc,
+      options
+    });
+    const {data, result, error} = await this.holder.post({url, json: body});
+    return {
+      derivedVc: extractIssuedCredential(data),
+      result,
+      error
+    };
+  }
+
+  async getPresentations() {
+    const url = this.presentationsCollectionUrl();
+    const {data, result, error} = await this.holder.get({url});
+    return {presentations: data, result, error};
+  }
+
+  async getPresentation(presentationId) {
+    const url = this.presentationResourceUrl(presentationId);
+    const {data, result, error} = await this.holder.get({url});
+    return {
+      presentation: extractCreatedPresentation(data),
+      result,
+      error
+    };
+  }
+
+  async deletePresentation(presentationId) {
+    const url = this.presentationResourceUrl(presentationId);
+    const {headers: _headers = {}, oauth2} = this.holder.settings;
+    const {makeHttpsRequest} = await import(
+      'vc-test-suite-implementations/lib/requests.js'
+    );
+    const {data, result, error} = await makeHttpsRequest({
+      url,
+      method: 'DELETE',
+      headers: _headers,
+      oauth2
+    });
+    return {data, result, error};
+  }
+
+  async verifyPresentation(vp, options) {
+    const verifyBody = createVerifyVpRequestBody({
+      vpVerifier: this.vpVerifier, vp, options
+    });
+    const {data, result, error} = await this.vpVerifier.post({
+      json: verifyBody
+    });
+    if(error) {
+      throw error;
+    }
+    return {data, result};
+  }
+
+  async verifyVp(vp, options = {}) {
+    const {data} = await this.verifyPresentation(vp, options);
+    return data;
+  }
+
+  _verifierEndpoint() {
+    return this.verifier || this.vpVerifier;
+  }
+
+  async createChallenge() {
+    const verifier = this._verifierEndpoint();
+    const url = resolveVerifierResourceUrl(
+      verifier.settings.endpoint,
+      '/challenges'
+    );
+    const {data, result, error} = await verifier.post({url, json: {}});
+    return {data, result, error};
+  }
+
+  workflowsBaseUrl() {
+    return resolveWorkflowsBaseUrl(this.workflow.settings.endpoint);
+  }
+
+  workflowResourceUrl(workflowId, exchangeId, suffix) {
+    return resolveWorkflowResourceUrl(
+      this.workflow.settings.endpoint,
+      workflowId,
+      exchangeId,
+      suffix
+    );
+  }
+
+  async createWorkflow(body = createWorkflowRequest()) {
+    const {data, result, error} = await this.workflow.post({json: body});
+    return {
+      workflowId: body.id ?? extractLocationResourceId(result),
+      result,
+      error,
+      data
+    };
+  }
+
+  async getWorkflowConfiguration(workflowId) {
+    const url = this.workflowResourceUrl(workflowId);
+    const {data, result, error} = await this.workflow.get({url});
+    return {configuration: data, result, error};
+  }
+
+  async createExchange(workflowId, body = createExchangeRequest()) {
+    const url = this.workflowResourceUrl(workflowId, undefined);
+    const exchangesUrl = `${url}/exchanges`;
+    const {data, result, error} = await this.workflow.post({
+      url: exchangesUrl,
+      json: body
+    });
+    return {
+      exchangeId: extractLocationResourceId(result),
+      result,
+      error,
+      data
+    };
+  }
+
+  async getExchangeProtocols(workflowId, exchangeId) {
+    const url = this.workflowResourceUrl(workflowId, exchangeId, 'protocols');
+    const {data, result, error} = await this.workflow.get({url});
+    return {protocols: data, result, error};
+  }
+
+  async participateInExchange(workflowId, exchangeId, body = {}) {
+    const url = this.workflowResourceUrl(workflowId, exchangeId);
+    const {data, result, error} = await this.workflow.post({url, json: body});
+    return {message: data, result, error};
+  }
+
+  async getExchangeState(workflowId, exchangeId) {
+    const url = this.workflowResourceUrl(workflowId, exchangeId);
+    const {data, result, error} = await this.workflow.get({url});
+    return {state: data, result, error};
+  }
+
+  async exchangeStepCallback(callbackId, body = {event: {data: {}}}) {
+    const url = resolveCallbackUrl(
+      this.workflow.settings.endpoint,
+      callbackId
+    );
+    const {data, result, error} = await this.workflow.post({url, json: body});
+    return {data, result, error};
+  }
+
+  async startInteraction({interactionId, accept = 'application/json'} = {}) {
+    const settings = this.interaction.settings;
+    const id = interactionId ?? settings.probes?.interactionId;
+    const url = settings.probes?.interactionStart ??
+      resolveInteractionStartUrl(settings.endpoint, id);
+    const {data, result, error} = await this.interaction.get({
+      url,
+      headers: {Accept: accept}
+    });
+    return {protocols: data, result, error};
+  }
+}

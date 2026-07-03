@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VCALM 1.0 — Normative Statement Statistics</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0f1419; --surface:#1a2332; --surface2:#243044; --text:#e8eef4; --muted:#8b9cb3; --accent:#3d9ae8; }
+    body { margin:0; font-family:"DM Sans",sans-serif; background:var(--bg); color:var(--text); line-height:1.55; }
+    header { padding:2.5rem 2rem; background:linear-gradient(135deg,#1a2a42,#0f1419); border-bottom:1px solid var(--surface2); }
+    header h1 { margin:0 0 .5rem; font-size:1.75rem; }
+    header p { margin:0; color:var(--muted); max-width:50rem; }
+    header a { color:var(--accent); }
+    nav.toc { margin-top:1rem; font-size:.9rem; }
+    nav.toc a { color:var(--accent); margin-right:1rem; }
+    .hero-stat { display:flex; gap:1.5rem; margin-top:1.5rem; flex-wrap:wrap; }
+    .stat-card { background:var(--surface); border-radius:12px; padding:1rem 1.25rem; border:1px solid var(--surface2); min-width:120px; }
+    .stat-card .n { font-size:2rem; font-weight:700; color:var(--accent); }
+    .stat-card .l { font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; }
+    main { max-width:1100px; margin:0 auto; padding:2rem 1.5rem 3rem; }
+    .method { background:var(--surface); border-left:4px solid var(--accent); padding:1rem 1.25rem; margin-bottom:2rem; border-radius:0 8px 8px 0; color:var(--muted); font-size:.92rem; }
+    h2 { font-size:1.1rem; margin:2rem 0 .75rem; }
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+    @media(max-width:800px){ .grid-2{ grid-template-columns:1fr; } }
+    .chart-box { background:var(--surface); border-radius:12px; padding:1rem; border:1px solid var(--surface2); }
+    .chart-box.wide { grid-column:1/-1; }
+    table { width:100%; border-collapse:collapse; font-size:.88rem; background:var(--surface); border-radius:12px; overflow:hidden; border:1px solid var(--surface2); margin:1rem 0; }
+    th,td { padding:.6rem .9rem; border-bottom:1px solid var(--surface2); text-align:left; }
+    th { background:var(--surface2); color:var(--muted); font-size:.72rem; text-transform:uppercase; }
+    td.num { font-family:"IBM Plex Mono",monospace; text-align:right; }
+    footer { text-align:center; padding:2rem; color:var(--muted); font-size:.85rem; }
+    section.analysis { margin-top:3rem; padding-top:2rem; border-top:1px solid var(--surface2); }
+    section.analysis > h2 { font-size:1.35rem; color:var(--accent); }
+    .analysis-body { background:var(--surface); border-radius:12px; padding:1.5rem 1.75rem; border:1px solid var(--surface2); }
+    .analysis-body h2 { font-size:1.15rem; margin:1.75rem 0 .6rem; color:var(--text); }
+    .analysis-body h3 { font-size:1rem; margin:1.25rem 0 .5rem; color:var(--muted); }
+    .analysis-body p { margin:.65rem 0; color:var(--text); }
+    .analysis-body ul, .analysis-body ol { margin:.5rem 0 .75rem 1.25rem; }
+    .analysis-body li { margin:.35rem 0; }
+    .analysis-body a { color:var(--accent); }
+    .analysis-body code { font-family:"IBM Plex Mono",monospace; font-size:.85em; background:var(--surface2); padding:.1em .35em; border-radius:4px; }
+    .analysis-body pre { background:#0a0e14; padding:1rem; border-radius:8px; overflow-x:auto; font-size:.8rem; }
+    .analysis-body pre.mermaid { background:transparent; text-align:center; }
+    .analysis-body hr { border:none; border-top:1px solid var(--surface2); margin:1.5rem 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>VCALM 1.0 — Normative statement statistics</h1>
+    <p>Keyword inventory for <a href="https://www.w3.org/TR/vcalm-1.0/ (WD 2026-05-05); §3.7–3.8 from editor draft">https://www.w3.org/TR/vcalm-1.0/ (WD 2026-05-05); §3.7–3.8 from editor draft</a>.</p>
+    <nav class="toc"><a href="#charts">Charts</a><a href="#test-suite-analysis">Test suite analysis</a></nav>
+    <div class="hero-stat">
+      <div class="stat-card"><div class="n">399</div><div class="l">Total statements</div></div>
+      <div class="stat-card"><div class="n">357</div><div class="l">HTTP / OAS schema</div></div>
+      <div class="stat-card"><div class="n">3</div><div class="l">Major sections</div></div>
+      <div class="stat-card"><div class="n">—</div><div class="l">API areas</div></div>
+      <div class="stat-card"><div class="n">22</div><div class="l">Subsections</div></div>
+    </div>
+  </header>
+  <main id="charts">
+    <div class="method"><strong>Method.</strong> Automated count of capitalized RFC 2119 keywords per markdown heading. Strips markdown emphasis (_MUST_). Statements are classified: http = OpenAPI request/response body schema tables; conformance = §1.3-style conformance classes; config = architecture/configuration prose; prose = all other normative text.<br><br><strong>Source.</strong> <a href="https://www.w3.org/TR/vcalm-1.0/ (WD 2026-05-05); §3.7–3.8 from editor draft">https://www.w3.org/TR/vcalm-1.0/ (WD 2026-05-05); §3.7–3.8 from editor draft</a></div>
+    <h2>By major section</h2>
+    <div class="grid-2">
+      <div class="chart-box"><canvas id="chaptersBar"></canvas></div>
+      <div class="chart-box"><canvas id="keywordsPie"></canvas></div>
+    </div>
+    <h2>By statement type</h2>
+    <div class="grid-2">
+      <div class="chart-box"><canvas id="typeBar"></canvas></div>
+      <div class="chart-box"><canvas id="typePie"></canvas></div>
+    </div>
+    <h2>Statement strength (major sections)</h2>
+    <div class="chart-box wide"><canvas id="chaptersStacked"></canvas></div>
+    
+    <h2>Densest subsections (top 15)</h2>
+    <div class="chart-box wide"><canvas id="subsBar"></canvas></div>
+    <h2>Section summary</h2>
+    <table><thead><tr><th>Section</th><th>Total</th><th>HTTP</th><th>Prose+</th><th>MUST*</th><th>SHOULD*</th><th>REQUIRED</th><th>MAY*</th></tr></thead>
+    <tbody id="chapterTable"></tbody></table>
+    
+    <section id="test-suite-analysis" class="analysis">
+      <h2>Test suite design &amp; implementation analysis</h2>
+      <div class="analysis-body">
+        <h1>VCALM test suite — design &amp; implementation analysis</h1>
+<p>This document interprets <a href="vcalm-normative-stats.json">vcalm-normative-stats.json</a> and the <a href="normative-requirements.md">normative requirements inventory</a> for anyone planning or implementing the <strong>vcalm-test-suite</strong>. It is not normative; it explains what the keyword counts imply for interop testing.</p>
+<p><strong>Source spec:</strong> <a href="https://www.w3.org/TR/vcalm-1.0/">VCALM 1.0</a> (WD 2026-05-05).   <strong>Counts:</strong> 418 RFC 2119 keyword occurrences across major sections; <strong>357 (85%)</strong> classified as <strong><code>http</code></strong> (OpenAPI request/response body schema tables).</p>
+<hr>
+<h2>Executive summary</h2>
+<p>VCALM is an <strong>HTTP API specification</strong> layered on <a href="https://www.w3.org/TR/vc-data-model-2.0/">VCDM 2.0</a>. The published text is dense with OpenAPI-style schema tables. A naive reading of “418 MUSTs” suggests hundreds of independent tests; in practice:</p>
+<ul><li>Most counts are <strong>schema field constraints</strong> repeated per property and per nested object, not separate protocol behaviors.</li><li>The <strong>real interop surface</strong> for a first suite is much smaller: §1.3 conformance endpoints, a handful of <strong>prose</strong> rules (proof handling, error semantics, interaction URLs), and <strong>JSON shape</strong> checks on a few critical request/response bodies.</li><li><strong>Workflows (§3.6)</strong> dominate the spec by volume and will dominate <strong>implementation cost</strong> even if early test phases defer them.</li></ul>
+<p>Design the suite in <strong>phases</strong> (see <a href="normative-requirements.md">normative-requirements.md</a>): smoke → issuer/verifier/holder CRUD → presentation requests → workflows → interactions. Tag implementations with <code>VCALM</code> and <code>vc2.0</code>; assume VCDM suites already cover credential semantics.</p>
+<hr>
+<h2>What the numbers mean</h2>
+<h3>Statement types (not all equal)</h3>
+<table><thead><tr><th>Type</th><th>Count</th><th>Share</th><th>What it is</th></tr></thead><tbody><tr><td><strong>http</strong></td><td>357</td><td>85%</td><td>MUST/SHOULD in <code>Property</code> / <code>Response</code> tables (“It MUST be an object of the following form…”)</td></tr><tr><td><strong>conformance</strong></td><td>19</td><td>5%</td><td>§1.3 — which endpoints each <em>service role</em> MUST expose</td></tr><tr><td><strong>prose</strong></td><td>12</td><td>3%</td><td>Narrative protocol rules in §3 (outside schema tables)</td></tr><tr><td><strong>config</strong></td><td>11</td><td>3%</td><td>§2.4 — base URL, authorization, serialization, payload limits</td></tr></tbody></table>
+<p><strong>Implication:</strong> §3 looks like 369 “requirements” but only <strong>~12 are prose-level protocol rules</strong> in the TR export analyzed. The rest are <strong>JSON Schema–style obligations</strong> embedded in tables. Testing strategy should separate:</p>
+<ol><li><strong>Structural conformance</strong> — validate request/response bodies against OpenAPI or JSON Schema (few tests, high coverage).</li><li><strong>Behavioral interop</strong> — HTTP status codes, required endpoints, cross-service flows (many tests, targeted).</li></ol>
+<p>Counting keywords without this split will over-plan the suite by an order of magnitude.</p>
+<h3>Why §3 HTTP API has the most MUSTs</h3>
+<p>§3 accounts for <strong>369 / 418 (88%)</strong> of all counted statements. Reasons:</p>
+<ol><li><strong>OpenAPI rendering in prose</strong> — Each endpoint documents request and response bodies as wide markdown tables. Every nested field (<code>@context</code>, <code>type</code>, <code>issuer</code>, <code>proof</code>, <code>credentialSubject</code>, …) carries its own MUST, and nested objects multiply counts in a single table row.</li><li><strong>Symmetric endpoints</strong> — Issuing, verifying, and presenting all describe full VC/VP graphs in responses. <strong>Verify Presentation (§3.3.2)</strong> and <strong>Participate in Exchange (§3.6.5)</strong> are the largest single subsections because they return the richest structures.</li><li><strong>Workflow configuration</strong> — Create/get workflow endpoints describe templates, steps, authorization, and credential templates in one large object tree (<strong>§3.6.1</strong>, <strong>§3.6.2</strong>).</li></ol>
+<p>This is <strong>documentation density</strong>, not necessarily <strong>418 distinct obligations</strong>. One table row can contain dozens of keyword hits.</p>
+<h3>Why some functional areas rank higher</h3>
+<table><thead><tr><th>Area</th><th>Statements</th><th>Interpretation</th></tr></thead><tbody><tr><td><strong>3.6 Workflows</strong></td><td>154</td><td>Largest area: workflow config, exchange lifecycle, participation payloads, optional protocol delegation. Stateful, multi-request, admin + coordinator + client roles. Highest <strong>suite design</strong> and <strong>fixture</strong> cost.</td></tr><tr><td><strong>3.3 Verifying</strong></td><td>80</td><td>Dominated by <strong>Verify Presentation</strong> response schema (VP + credentials + <code>verified</code> + <code>problemDetails</code>). Verifier interop is schema-heavy; fewer endpoints than workflows but very wide responses.</td></tr><tr><td><strong>3.5 Presenting</strong></td><td>80</td><td>Spread across derive + create/get/delete presentation; several medium-sized OAS sections. Depends on holder storage and selective disclosure options.</td></tr><tr><td><strong>3.2 Issuing</strong></td><td>33</td><td>Smaller area count but <strong>first-class for interop</strong> — §1.3 requires only <code>POST /credentials/issue</code>. Issue Credential still has significant schema (credential + options) but fewer endpoints than workflows.</td></tr><tr><td><strong>3.4 VP requests</strong></td><td>22</td><td>More <strong>data model</strong> for requests (QbE, DID Auth) than HTTP CRUD; some prose. Bridges verifier coordinator ↔ holder.</td></tr></tbody></table>
+<p><strong>Densest subsections (where “MUST inflation” peaks):</strong></p>
+<table><thead><tr><th>Subsection</th><th>Total</th><th>http</th><th>Note</th></tr></thead><tbody><tr><td>3.6.5 Participate in Exchange</td><td>67</td><td>65</td><td>Exchange step request/response; drives state machine tests</td></tr><tr><td>3.3.2 Verify Presentation</td><td>56</td><td>56</td><td>Entirely schema-table MUSTs</td></tr><tr><td>3.6.1 Create Workflow</td><td>45</td><td>40</td><td>Large configuration object</td></tr><tr><td>3.6.2 Get Workflow Configuration</td><td>40</td><td>40</td><td>Mirrors create response</td></tr><tr><td>1.3 Conformance</td><td>19</td><td>0</td><td><strong>Real “what must exist”</strong> checklist — start here</td></tr></tbody></table>
+<p>§3.7 Interactions (15, prose) and §3.8 Error handling (4, prose) are small in the count but <strong>disproportionately important</strong> for QR/URL formats and ProblemDetails behavior.</p>
+<hr>
+<h2>Test suite design challenges</h2>
+<h3>1. Keyword count ≠ test count</h3>
+<p>A single interop test (“issue a credential and assert response shape + HTTP 201”) may satisfy dozens of table MUSTs. Conversely, one table row might need <strong>zero</strong> dedicated tests if covered by OpenAPI validation.</p>
+<p><strong>Recommendation:</strong> Maintain a <strong>test manifest</strong> mapped to spec sections, not to keyword counts. Use stats to find <strong>hot spots</strong>, not as a coverage target.</p>
+<h3>2. Multiple implementation roles per vendor</h3>
+<p>§1.3 defines <strong>issuer</strong>, <strong>verifier</strong>, <strong>holder</strong>, <strong>workflow</strong>, and <strong>status</strong> services with different required endpoints. Vendors may ship:</p>
+<ul><li>All roles in one deployment</li><li>Only issuer + verifier (common for ACA-Py-style agents)</li><li>Coordinator UIs separately from “services”</li></ul>
+<p>The suite must allow <strong>partial profiles</strong> (e.g. <code>issuer-only</code>, <code>verifier+vpVerifier</code>) via tags or config, while still reporting conformance clearly. Otherwise implementers will skip the suite or fail on irrelevant tests.</p>
+<h3>3. Coordinator vs service endpoints</h3>
+<p>VCALM describes coordinators (orchestration) and services (HTTP APIs). Interop tests historically hit <strong>service base URLs</strong> (as in the VCDM 2.0 suite). Workflow and exchange tests blur the line: coordinators create exchanges; clients POST to workflow services.</p>
+<p><strong>Challenge:</strong> Tests need stable <strong>BASE_URL</strong> per role, optional <strong>workflow base URL</strong>, and clarity on who initiates each step. Document expected <code>localConfig.cjs</code> shape early.</p>
+<h3>4. Dependency on VCDM 2.0 and crypto suites</h3>
+<p>VCALM does not redefine VC semantics. Issued credentials and presentations must already be valid per VCDM 2.0 / Data Integrity / JOSE-COSE suites.</p>
+<p><strong>Challenge:</strong> Failures may be VCALM HTTP issues vs VC validation issues. Tag <code>vc2.0</code>, reuse VCDM test vectors where possible, and separate “HTTP/API” assertions from “credential valid” assertions.</p>
+<h3>5. Schema validation strategy — <a href="https://schemathesis.io/">Schemathesis</a></h3>
+<p>357 <code>http</code>-typed statements beg for <strong>machine validation</strong> against <a href="https://github.com/w3c/vcalm/blob/main/oas.yaml">w3c/vcalm <code>oas.yaml</code></a>, not hand-written Mocha assertions per field. <strong><a href="https://schemathesis.io/">Schemathesis</a></strong> is a practical choice: it is open source, schema-aware, and built for OpenAPI — it generates diverse requests from the schema, validates responses against the same schema, and integrates with CI (<a href="https://schemathesis.io/">GitHub Action</a>, Docker, <code>uvx</code>).</p>
+<p><strong>Recommended split:</strong></p>
+<table><thead><tr><th>Layer</th><th>Tool</th><th>Covers</th></tr></thead><tbody><tr><td><strong>Structural</strong></td><td>Schemathesis</td><td>Request/response shapes, types, required fields, status codes documented in OAS — most <code>http</code>-typed MUSTs</td></tr><tr><td><strong>Behavioral interop</strong></td><td>Mocha + <code>vc-test-suite-implementations</code></td><td>Golden issue/verify paths, §1.3 required endpoints, <code>verified</code> / ProblemDetails semantics, proof-set behavior</td></tr></tbody></table>
+<p>Example (against a running implementation):</p>
+<pre><code class="language-bash"># Pin oas.yaml from w3c/vcalm; point at implementer&#x27;s base URL
+export BASE_URL=https://your-vcalm-service.example
+uvx schemathesis run https://raw.githubusercontent.com/w3c/vcalm/main/oas.yaml \
+  --url &quot;$BASE_URL&quot; \
+  --header &quot;Authorization: Bearer $VCALM_TOKEN&quot;</code></pre>
+<p><strong>What Schemathesis handles well</strong></p>
+<ul><li><strong>Response validation</strong> — flags when live APIs diverge from documented JSON shapes (the bulk of §3.2–3.5 table MUSTs).</li><li><strong>Input fuzzing</strong> — boundary values, type mismatches, missing required properties on requests.</li><li><strong>Low maintenance</strong> — new OAS operations pick up tests automatically when <code>oas.yaml</code> updates.</li><li><strong>CI gating</strong> — JUnit XML / exit codes for GitHub Actions alongside the existing interop reporter.</li></ul>
+<p><strong>What still needs the Mocha suite</strong></p>
+<ul><li>§1.3 <strong>which endpoints must exist</strong> for each role (conformance class), not just shape of calls that happen to succeed.</li><li><strong>Semantic VC validity</strong> (VCDM 2.0) — Schemathesis checks JSON shape, not that a credential verifies cryptographically.</li><li><strong>Prose rules</strong> (~12 in §3): proof sets/chains on issue, 200 + <code>verified: false</code>, interaction URL formats (§3.7).</li><li><strong>Stateful workflows</strong> (§3.6) — use Schemathesis <a href="https://schemathesis.readthedocs.io/">stateful / linked operations</a> or dedicated multi-step Mocha tests; blind fuzzing alone will not walk exchange state machines reliably.</li><li><strong>Auth</strong> — configure via <code>--header</code> / hooks; OAuth from §2.4 remains implementer-specific.</li></ul>
+<p><strong>VCALM-specific caveats</strong></p>
+<ol><li><strong>Single source of truth</strong> — Treat <code>oas.yaml</code> as authoritative for the schema layer; diff TR tables when the spec changes.</li><li><strong>Valid request bodies</strong> — Random fuzz inputs often yield 400; that is useful but does not prove issue/verify <em>success</em> paths. Combine with <strong>fixed examples</strong> (golden credentials from the VCDM suite) via <a href="https://schemathesis.readthedocs.io/en/stable/extending.html">Schemathesis hooks</a> for happy-path operations.</li><li><strong>Partial implementations</strong> — Filter operations (e.g. only <code>POST /credentials/issue</code>, <code>/credentials/verify</code>, <code>/presentations/verify</code>) so issuers are not penalized for missing workflow paths.</li><li><strong>Side effects</strong> — <code>DELETE</code>, workflow creation, and exchange participation mutate state; use separate CI jobs, read-only profiles, or sandbox tenants.</li></ol>
+<p><strong>Challenge:</strong> OAS may drift from TR tables; run Schemathesis in CI against a <strong>reference implementation</strong> and optionally per-vendor <code>BASE_URL</code> from <code>localConfig.cjs</code>, publishing results next to the Mocha interop report.</p>
+<h3>6. Stateful workflow and exchange tests</h3>
+<p>Workflows are inherently <strong>multi-step</strong> (create workflow → create exchange → participate → get state → callbacks). Unlike single-shot issue/verify, they need:</p>
+<ul><li>Shared workflow IDs and exchange IDs across requests</li><li>Time ordering and optional expiration</li><li>Cleanup between tests</li></ul>
+<p><strong>Challenge:</strong> Parallel test runs, shared tenants, and flaky CI if state leaks. Phase 5+ should use isolated workflow instances per test or per run.</p>
+<h3>7. Optional endpoints vs MUST conformance</h3>
+<p>Many §3 endpoints are MAY for a given role. §1.3 narrows the minimum set. The suite must distinguish:</p>
+<ul><li><strong>Required for conformance</strong> (fail if missing)</li><li><strong>Optional profile</strong> (skip or report “not implemented”)</li></ul>
+<p>Otherwise issuers without <code>DELETE /credentials/{id}</code> fail despite being conformant.</p>
+<h3>8. Authorization and deployment configuration (§2.4)</h3>
+<p>OAuth2, <code>read</code>/<code>write</code> scopes, base URL, and content serialization are mostly <strong>MAY</strong> with a few MUSTs. Hard to test in anonymous interop without implementer-supplied credentials.</p>
+<p><strong>Challenge:</strong> Phase 0 should document optional auth headers in config; do not block core issue/verify on OAuth in v1 of the suite.</p>
+<h3>9. Error handling and verification semantics (§3.8)</h3>
+<p>Prose rules: HTTP 200 can mean “verification ran” with <code>verified: false</code>; distinguish errors vs warnings via ProblemDetails. This is <strong>behavioral</strong> and easy to get wrong across implementations.</p>
+<p><strong>Challenge:</strong> Needs curated <strong>negative fixtures</strong> (malformed VP, wrong issuer, expired credential) and assertions on response structure, not just HTTP status.</p>
+<h3>10. Interactions (§3.7) and non-HTTP protocols</h3>
+<p>Interaction URLs, QR codes, and <code>interaction:</code> scheme are <strong>format</strong> requirements with SHOULD-heavy text. Testing may be string/regex based rather than full HTTP round-trips.</p>
+<p><strong>Challenge:</strong> Lower priority for agent interop; higher for wallet/coordinator UIs. Consider a separate tag <code>VCALM.interactions</code>.</p>
+<h3>11. Reporting and comparability</h3>
+<p>W3C interop reporters work well for pass/fail matrices. VCALM’s large surface risks <strong>noisy reports</strong> if every schema field is a separate line item.</p>
+<p><strong>Recommendation:</strong> Group results by phase and endpoint (e.g. “§3.2.1 Issue Credential — response schema”).</p>
+<hr>
+<h2>Implementation challenges (for implementers &amp; test authors)</h2>
+<h3>Agents that are not VCALM-native</h3>
+<p>Many deployments (e.g. ACA-Py, Traction) expose <strong>issuer/verifier</strong> routes that resemble VCALM but differ in paths, bodies, or options. Implementers need an <strong>adapter layer</strong> or the suite needs <strong>vendor-specific endpoint maps</strong> in <code>localConfig.cjs</code>.</p>
+<p><strong>Impact:</strong> Phase 1–2 may only include agents with explicit VCALM bindings; broad interop comes later.</p>
+<h3>Proof sets, proof chains, and existing proofs</h3>
+<p>§3.2.1 prose requires configurable handling when <code>credential</code> already contains proofs (append, chain, or error). This is <strong>instance configuration</strong>, not visible from a single HTTP call.</p>
+<p><strong>Impact:</strong> Tests should document required issuer configuration or accept multiple valid behaviors with clear reporting.</p>
+<h3>Media types and enveloped credentials</h3>
+<p>Issue Credential allows non-<code>application/vc</code> types and <code>EnvelopedVerifiableCredential</code>. Test vectors multiply.</p>
+<p><strong>Impact:</strong> Phase 1 uses <code>application/vc</code> + Data Integrity only; defer mdoc/SD-JWT/barcode profiles.</p>
+<h3>Selective disclosure and mandatory pointers</h3>
+<p><code>options.mandatoryPointers</code> ties to disclosure schemes. Not all issuers support the same cryptosuites.</p>
+<p><strong>Impact:</strong> Optional test profile; avoid mandatory pointers in baseline vectors.</p>
+<h3>Workflows referencing external issuer/verifier services</h3>
+<p>Workflow configuration can authorize use of external issuer/verifier services. Tests need <strong>multiple BASE_URLs</strong> or a single “playground” deployment that hosts all roles.</p>
+<p><strong>Impact:</strong> Increases CI complexity; consider Docker Compose fixtures for Phase 5.</p>
+<h3>Status service (Appendix C)</h3>
+<p>Optional for many use cases but normatively required for “status service implementation” class.</p>
+<p><strong>Impact:</strong> Phase 8 as optional tag <code>VCALM.status</code>; do not conflate with core issuer/verifier interop.</p>
+<h3>Flaky network and long-running exchanges</h3>
+<p>Exchanges can expire; participation may be async with callbacks (§3.6.7).</p>
+<p><strong>Impact:</strong> Generous timeouts in CI; idempotent setup/teardown; avoid hard-coded sleeps.</p>
+<hr>
+<h2>Suggested testing philosophy</h2>
+<pre class="mermaid">flowchart LR
+  subgraph phase0 [Phase 0-2 Core]
+    C[Conformance endpoints]
+    I[Issue / Verify smoke]
+    S[Schemathesis vs oas.yaml]
+  end
+  subgraph phase3 [Phase 3-4 Holder &amp; VP requests]
+    H[Presentations CRUD]
+    R[VP request formats]
+  end
+  subgraph phase5 [Phase 5+ Advanced]
+    W[Workflows &amp; exchanges]
+    N[Interactions &amp; status]
+  end
+  C --&gt; I --&gt; S --&gt; H --&gt; R --&gt; W --&gt; N</pre>
+<table><thead><tr><th>Priority</th><th>Spec focus</th><th>Test style</th><th>Rationale</th></tr></thead><tbody><tr><td>P0</td><td>§1.3, §3.2.1, §3.3.1–2</td><td>HTTP + golden JSON</td><td>Minimum conformant product</td></tr><tr><td>P1</td><td>§3.2.2–3, §3.3.3, §3.5.1–2</td><td>HTTP + schema</td><td>Common holder/issuer paths</td></tr><tr><td>P2</td><td>§3.8, §3.4</td><td>Negative + ProblemDetails</td><td>Cross-cutting correctness</td></tr><tr><td>P3</td><td>§3.6</td><td>Stateful multi-call</td><td>Highest count, highest cost</td></tr><tr><td>P4</td><td>§3.7, Appendix C</td><td>Format / optional profile</td><td>Narrower audience</td></tr></tbody></table>
+<p><strong>Do not</strong> aim for 418 tests. Aim for <strong>tens of well-grouped tests</strong> with schema validation backing the <code>http</code>-typed bulk.</p>
+<hr>
+<h2>How to use the stats going forward</h2>
+<ol><li>Open <a href="vcalm-normative-stats.html">vcalm-normative-stats.html</a> — charts plus this analysis in one page; compare <strong>HTTP vs prose+</strong> columns per section.</li><li>When a subsection spike appears (e.g. 3.3.2), ask: <strong>one schema test or many behavioral tests?</strong></li><li>Re-run extraction after spec updates:</li></ol>
+<p>   ``<code>bash    SKILL=~/.cursor/skills/spec-analyzer/scripts    python3 &quot;$SKILL/extract_normative.py&quot; SPEC.md --title &quot;VCALM 1.0&quot; \      --source &quot;https://www.w3.org/TR/vcalm-1.0/&quot; -o docs/vcalm-normative-stats.json    python3 &quot;$SKILL/generate_stats_html.py&quot; docs/vcalm-normative-stats.json \      -o docs/vcalm-normative-stats.html --footer vcalm-test-suite    </code>``</p>
+<ol><li>Keep this analysis aligned when phases or OAS source of truth changes.</li></ol>
+<hr>
+<h2>Related artifacts</h2>
+<table><thead><tr><th>File</th><th>Purpose</th></tr></thead><tbody><tr><td><a href="normative-requirements.md">normative-requirements.md</a></td><td>Section-by-section requirements and phased plan</td></tr><tr><td><a href="vcalm-normative-stats.json">vcalm-normative-stats.json</a></td><td>Machine-readable counts and <code>by_type</code> breakdown</td></tr><tr><td><a href="vcalm-normative-stats.html">vcalm-normative-stats.html</a></td><td>Visual dashboard</td></tr></tbody></table>
+      </div>
+    </section>
+  </main>
+  <footer>vcalm-test-suite · * includes NOT variants where grouped</footer>
+  <script>
+    const chapters = [{"name": "\u00a73 HTTP API", "total": 369, "must": 264, "should": 64, "required": 8, "recommended": 0, "may": 33, "breakdown": {"must": 260, "should_not": 19, "should": 45, "may": 33, "must_not": 4, "required": 8}, "types": {"http": 357, "prose": 12}}, {"name": "\u00a71 Introduction", "total": 19, "must": 9, "should": 3, "required": 2, "recommended": 1, "may": 4, "breakdown": {"must_not": 1, "must": 8, "should_not": 1, "should": 2, "required": 2, "recommended": 1, "may": 4}, "types": {"conformance": 19}}, {"name": "\u00a72 Architecture", "total": 11, "must": 4, "should": 0, "required": 0, "recommended": 1, "may": 6, "breakdown": {"may": 6, "must_not": 1, "must": 3, "recommended": 1}, "types": {"config": 11}}];
+    const byType = [{"name": "http", "total": 357, "must": 260, "should": 62, "required": 7, "recommended": 0, "may": 28, "breakdown": {"must": 256, "should_not": 19, "should": 43, "may": 28, "must_not": 4, "required": 7}}, {"name": "conformance", "total": 19, "must": 9, "should": 3, "required": 2, "recommended": 1, "may": 4, "breakdown": {"must_not": 1, "must": 8, "should_not": 1, "should": 2, "required": 2, "recommended": 1, "may": 4}}, {"name": "prose", "total": 12, "must": 4, "should": 2, "required": 1, "recommended": 0, "may": 5, "breakdown": {"must": 4, "required": 1, "should": 2, "may": 5}}, {"name": "config", "total": 11, "must": 4, "should": 0, "required": 0, "recommended": 1, "may": 6, "breakdown": {"may": 6, "must_not": 1, "must": 3, "recommended": 1}}];
+    const subs = [{"section": "VCALM v1.0 > 3 HTTP API > 3.6 Workflows and Exchanges > 3.6.5 Participate in an Exchange", "total": 67, "must": 35, "should": 23, "required": 0, "recommended": 0, "may": 9, "breakdown": {"should": 21, "may": 9, "must": 35, "should_not": 2}, "types": {"prose": 2, "http": 65}}, {"section": "VCALM v1.0 > 3 HTTP API > 3.3 Verifying > 3.3.2 Verify Presentation", "total": 56, "must": 48, "should": 4, "required": 0, "recommended": 0, "may": 4, "breakdown": {"must": 46, "should_not": 2, "should": 2, "may": 4, "must_not": 2}, "types": {"http": 56}}, {"section": "VCALM v1.0 > 3 HTTP API > 3.6 Workflows and Exchanges > 3.6.1 Create Workflow", "total": 45, "must": 34, "should": 4, "required": 2, "recommended": 0, "may": 5, "breakdown": {"required": 2, "must": 33, "must_not": 1, "should_not": 1, "should": 3, "may": 5}, "types": {"http": 40, "prose": 5}}, {"section": "VCALM v1.0 > 3 HTTP API > 3.6 Workflows and Exchanges > 3.6.2 Get Workflow Configuration", "total": 40, "must": 34, "should": 4, "required": 1, "recommended": 0, "may": 1, "breakdown": {"must_not": 1, "must": 33, "should_not": 1, "should": 3, "required": 1, "may": 1}, "types": {"http": 40}}, {"section": "VCALM v1.0 > 3 HTTP API > 3.5 Presenting > 3.5.2 Create Presentation", "total": 25, "must": 19, "should": 4, "required": 0, "recommended": 0, "may": 2, "breakdown": {"must": 19, "should_not": 2, "should": 2, "may": 2}, "types": {"http": 25}}, {"section": "VCALM v1.0 > 3 HTTP API > 3.3 Verifying > 3.3.1 Verify Credential", "total": 23, "must": 20, "should": 2, "required": 0, "recommended": 0, "may": 1, "breakdown": {"must": 20, "should_not": 1, "should": 1, "may": 1}, "types": {"http": 23}}, {"section": "VCALM v1.0 > 3 HTTP API > 3.2 Issuing > 3.2.1 Issue Credential", "total": 21, "must": 14, "should": 6, "required": 0, "recommended": 0, "may": 1, "breakdown": {"must": 14, "should_not": 3, "should": 3, "may": 1}, "types": {"http": 20, "prose": 1}}, {"section": "VCALM v1.0 > 3 HTTP API > 3.5 Presenting > 3.5.3 Get Presentations", "total": 21, "must": 15, "should": 4, "required": 0, "recommended": 0, "may": 2, "breakdown": {"must": 15, "should_not": 2, "should": 2, "may": 2}, "types": {"http": 21}}, {"section": "VCALM v1.0 > 3 HTTP API > 3.5 Presenting > 3.5.4 Get a Specific Presentation", "total": 20, "must": 14, "should": 4, "required": 0, "recommended": 0, "may": 2, "breakdown": {"must": 14, "should_not": 2, "should": 2, "may": 2}, "types": {"http": 20}}, {"section": "VCALM v1.0 > 1 Introduction > 1.3 Conformance", "total": 19, "must": 9, "should": 3, "required": 2, "recommended": 1, "may": 4, "breakdown": {"must_not": 1, "must": 8, "should_not": 1, "should": 2, "required": 2, "recommended": 1, "may": 4}, "types": {"conformance": 19}}, {"section": "VCALM v1.0 > 3 HTTP API > 3.4 Requesting a Presentation > 3.4.3 DID Authentication", "total": 15, "must": 9, "should": 0, "required": 4, "recommended": 0, "may": 2, "breakdown": {"must": 9, "required": 4, "may": 2}, "types": {"http": 14, "prose": 1}}, {"section": "VCALM v1.0 > 3 HTTP API > 3.5 Presenting > 3.5.1 Derive Credential", "total": 14, "must": 8, "should": 4, "required": 0, "recommended": 0, "may": 2, "breakdown": {"must": 8, "should_not": 2, "should": 2, "may": 2}, "types": {"http": 14}}, {"section": "VCALM v1.0 > 3 HTTP API > 3.2 Issuing > 3.2.2 Get a Specific Credential", "total": 12, "must": 9, "should": 2, "required": 0, "recommended": 0, "may": 1, "breakdown": {"must": 9, "should_not": 1, "should": 1, "may": 1}, "types": {"http": 12}}, {"section": "VCALM v1.0 > 3 HTTP API > 3.4 Requesting a Presentation > 3.4.2 Query By Example", "total": 5, "must": 1, "should": 3, "required": 0, "recommended": 0, "may": 1, "breakdown": {"may": 1, "must": 1, "should": 3}, "types": {"http": 4, "prose": 1}}, {"section": "VCALM v1.0 > 2 Architecture > 2.4 Configurations > Authorization", "total": 4, "must": 2, "should": 0, "required": 0, "recommended": 0, "may": 2, "breakdown": {"must_not": 1, "must": 1, "may": 2}, "types": {"config": 4}}];
+    const kw = {"must": 271, "should_not": 20, "should": 47, "may": 43, "must_not": 6, "required": 10, "recommended": 2};
+    const typeColors = { http:'#3d9ae8', prose:'#6eb5d9', conformance:'#9b7ede', config:'#4db88a' };
+    Chart.defaults.color = '#e8eef4';
+    Chart.defaults.borderColor = 'rgba(255,255,255,.08)';
+    new Chart(typeBar, { type:'bar', data:{ labels:byType.map(t=>t.name),
+      datasets:[{ data:byType.map(t=>t.total), backgroundColor:byType.map(t=>typeColors[t.name]||'#8b9cb3'), label:'Total' }] },
+      options:{ plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true} } } });
+    new Chart(typePie, { type:'doughnut', data:{ labels:byType.map(t=>t.name),
+      datasets:[{ data:byType.map(t=>t.total), backgroundColor:byType.map(t=>typeColors[t.name]||'#8b9cb3') }] },
+      options:{ plugins:{ legend:{position:'right'} } } });
+    new Chart(chaptersBar, { type:'bar', data:{ labels:chapters.map(c=>c.name),
+      datasets:[{ data:chapters.map(c=>c.total), backgroundColor:'#3d9ae8', label:'Total' }] },
+      options:{ plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true} } } });
+    new Chart(keywordsPie, { type:'doughnut', data:{ labels:['MUST','MUST NOT','SHOULD','SHOULD NOT','REQUIRED','MAY','RECOMMENDED'],
+      datasets:[{ data:[kw.must||0,kw.must_not||0,kw.should||0,kw.should_not||0,kw.required||0,kw.may||0,kw.recommended||0],
+      backgroundColor:['#e85d5d','#c94a4a','#e8a838','#c48830','#9b7ede','#4db88a','#6eb5d9'] }] },
+      options:{ plugins:{ legend:{position:'right'} } } });
+    new Chart(chaptersStacked, { type:'bar', data:{ labels:chapters.map(c=>c.name), datasets:[
+      { label:'MUST*', data:chapters.map(c=>c.must), backgroundColor:'#e85d5d' },
+      { label:'SHOULD*', data:chapters.map(c=>c.should), backgroundColor:'#e8a838' },
+      { label:'REQUIRED', data:chapters.map(c=>c.required), backgroundColor:'#9b7ede' },
+      { label:'MAY*', data:chapters.map(c=>c.may), backgroundColor:'#4db88a' },
+    ]}, options:{ scales:{ x:{stacked:true}, y:{stacked:true,beginAtZero:true} } } });
+    
+    new Chart(subsBar, { type:'bar', data:{ labels:subs.map(s=>s.section.split(' > ').slice(-2).join(' › ')),
+      datasets:[{ data:subs.map(s=>s.total), backgroundColor:'#3d9ae8' }] },
+      options:{ indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{beginAtZero:true}} } });
+    const cb=document.getElementById('chapterTable');
+    chapters.forEach(c=>{ const tr=document.createElement('tr');
+      const types=c.types||{};
+      const nonHttp=(types.prose||0)+(types.conformance||0)+(types.config||0);
+      tr.innerHTML=`<td>${c.name}</td><td class="num">${c.total}</td><td class="num">${types.http||0}</td>
+        <td class="num">${nonHttp}</td><td class="num">${c.must}</td><td class="num">${c.should}</td>
+        <td class="num">${c.required}</td><td class="num">${c.may}</td>`;
+      cb.appendChild(tr); });
+    
+    if (typeof mermaid !== 'undefined') {
+      mermaid.initialize({ startOnLoad: true, theme: 'dark',
+        themeVariables: { primaryColor: '#1a2332', primaryTextColor: '#e8eef4',
+          lineColor: '#3d9ae8', secondaryColor: '#243044' } });
+    }
+  </script>
+</body>
+</html>
