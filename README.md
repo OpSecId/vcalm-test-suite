@@ -121,15 +121,15 @@ with tag `VCALM` on issuer, verifier, and holder endpoints (and
 
 ## OAS conformance (Schemathesis)
 
-On branch **`feature/vcalm-oas-pin`**:
+This branch includes the pinned OpenAPI bundle and `npm run test:schema`.
 
 ```sh
-git checkout feature/vcalm-oas-pin -- docs/schemathesis/ schemathesis.local.example.cjs schemathesis.toml scripts/
 cp schemathesis.local.example.cjs schemathesis.local.cjs
 BASE_URL=https://localhost:8000 npm run test:schema
 ```
 
-See `docs/schemathesis/README.md` on that branch for profiles and auth.
+See [docs/schemathesis/README.md](docs/schemathesis/README.md) for profiles and auth.
+Mocha tests: use branch `feature/vcalm-interop-suite` (or `npm test` here — same tests).
 
 ## Report
 

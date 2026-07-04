@@ -1,0 +1,19 @@
+# Schemathesis config for vcalm-test-suite (local + CI).
+# Environment variables are set by scripts/run-schemathesis.cjs from
+# schemathesis.local.cjs / localConfig.cjs — see schemathesis.local.example.cjs.
+
+color = true
+request-timeout = 30
+
+[generation]
+max-examples = 25
+
+[[project]]
+title = "VCALM"
+base-url = "${BASE_URL}"
+
+# Bearer auth: runner passes -H when VCALM_TOKEN is set (see schemathesis.local.cjs)
+# Checks: runner passes -c not_a_server_error,status_code_conformance,response_schema_conformance
+
+# Phase 1 default: only §1.3 core operations (runner adds --include-operation-id per profile)
+# For full API testing, use profile=full in schemathesis.local.cjs

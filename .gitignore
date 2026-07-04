@@ -8,6 +8,3 @@ suite.log
 allure-results/
 .DS_Store
 .schemathesis/
-
-# Generated OAS pin (branch feature/vcalm-oas-pin) or local checkout from that branch
-docs/schemathesis/
