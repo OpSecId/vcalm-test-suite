@@ -24,7 +24,7 @@ Normative text is everything except sections marked *non-normative*, authoring g
 | Verifier service | `[MUST]` `POST /credentials/verify` (§3.3.1) and `POST /presentations/verify` (§3.3.2). Other §3.3 `[MAY]` be provided. |
 | Holder service | `[MUST]` Get Exchange Protocols (§3.6.4) and Participate in Exchange (§3.6.5). Conformance to §3.7, §3.4, §3.5.2, §3.5, §3.6 `[MAY]` also be provided. |
 | Status service | `[MUST]` Update Status (Appendix C.3). |
-| Workflow service | `[MUST]` all interfaces in §3.6 Workflows and Exchanges. |
+| Workflow service | `[MUST]` all interfaces in §3.6 Workflows. |
 | Service client | `[MUST]` provide means to communicate with all `[REQUIRED]` interfaces of the corresponding service. |
 | All implementations | `[MAY]` provide functionality beyond this specification. |
 
@@ -72,7 +72,7 @@ Normative text is everything except sections marked *non-normative*, authoring g
 
 ---
 
-### §3.4 Requesting a Presentation
+### §3.4 Requesting
 
 #### §3.4.1 Verifiable Presentation Request
 
@@ -97,7 +97,7 @@ Normative text is everything except sections marked *non-normative*, authoring g
 
 ---
 
-### §3.6 Workflows and Exchanges
+### §3.6 Workflows
 
 #### §3.6.1 Create Workflow
 

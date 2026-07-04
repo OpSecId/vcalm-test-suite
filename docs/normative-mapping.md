@@ -137,10 +137,10 @@ See [test-coverage.md](test-coverage.md) → **VCALM tag and endpoint registrati
 (OAS field-level MUSTs on verify request/response bodies) ................. 🔷  verifier profile
 ```
 
-### §3.4 Requesting a Presentation — `tests/3.4-RequestingAPresentation/`
+### §3.4 Requesting — `tests/3.4-Requesting/`
 
 ```text
-3.4-RequestingAPresentation/
+3.4-Requesting/
 ├── 3.4.1-VerifiablePresentationRequest.js
 │   ├── [REQUIRED] query property ......................................... ✅  fixture
 │   └── [MUST] each query map defines type (string) ....................... ✅  fixture
@@ -173,10 +173,10 @@ See [test-coverage.md](test-coverage.md) → **VCALM tag and endpoint registrati
 (OAS field-level MUSTs on presentation bodies) ............................ 🔷  holder profile
 ```
 
-### §3.6 Workflows and Exchanges — `tests/3.6-WorkflowsAndExchanges/`
+### §3.6 Workflows — `tests/3.6-Workflows/`
 
 ```text
-3.6-WorkflowsAndExchanges/
+3.6-Workflows/
 ├── 3.6.1-CreateWorkflow.js
 │   └── POST /workflows → HTTP 201/204 + Location ....................... ✅🔷  createWorkflow
 ├── 3.6.1.1-IssueRequestVariablesAndResult.js
