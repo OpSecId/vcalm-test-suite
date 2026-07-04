@@ -204,10 +204,10 @@ See [test-coverage.md](test-coverage.md) → **VCALM tag and endpoint registrati
 §1.3 workflow service “all §3.6 interfaces” ............................. 🔷  workflow profile (+ callback op)
 ```
 
-### §3.7 Initiating Interactions — `tests/3.7-InitiatingInteractions/`
+### §3.7 Interactions — `tests/3.7-Interactions/`
 
 ```text
-3.7-InitiatingInteractions/
+3.7-Interactions/
 ├── 3.7.1-InteractionURLFormat.js
 │   ├── [MUST] valid URL with iuv query param; iuv = 1 .................... ✅  fixture
 │   ├── [SHOULD] HTTPS URL ................................................ ✅  fixture

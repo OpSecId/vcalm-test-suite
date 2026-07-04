@@ -37,7 +37,7 @@ Mocha runs `tests/*/**/*.js` only — helpers at `tests/*.js` (e.g.
 | `3.4-Requesting/` | §3.4 Requesting | `3.4.1` … `3.4.5-LogicalOperationsInQueries.js` |
 | `3.5-Presenting/` | §3.5 Presenting | `3.5.1` … `3.5.5-DeleteASpecificPresentation.js` |
 | `3.6-Workflows/` | §3.6 Workflows | `3.6.1` … `3.6.8-ExchangeExamples.js`, `3.6.1.1-IssueRequestVariablesAndResult.js`, `3.6.5.1-ExchangeReferenceId.js` |
-| `3.7-InitiatingInteractions/` | §3.7 Initiating Interactions | `3.7.1` … `3.7.6-vcapiInteractionProtocol.js` |
+| `3.7-Interactions/` | §3.7 Interactions | `3.7.1` … `3.7.6-vcapiInteractionProtocol.js` |
 | `3.8-ErrorHandling/` | §3.8 Error Handling | `3.8.1-VerificationErrorsVsWarnings.js`, `3.8.2-ProblemDetails.js` |
 | `appendix-B-Security/` | Appendix B (selected) | `B.1-StripUnrecognizedProofs.js`, `B.4-InstancePayloadLimits.js` |
 
@@ -123,16 +123,16 @@ Legend: **fixture** = no live endpoint; **HTTP** = matrix against `localConfig.c
 | `3.6-Workflows/3.6.7-ExchangeStepCallbacks.js` | `workflows.callbacks` | HTTP | [#exchange-step-callbacks](https://www.w3.org/TR/vcalm-1.0/#exchange-step-callbacks) |
 | `3.6-Workflows/3.6.8-ExchangeExamples.js` | `workflows.examples` | ⏭ `it.skip` | [#exchange-examples](https://www.w3.org/TR/vcalm-1.0/#exchange-examples) |
 
-### §3.7 Initiating Interactions
+### §3.7 Interactions
 
 | Test file | `NORMATIVE` key | Layer | Spec link |
 |-----------|-----------------|-------|-----------|
-| `3.7-InitiatingInteractions/3.7.1-InteractionURLFormat.js` | `interactionUrl`, `interactionHttps`, `interactionOpaque`, `interactionNoExtraQuery` | fixture | [#interaction-url-format](https://www.w3.org/TR/vcalm-1.0/#interaction-url-format) |
-| `3.7-InitiatingInteractions/3.7.2-InteractionQRCodeFormat.js` | `qrCode`, `qrCodeMaxLength` | fixture | [#interaction-qr-code-format](https://www.w3.org/TR/vcalm-1.0/#interaction-qr-code-format) |
-| `3.7-InitiatingInteractions/3.7.3-InteractionSchemeFormat.js` | `scheme` | fixture | [#interaction-scheme-format](https://www.w3.org/TR/vcalm-1.0/#interaction-scheme-format) |
-| `3.7-InitiatingInteractions/3.7.4-InteractionProtocolsResponse.js` | `protocolsJson`, `protocolsHtml` | fixture + HTTP | [#interaction-protocols-response](https://www.w3.org/TR/vcalm-1.0/#interaction-protocols-response) |
-| `3.7-InitiatingInteractions/3.7.5-inviteRequestInteractionProtocol.js` | `inviteRequest` | ⏭ `it.skip` | [#inviterequest-interaction-protocol](https://www.w3.org/TR/vcalm-1.0/#inviterequest-interaction-protocol) |
-| `3.7-InitiatingInteractions/3.7.6-vcapiInteractionProtocol.js` | `vcapi` | ⏭ `it.skip` | [#vcapi-interaction-protocol](https://www.w3.org/TR/vcalm-1.0/#vcapi-interaction-protocol) |
+| `3.7-Interactions/3.7.1-InteractionURLFormat.js` | `interactionUrl`, `interactionHttps`, `interactionOpaque`, `interactionNoExtraQuery` | fixture | [#interaction-url-format](https://www.w3.org/TR/vcalm-1.0/#interaction-url-format) |
+| `3.7-Interactions/3.7.2-InteractionQRCodeFormat.js` | `qrCode`, `qrCodeMaxLength` | fixture | [#interaction-qr-code-format](https://www.w3.org/TR/vcalm-1.0/#interaction-qr-code-format) |
+| `3.7-Interactions/3.7.3-InteractionSchemeFormat.js` | `scheme` | fixture | [#interaction-scheme-format](https://www.w3.org/TR/vcalm-1.0/#interaction-scheme-format) |
+| `3.7-Interactions/3.7.4-InteractionProtocolsResponse.js` | `protocolsJson`, `protocolsHtml` | fixture + HTTP | [#interaction-protocols-response](https://www.w3.org/TR/vcalm-1.0/#interaction-protocols-response) |
+| `3.7-Interactions/3.7.5-inviteRequestInteractionProtocol.js` | `inviteRequest` | ⏭ `it.skip` | [#inviterequest-interaction-protocol](https://www.w3.org/TR/vcalm-1.0/#inviterequest-interaction-protocol) |
+| `3.7-Interactions/3.7.6-vcapiInteractionProtocol.js` | `vcapi` | ⏭ `it.skip` | [#vcapi-interaction-protocol](https://www.w3.org/TR/vcalm-1.0/#vcapi-interaction-protocol) |
 
 ### §3.8 Error Handling
 
