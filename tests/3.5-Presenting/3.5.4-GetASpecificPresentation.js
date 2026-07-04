@@ -35,11 +35,11 @@ describe('Get a Specific Presentation', function() {
         should.exist(issuedVc, `Expected ${name} to issue a VC first.`);
         const created = await endpoints.createPresentation({issuedVc});
         shouldBeCreatedPresentation({
-          vp: created.verifiablePresentation,
+          data: created.data,
           result: created.result,
           error: created.error
         });
-        presentationId = created.verifiablePresentation?.id;
+        presentationId = created.data?.verifiablePresentation?.id;
       });
       it(NORMATIVE.presenting.getById,
         async function() {
@@ -48,7 +48,8 @@ describe('Get a Specific Presentation', function() {
           if(!presentationId) {
             this.skip('Created presentation has no id for storage lookup.');
           }
-          const {presentation, result, error} = await endpoints.getPresentation(
+          const {data, presentation, result, error} =
+            await endpoints.getPresentation(
             presentationId
           );
           skipIfNotImplemented(this, {
@@ -57,6 +58,7 @@ describe('Get a Specific Presentation', function() {
           });
           shouldReturnHttpResult({result, error});
           result.status.should.equal(200, 'Expected status code 200.');
+          data.should.have.property('verifiablePresentation');
           presentation.should.be.an('object');
           presentation.id.should.equal(presentationId);
         });

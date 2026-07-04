@@ -38,7 +38,7 @@ describe('Multiple proofs in a single response', function() {
           );
         }
         const issueBody = createRequestBody({issuer: endpoints.issuer});
-        const {issuedVc, result, error} =
+        const {issuedVc, data, result, error} =
           await endpoints.issueCredentialWithBody(issueBody);
         skipIfNotImplemented(this, {
           result,
@@ -46,6 +46,7 @@ describe('Multiple proofs in a single response', function() {
         });
         shouldReturnHttpResult({result, error});
         expect(result.status).to.equal(201);
+        data.should.have.property('verifiableCredential');
         shouldAttachMultipleProofsInSingleResponse(issuedVc);
       });
     });

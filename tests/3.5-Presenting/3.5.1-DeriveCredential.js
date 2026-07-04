@@ -36,7 +36,7 @@ describe('Derive Credential', function() {
       it(NORMATIVE.presenting.derive, async function() {
         this.test.link = 'https://www.w3.org/TR/vcalm-1.0/#derive-credential';
         should.exist(issuedVc, `Expected ${name} to issue a VC first.`);
-        const {derivedVc, result, error} = await endpoints.deriveCredential(
+        const {data, result, error} = await endpoints.deriveCredential(
           issuedVc
         );
         skipIfNotImplemented(this, {
@@ -46,7 +46,7 @@ describe('Derive Credential', function() {
         shouldReturnHttpResult({result, error});
         result.status.should.equal(201, 'Expected status code 201.');
         shouldBeIssuedVc({
-          issuedVc: derivedVc,
+          data,
           result,
           operation: 'deriveCredential'
         });

@@ -34,14 +34,14 @@ describe('Proof sets and chains configuration', function() {
       beforeEach(addPerTestMetadata);
       it(NORMATIVE.issuing.proofHandling, async function() {
         this.test.link = 'https://www.w3.org/TR/vcalm-1.0/#issue-credential';
-        const {issuedVc, result, error} =
+        const {issuedVc, data, result, error} =
           await endpoints.issueCredentialWithExistingProof();
         skipIfNotImplemented(this, {
           result,
           label: 'POST /credentials/issue (credential with existing proof)'
         });
         shouldReturnHttpResult({result, error});
-        shouldHandlePreProofedCredentialIssue({issuedVc, result});
+        shouldHandlePreProofedCredentialIssue({data, issuedVc, result});
       });
     });
   }

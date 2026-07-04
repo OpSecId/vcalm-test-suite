@@ -34,7 +34,7 @@ describe('Verify Presentation', function() {
         should.exist(issuedVc, `Expected ${name} to issue a VC first.`);
         const created = await endpoints.createPresentation({issuedVc});
         shouldBeCreatedPresentation({
-          vp: created.verifiablePresentation,
+          data: created.data,
           result: created.result,
           error: created.error
         });

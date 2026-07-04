@@ -30,11 +30,15 @@ export function shouldReturnHttpResult({result, error}) {
 }
 
 export function shouldBeIssuedVc({
-  issuedVc,
+  data,
   result,
   operation = 'issueCredential',
   pathParams
 }) {
+  should.exist(data, 'Expected a response body.');
+  data.should.be.an('object', 'Expected the response body to be an object.');
+  data.should.have.property('verifiableCredential');
+  const issuedVc = data.verifiableCredential;
   issuedVc.should.be.an(
     'object',
     'Expected the issued verifiable credential to be an object.'
@@ -48,12 +52,7 @@ export function shouldBeIssuedVc({
   issuedVc.should.have.property('proof');
   issuedVc.proof.should.be.an('object', 'Expected `proof` to be an object.');
   if(result) {
-    shouldSatisfyOpenApi({
-      result,
-      data: {verifiableCredential: issuedVc},
-      operation,
-      pathParams
-    });
+    shouldSatisfyOpenApi({result, data, operation, pathParams});
   }
 }
 
@@ -327,20 +326,24 @@ export function shouldAdvertiseInteractionProtocols(protocols) {
   );
 }
 
-export function shouldBeCreatedPresentation({vp, result, error}) {
+export function shouldBeCreatedPresentation({data, result, error}) {
   should.not.exist(
     error,
     `Expected no error creating presentation: ${error?.message}`
   );
   shouldReturnHttpResult({result});
   result.status.should.equal(201, 'Expected status code 201.');
+  should.exist(data, 'Expected a response body.');
+  data.should.be.an('object', 'Expected the response body to be an object.');
+  data.should.have.property('verifiablePresentation');
+  const vp = data.verifiablePresentation;
   should.exist(vp, 'Expected a verifiablePresentation.');
   vp.should.have.property('type');
   vp.type.should.include('VerifiablePresentation');
   vp.should.have.property('proof');
   shouldSatisfyOpenApi({
     result,
-    data: {verifiablePresentation: vp},
+    data,
     operation: 'createPresentation'
   });
 }
@@ -603,8 +606,13 @@ export function shouldAllowServerReferenceId(message) {
   message.referenceId.should.be.a('string').and.not.be.empty;
 }
 
-export function shouldHandlePreProofedCredentialIssue({issuedVc, result}) {
+export function shouldHandlePreProofedCredentialIssue({data, issuedVc, result}) {
   should.exist(result, 'Expected an HTTP result.');
+  if(result.status < 400) {
+    should.exist(data, 'Expected a response body.');
+    data.should.have.property('verifiableCredential');
+    issuedVc.should.equal(data.verifiableCredential);
+  }
   if(result.status >= 400) {
     return;
   }

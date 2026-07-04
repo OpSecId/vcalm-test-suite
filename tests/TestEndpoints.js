@@ -57,6 +57,7 @@ export class TestEndpoints {
     const {data, result, error} = await this.issuer.post({json: issueBody});
     return {
       issuedVc: extractIssuedCredential(data),
+      data,
       result,
       error
     };
@@ -85,6 +86,7 @@ export class TestEndpoints {
     const {data, result, error} = await this.issuer.get({url});
     return {
       credential: extractIssuedCredential(data),
+      data,
       result,
       error
     };
@@ -130,6 +132,7 @@ export class TestEndpoints {
     const {data, result, error} = await this.holder.post({json: body});
     return {
       verifiablePresentation: extractCreatedPresentation(data),
+      data,
       result,
       error
     };
@@ -156,6 +159,7 @@ export class TestEndpoints {
     const {data, result, error} = await this.holder.post({url, json: body});
     return {
       derivedVc: extractIssuedCredential(data),
+      data,
       result,
       error
     };
@@ -172,6 +176,7 @@ export class TestEndpoints {
     const {data, result, error} = await this.holder.get({url});
     return {
       presentation: extractCreatedPresentation(data),
+      data,
       result,
       error
     };

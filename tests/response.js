@@ -3,41 +3,29 @@
  */
 
 /**
- * Normalize a VC issue HTTP response body to the issued credential object.
+ * Read the issued credential from a VCALM response body.
  *
- * @param {object} data - Parsed JSON from POST /credentials/issue.
- * @returns {object} The issued verifiable credential.
+ * @param {object} data - Parsed JSON response body.
+ * @returns {object|undefined} The `verifiableCredential` value when present.
  */
 export function extractIssuedCredential(data) {
   if(data == null || typeof data !== 'object') {
-    return data;
+    return undefined;
   }
-  if(data.verifiableCredential !== undefined) {
-    return data.verifiableCredential;
-  }
-  if(data.credential !== undefined) {
-    return data.credential;
-  }
-  return data;
+  return data.verifiableCredential;
 }
 
 /**
- * Normalize a create-presentation HTTP response body to the signed VP.
+ * Read the created presentation from a VCALM response body.
  *
- * @param {object} data - Parsed JSON from POST /presentations.
- * @returns {object} The verifiable presentation.
+ * @param {object} data - Parsed JSON response body.
+ * @returns {object|undefined} The `verifiablePresentation` value when present.
  */
 export function extractCreatedPresentation(data) {
   if(data == null || typeof data !== 'object') {
-    return data;
+    return undefined;
   }
-  if(data.verifiablePresentation !== undefined) {
-    return data.verifiablePresentation;
-  }
-  if(data.presentation !== undefined) {
-    return data.presentation;
-  }
-  return data;
+  return data.verifiablePresentation;
 }
 
 /**

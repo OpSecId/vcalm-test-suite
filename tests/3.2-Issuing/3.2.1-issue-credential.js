@@ -22,10 +22,10 @@ describe('Issue Credential', function() {
       beforeEach(addPerTestMetadata);
       it(NORMATIVE.issuing.issue, async function() {
         this.test.link = 'https://www.w3.org/TR/vcalm-1.0/#issue-credential';
-        const {issuedVc, result, error} = await endpoints.issueCredential();
+        const {data, result, error} = await endpoints.issueCredential();
         shouldReturnHttpResult({result, error});
         result.status.should.equal(201, 'Expected status code 201.');
-        shouldBeIssuedVc({issuedVc, result});
+        shouldBeIssuedVc({data, result});
       });
     });
   }

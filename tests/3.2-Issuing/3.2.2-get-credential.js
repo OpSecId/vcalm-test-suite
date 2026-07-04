@@ -34,7 +34,7 @@ describe('Get Credential', function() {
           issuedVc?.id,
           `Expected ${name} to issue a VC with an id.`
         );
-        const {credential, result, error} = await endpoints.getCredential(
+        const {data, result, error} = await endpoints.getCredential(
           issuedVc.id
         );
         skipIfNotImplemented(this, {
@@ -44,12 +44,12 @@ describe('Get Credential', function() {
         shouldReturnHttpResult({result, error});
         result.status.should.equal(200, 'Expected status code 200.');
         shouldBeIssuedVc({
-          issuedVc: credential,
+          data,
           result,
           operation: 'getCredential',
           pathParams: {id: issuedVc.id}
         });
-        credential.id.should.equal(
+        data.verifiableCredential.id.should.equal(
           issuedVc.id,
           'Expected the same credential id.'
         );
