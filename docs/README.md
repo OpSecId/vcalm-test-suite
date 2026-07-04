@@ -1,8 +1,8 @@
 # VCALM test suite — normative documentation
 
-Branch **`feature/vcalm-docs`** holds spec traceability and planning artifacts.
-Mocha tests and run instructions live on **`feature/vcalm-interop-suite`**.
-OpenAPI / Schemathesis tooling lives on **`feature/vcalm-oas-pin`**.
+Branch **`feature/vcalm-docs`** holds the coverage matrix, spec traceability, and
+planning artifacts. Mocha tests: **`feature/vcalm-interop-suite`**. Schemathesis:
+**`feature/vcalm-oas-pin`**.
 
 ## Start here
 
