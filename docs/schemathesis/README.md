@@ -1,8 +1,28 @@
 # Schemathesis (local schema conformance)
 
-Property-based tests for VCALM **request/response bodies** against the pinned OpenAPI spec ([`oas.yaml`](oas.yaml) from [w3c.github.io/vcalm](https://w3c.github.io/vcalm/oas.yaml)), using [Schemathesis](https://schemathesis.io/).
+Property-based tests for VCALM **request/response bodies** against the OpenAPI spec
+([w3c.github.io/vcalm/oas.yaml](https://w3c.github.io/vcalm/oas.yaml)), using
+[Schemathesis](https://schemathesis.io/).
 
-This layer covers most **`http`-typed** normative statements from the [stats analysis](../vcalm-normative-stats.html#test-suite-analysis). Mocha (golden issue/verify, §1.3 roles) is `npm test`.
+This layer covers most **`http`-typed** normative statements from the
+[stats analysis](../vcalm-normative-stats.html#test-suite-analysis). Mocha
+(golden issue/verify, §1.3 roles) is `npm test`.
+
+## OpenAPI pin (not on `feature/vcalm-interop-suite`)
+
+The large vendored tree (`oas.yaml`, `components/`, `oas.bundled.json`) lives on
+branch **`feature/vcalm-oas-pin`** so the interop branch stays reviewable.
+
+On `feature/vcalm-interop-suite`, generate the pin locally before schema tests:
+
+```sh
+npm run schema:update-oas
+```
+
+That writes into `docs/schemathesis/` (gitignored on the interop branch). To use
+the pre-vendored copy instead: `git checkout feature/vcalm-oas-pin -- docs/schemathesis/`.
+
+Committed on every branch: this README and [`hooks.py`](hooks.py).
 
 ## Prerequisites
 
@@ -72,7 +92,9 @@ Reports: `reports/schemathesis/junit.xml` and `reports/schemathesis/index.html` 
 npm run schema:update-oas
 ```
 
-Pulls [`oas.yaml`](https://w3c.github.io/vcalm/oas.yaml) and `components/` from [w3c.github.io/vcalm](https://w3c.github.io/vcalm/).
+Pulls [`oas.yaml`](https://w3c.github.io/vcalm/oas.yaml) and `components/` from
+[w3c.github.io/vcalm](https://w3c.github.io/vcalm/). On `feature/vcalm-interop-suite`
+these files are gitignored; the vendored snapshot is on `feature/vcalm-oas-pin`.
 
 ## What to expect
 

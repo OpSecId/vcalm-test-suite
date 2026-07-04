@@ -8,7 +8,7 @@ Lifecycle Management).
 
 | Layer | Tool | Purpose |
 |-------|------|---------|
-| OAS Conformance | Schemathesis | Request/response schemas from [w3c.github.io/vcalm/oas.yaml](https://w3c.github.io/vcalm/oas.yaml) (pinned under `docs/schemathesis/`) |
+| OAS Conformance | Schemathesis | Request/response schemas from [w3c.github.io/vcalm/oas.yaml](https://w3c.github.io/vcalm/oas.yaml) (generate locally or use branch `feature/vcalm-oas-pin`) |
 | OAS (optional) | Chai OpenAPI | Response envelope checks on happy paths (`tests/openapi.js`; off when `VCALM_OPENAPI=0`) |
 | Mocha | Mocha | §1.3 roles, happy paths, negative inputs, `verified` / ProblemDetails semantics |
 
@@ -110,7 +110,8 @@ with tag `VCALM` on issuer, verifier, and holder endpoints (and
 
 ## OAS conformance (Schemathesis)
 
-Property-based tests against the pinned OpenAPI bundle in `docs/schemathesis/`.
+Property-based tests against the OpenAPI bundle in `docs/schemathesis/` (run
+`npm run schema:update-oas` first, or check out branch `feature/vcalm-oas-pin`).
 
 ```sh
 npm run schema:update-oas   # refresh oas.yaml from https://w3c.github.io/vcalm/oas.yaml
