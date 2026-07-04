@@ -6,7 +6,6 @@
     "VerifiableCredential"
   ],
   "credentialSubject": {
-    "id": "did:key:z6MkhTNL7i2etLerDK8Acz5t528giE5KA4p75T6ka1E1D74r",
     "description": "This is a valid VC"
   }
 }
