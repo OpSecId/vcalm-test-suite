@@ -1,7 +1,4 @@
-// See docs/test-coverage.md → "VCALM tag and endpoint registration" for how
-// tags and per-role endpoint URLs are interpreted by the test harness.
-//
-// Rename to localConfig.cjs
+// Rename to localConfig.cjs — unified gateway (A) or explicit paths (B) below.
 //
 // Two URL conventions (pick one per deployment):
 //

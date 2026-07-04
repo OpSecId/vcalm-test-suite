@@ -8,9 +8,9 @@ Lifecycle Management).
 
 | Branch | Contents |
 |--------|----------|
-| `feature/vcalm-interop-suite` | Mocha tests, `docs/test-coverage.md`, run instructions (this branch) |
+| `feature/vcalm-interop-suite` | Mocha tests and run instructions (this branch) |
 | `feature/vcalm-oas-pin` | Schemathesis, pinned OpenAPI (`docs/schemathesis/`), `npm run test:schema` |
-| `feature/vcalm-docs` | Normative traceability, stats, spec-to-test mapping (`docs/` tree) |
+| `feature/vcalm-docs` | Coverage matrix, normative traceability, stats (`docs/` tree) |
 
 ```sh
 git checkout feature/vcalm-oas-pin -- docs/schemathesis/ schemathesis.local.example.cjs schemathesis.toml scripts/
@@ -36,8 +36,8 @@ validation is covered by Schemathesis on `feature/vcalm-oas-pin`. This suite doe
 sufficient to exercise the API.
 
 Mocha tests under `tests/<section>/` mirror the VCALM TOC (helpers live at
-`tests/*.js` and are excluded from the `tests/*/**/*.js` glob). See
-[docs/test-coverage.md](docs/test-coverage.md).
+`tests/*.js` and are excluded from the `tests/*/**/*.js` glob). Per-file
+coverage matrix: branch `feature/vcalm-docs` → `docs/test-coverage.md`.
 
 ## Install
 
@@ -92,17 +92,36 @@ NODE_TLS_REJECT_UNAUTHORIZED=0 VCALM_OPENAPI=0 npm test
 
 ### Role registration
 
-Verify VC tests require `issuers` + `verifiers` on the same implementation.
-Verify VP tests require `issuers` + `holders` + `verifiers` (issue → create
-presentation → verify).
+Tag each registered endpoint with `VCALM`. Register only roles your deployment
+implements — tests skip missing pairings (e.g. no VP path without `holders` +
+`verifiers`).
 
-The `verifiers` entry may point at a unified gateway root or at
-`POST /credentials/verify`; the suite resolves `/presentations/verify` from
-the same setting. See [docs/test-coverage.md](docs/test-coverage.md) →
-**VCALM tag and endpoint registration** for tags, per-role URL resolution, and
-pairing rules.
+| Profile | Register | Enables |
+|---------|----------|---------|
+| Issuer only | `issuers` | §1.3 issuer, §2.4.1/2.4.2, §3.2.1, §3.2.6 |
+| Verifier only | `verifiers` | §1.3 verifier smoke, §3.3.4–5 |
+| Issuer + verifier | `issuers`, `verifiers` | + §3.3.1, §3.3.4, §3.8.1 (VC) |
+| Full §1.3 core | above + `holders` | + §3.3.2, §3.3.5, §3.5.2, §3.8.1 (VP) |
 
-For path-specific deployments:
+**Verifier — one entry, two operations.** There is no separate `vpVerifiers` key.
+A single `verifiers` entry satisfies §1.3 (verify credential and verify
+presentation). The suite derives the sibling path from `endpoint`:
+
+- `…/credentials/verify` → VP at `…/presentations/verify` (path swap)
+- Gateway root → both paths appended under the root
+
+| Role key | Typical `endpoint` |
+|----------|-------------------|
+| `issuers` | `…/credentials/issue` or gateway root |
+| `verifiers` | `…/credentials/verify` or gateway root |
+| `holders` | `…/presentations` or gateway root |
+| `workflows` | `…/workflows` or gateway root (optional) |
+| `interactions` | gateway root or `…/interactions` (optional) |
+
+Optional endpoints that return **404** or **501** are skipped. See
+`localConfig.example.cjs` for unified-gateway vs explicit-path templates.
+
+Explicit paths:
 
 ```js
 issuers: [{ endpoint: `${baseUrl}/credentials/issue`, tags: ['VCALM'] }],
