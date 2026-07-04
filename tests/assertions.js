@@ -4,9 +4,24 @@
 
 import chai from 'chai';
 
-import {parseInteractionSchemeUrl} from './helpers.js';
+import {
+  expectSatisfiesOpenApi,
+  isOpenApiValidationEnabled
+} from './openapi.js';
+import {
+  parseInteractionSchemeUrl,
+  PROOF_HANDLING_MODES,
+  RECOMMENDED_VC_PAYLOAD_BYTES
+} from './helpers.js';
 
 const should = chai.should();
+
+function shouldSatisfyOpenApi({result, data, operation, pathParams}) {
+  if(!isOpenApiValidationEnabled() || !result) {
+    return;
+  }
+  expectSatisfiesOpenApi({result, data, operation, pathParams});
+}
 
 export function shouldReturnHttpResult({result, error}) {
   should.not.exist(error, `Expected no error, got ${error?.message}`);
@@ -14,7 +29,12 @@ export function shouldReturnHttpResult({result, error}) {
   should.exist(result.status, 'Expected an HTTP status code.');
 }
 
-export function shouldBeIssuedVc({issuedVc}) {
+export function shouldBeIssuedVc({
+  issuedVc,
+  result,
+  operation = 'issueCredential',
+  pathParams
+}) {
   issuedVc.should.be.an(
     'object',
     'Expected the issued verifiable credential to be an object.'
@@ -27,6 +47,14 @@ export function shouldBeIssuedVc({issuedVc}) {
   );
   issuedVc.should.have.property('proof');
   issuedVc.proof.should.be.an('object', 'Expected `proof` to be an object.');
+  if(result) {
+    shouldSatisfyOpenApi({
+      result,
+      data: {verifiableCredential: issuedVc},
+      operation,
+      pathParams
+    });
+  }
 }
 
 export function skipIfNotImplemented(test, {result, label}) {
@@ -35,16 +63,93 @@ export function skipIfNotImplemented(test, {result, label}) {
   }
 }
 
-export function shouldVerifyCredential({data, result}) {
+export function skipIfVerificationClientError(test, {result, label}) {
+  if(result?.status >= 400 && result?.status < 500) {
+    test.skip(
+      `${label} returned HTTP ${result.status} instead of 200 with ` +
+      'verified: false.'
+    );
+  }
+}
+
+export function shouldRejectMalformedIssueRequest({result}) {
+  should.exist(result, 'Expected an HTTP result.');
+  result.status.should.be.at.least(
+    400,
+    'Expected client error for malformed issue request.'
+  );
+  result.status.should.be.below(
+    500,
+    'Expected client error for malformed issue request.'
+  );
+}
+
+export function shouldSatisfyConformanceProbe({
+  result,
+  error,
+  data,
+  label,
+  probeKind
+}) {
+  const httpResult = result ?? error?.response;
+  should.exist(
+    httpResult,
+    `Expected HTTP response for ${label}, got error: ${error?.message}`
+  );
+  httpResult.status.should.not.equal(
+    404,
+    `Expected ${label} to be exposed (got 404 Not Found).`
+  );
+  httpResult.status.should.not.equal(
+    501,
+    `Expected ${label} to be implemented (got 501 Not Implemented).`
+  );
+
+  switch(probeKind) {
+    case 'issueMalformed':
+      shouldRejectMalformedIssueRequest({result: httpResult});
+      break;
+    case 'verifyMalformed':
+      if(httpResult.status === 200) {
+        should.exist(
+          data,
+          `Expected verification response body for ${label}.`
+        );
+        data.should.have.property('verified');
+        data.verified.should.equal(
+          false,
+          `Expected verified:false for malformed ${label} probe.`
+        );
+      } else {
+        shouldRejectMalformedIssueRequest({result: httpResult});
+      }
+      break;
+    default:
+      break;
+  }
+}
+
+export function shouldVerifyCredential({
+  data,
+  result,
+  operation = 'verifyCredential'
+}) {
   shouldReturnHttpResult({result});
   result.status.should.equal(200, 'Expected status code 200.');
   data.should.be.an('object', 'Expected a verification result object.');
   shouldReflectVerificationErrorsVsWarnings(data);
+  shouldSatisfyOpenApi({result, data, operation});
 }
 
 export function verificationErrorsIn(data) {
   if(Array.isArray(data?.errors)) {
     return data.errors;
+  }
+  if(Array.isArray(data?.problemDetails)) {
+    return data.problemDetails.map(item => ({
+      type: item.title || item.type,
+      detail: item.detail || item.title
+    }));
   }
   return [];
 }
@@ -72,7 +177,11 @@ export function shouldReflectVerificationErrorsVsWarnings(data) {
   }
 }
 
-export function shouldReportVerificationFailure({data, result}) {
+export function shouldReportVerificationFailure({
+  data,
+  result,
+  operation = 'verifyCredential'
+}) {
   shouldReturnHttpResult({result});
   result.status.should.equal(200, 'Expected status code 200.');
   data.should.be.an('object', 'Expected a verification result object.');
@@ -84,10 +193,11 @@ export function shouldReportVerificationFailure({data, result}) {
     true,
     'Expected verification errors or problemDetails in the response.'
   );
+  shouldSatisfyOpenApi({result, data, operation});
 }
 
 export function shouldVerifyPresentation({data, result}) {
-  shouldVerifyCredential({data, result});
+  shouldVerifyCredential({data, result, operation: 'verifyPresentation'});
 }
 
 export function shouldCreateChallenge({data, result}) {
@@ -96,6 +206,7 @@ export function shouldCreateChallenge({data, result}) {
   data.should.be.an('object', 'Expected a challenge result object.');
   data.should.have.property('challenge');
   data.challenge.should.be.a('string').and.not.be.empty;
+  shouldSatisfyOpenApi({result, data, operation: 'challenge'});
 }
 
 export function shouldSatisfyVprQueryRequirements(vpr) {
@@ -179,20 +290,290 @@ export function shouldBeCreatedPresentation({vp, result, error}) {
   vp.should.have.property('type');
   vp.type.should.include('VerifiablePresentation');
   vp.should.have.property('proof');
+  shouldSatisfyOpenApi({
+    result,
+    data: {verifiablePresentation: vp},
+    operation: 'createPresentation'
+  });
 }
 
 export function shouldExposeServiceEndpoint({result, error, label}) {
-  should.not.exist(
-    error,
+  const httpResult = result ?? error?.response;
+  should.exist(
+    httpResult,
     `Expected HTTP response for ${label}, got error: ${error?.message}`
   );
-  should.exist(result, `Expected HTTP result for ${label}.`);
-  result.status.should.not.equal(
+  httpResult.status.should.not.equal(
     404,
     `Expected ${label} to be exposed (got 404 Not Found).`
   );
-  result.status.should.not.equal(
+  httpResult.status.should.not.equal(
     501,
     `Expected ${label} to be implemented (got 501 Not Implemented).`
   );
+}
+
+export function shouldUseJsonContentType(result) {
+  should.exist(result, 'Expected an HTTP result.');
+  const contentType = result.headers?.get?.('content-type') ??
+    result.headers?.get?.('Content-Type');
+  should.exist(contentType, 'Expected Content-Type response header.');
+  contentType.toLowerCase().should.include(
+    'application/json',
+    'Expected application/json Content-Type.'
+  );
+}
+
+export function shouldBeProblemDetails(problem) {
+  problem.should.be.an('object');
+  problem.should.have.property('type');
+  problem.type.should.be.a('string').and.match(
+    /^https?:\/\//,
+    'Expected ProblemDetails.type to be a URL.'
+  );
+}
+
+export function shouldHaveReadableProblemDetails(problem) {
+  shouldBeProblemDetails(problem);
+  if(problem.title !== undefined) {
+    problem.title.should.be.a('string').and.not.be.empty;
+  }
+  if(problem.detail !== undefined) {
+    problem.detail.should.be.a('string').and.not.be.empty;
+  }
+}
+
+export function shouldRejectUnknownOption({data, result}) {
+  should.exist(result, 'Expected an HTTP result.');
+  result.status.should.be.at.least(
+    400,
+    'Expected HTTP error for unknown option.'
+  );
+  result.status.should.be.below(
+    500,
+    'Expected client error for unknown option.'
+  );
+  const problems = [];
+  if(data?.type) {
+    problems.push(data);
+  }
+  if(Array.isArray(data?.problemDetails)) {
+    problems.push(...data.problemDetails);
+  }
+  if(Array.isArray(data?.errors)) {
+    problems.push(...data.errors);
+  }
+  problems.length.should.be.above(
+    0,
+    'Expected ProblemDetails in the error response.'
+  );
+  problems.some(problem =>
+    String(problem.type).includes('UNKNOWN_OPTION_PROVIDED')
+  ).should.equal(
+    true,
+    'Expected UNKNOWN_OPTION_PROVIDED ProblemDetails type.'
+  );
+}
+
+export function shouldBeDidAuthenticationQuery(query) {
+  query.should.be.an('object');
+  query.type.should.equal('DIDAuthentication');
+}
+
+export function shouldBeDidAuthenticationPresentation({
+  presentation,
+  challenge,
+  domain,
+  holderDid
+}) {
+  presentation.should.be.an('object');
+  presentation.type.should.include('VerifiablePresentation');
+  presentation.holder.should.equal(holderDid);
+  const proofs = Array.isArray(presentation.proof) ?
+    presentation.proof :
+    [presentation.proof];
+  proofs.should.not.be.empty;
+  for(const proof of proofs) {
+    proof.challenge.should.equal(challenge);
+    proof.domain.should.equal(domain);
+  }
+}
+
+export function shouldDescribeLogicalQueryGroups(vpr) {
+  vpr.should.have.property('query');
+  const groups = new Map();
+  for(const [index, entry] of vpr.query.entries()) {
+    const key = entry.group ?? `__ungrouped_${index}`;
+    groups.set(key, [...(groups.get(key) ?? []), entry]);
+  }
+  groups.size.should.be.above(1, 'Expected multiple query groups.');
+  [...groups.values()].some(entries => entries.length > 1).should.equal(
+    true,
+    'Expected at least one AND group with multiple queries.'
+  );
+}
+
+export function shouldPreferHttpsInteractionUrl(interactionUrl) {
+  const url = new URL(interactionUrl);
+  url.protocol.should.equal('https:', 'Interaction URL SHOULD be HTTPS.');
+}
+
+export function shouldUseOnlyIuvQueryParameter(interactionUrl) {
+  const url = new URL(interactionUrl);
+  [...url.searchParams.keys()].should.deep.equal(
+    ['iuv'],
+    'Interaction URL SHOULD NOT include extra query parameters.'
+  );
+}
+
+export function shouldReturnInteractionHtml({result}) {
+  shouldReturnHttpResult({result});
+  result.status.should.equal(200, 'Expected status code 200.');
+  const contentType = result.headers?.get?.('content-type') ??
+    result.headers?.get?.('Content-Type') ??
+    '';
+  contentType.toLowerCase().should.include(
+    'text/html',
+    'Expected text/html Content-Type.'
+  );
+}
+
+export function shouldEchoReferenceId({serverMessage, clientMessage}) {
+  should.exist(
+    serverMessage.referenceId,
+    'Expected server message to include referenceId.'
+  );
+  clientMessage.referenceId.should.equal(
+    serverMessage.referenceId,
+    'Expected client to echo referenceId.'
+  );
+}
+
+export function shouldUseUrnUuidReferenceId(referenceId) {
+  referenceId.should.match(
+    /^urn:uuid:[0-9a-f-]{36}$/i,
+    'Expected referenceId to be a urn:uuid value.'
+  );
+}
+
+export function shouldAttachMultipleProofsInSingleResponse(credential) {
+  const proofs = Array.isArray(credential.proof) ?
+    credential.proof :
+    credential.proof ? [credential.proof] : [];
+  proofs.length.should.be.at.least(
+    2,
+    'Expected multiple proofs in a single issue response.'
+  );
+}
+
+export function shouldNotUseLongLivedStaticCredentials(endpoints) {
+  for(const endpoint of endpoints) {
+    const authorization = endpoint.settings?.headers?.Authorization ??
+      endpoint.settings?.headers?.authorization;
+    if(typeof authorization === 'string') {
+      authorization.should.not.match(
+        /^Basic /i,
+        'Requests MUST NOT use HTTP Basic Authentication.'
+      );
+    }
+  }
+}
+
+export function shouldStripUnrecognizedProofs({
+  credential,
+  acceptedProofTypes
+}) {
+  const proofs = Array.isArray(credential.proof) ?
+    credential.proof :
+    credential.proof ? [credential.proof] : [];
+  for(const proof of proofs) {
+    acceptedProofTypes.should.include(
+      proof.type,
+      'Expected only understood proof types after stripping.'
+    );
+  }
+}
+
+export function shouldDocumentProofHandlingModes(modes) {
+  modes.should.be.an('array').that.is.not.empty;
+  for(const mode of modes) {
+    PROOF_HANDLING_MODES.should.include(mode);
+  }
+}
+
+export function shouldRecommendVcPayloadBaseline(bytes) {
+  bytes.should.equal(
+    RECOMMENDED_VC_PAYLOAD_BYTES,
+    'Expected 10 MiB interoperability baseline.'
+  );
+}
+
+export function shouldDeclareVcPayloadLimit(settings) {
+  should.exist(
+    settings.vcPayloadLimitBytes,
+    'Expected vcPayloadLimitBytes in endpoint settings.'
+  );
+  settings.vcPayloadLimitBytes.should.be.at.least(
+    RECOMMENDED_VC_PAYLOAD_BYTES,
+    'Configured VC payload limit SHOULD be at least the 10 MiB baseline.'
+  );
+}
+
+export function shouldDeclareInstancePayloadLimit(settings) {
+  should.exist(
+    settings.instancePayloadLimitBytes,
+    'Expected instancePayloadLimitBytes in endpoint settings.'
+  );
+  settings.instancePayloadLimitBytes.should.be.above(
+    0,
+    'Instance payload limit SHOULD be a positive byte count.'
+  );
+}
+
+export function shouldAllowIssueRequestVariables(issueRequest) {
+  issueRequest.should.be.an('object');
+  issueRequest.should.have.property('variables');
+  issueRequest.variables.should.be.an('object');
+}
+
+export function shouldSatisfyIssueRequestResult(issueRequest) {
+  issueRequest.should.be.an('object');
+  issueRequest.should.have.property('result');
+  const {result} = issueRequest;
+  const isTopLevelVariable = /^[A-Za-z_][\w]*$/.test(result);
+  const isJsonPointer = result.startsWith('/variables/');
+  (isTopLevelVariable || isJsonPointer).should.equal(
+    true,
+    'Expected result to name a top-level variable or be a JSON pointer.'
+  );
+}
+
+export function shouldAllowServerReferenceId(message) {
+  if(message?.referenceId === undefined) {
+    return;
+  }
+  message.referenceId.should.be.a('string').and.not.be.empty;
+}
+
+export function shouldHandlePreProofedCredentialIssue({
+  expectedMode,
+  issuedVc,
+  result
+}) {
+  should.exist(result, 'Expected an HTTP result.');
+  switch(expectedMode) {
+    case 'errorHandling':
+      result.status.should.be.at.least(400);
+      break;
+    case 'proofSets':
+      result.status.should.equal(201);
+      shouldAttachMultipleProofsInSingleResponse(issuedVc);
+      break;
+    case 'proofChains':
+      result.status.should.equal(201);
+      should.exist(issuedVc?.proof, 'Expected a proof on the issued VC.');
+      break;
+    default:
+      throw new Error(`Unknown proof handling mode: ${expectedMode}`);
+  }
 }

@@ -8,23 +8,24 @@ import {
   shouldReturnHttpResult
 } from '../assertions.js';
 import {filterByTag} from 'vc-test-suite-implementations';
+import {NORMATIVE} from '../normative-statements.js';
 import {TestEndpoints} from '../TestEndpoints.js';
 
 const tag = VCALM_TAG;
 const {match} = filterByTag({property: 'issuers', tags: [tag]});
 
-describe('VCALM §3.2.1 Issue Credential', function() {
+describe('Issue Credential', function() {
   setupMatrix.call(this, match, 'Issuer');
   for(const [name, implementation] of match) {
     const endpoints = new TestEndpoints({implementation, tag});
     describe(name, function() {
       beforeEach(addPerTestMetadata);
-      it('MUST successfully issue a credential (HTTP 201).', async function() {
+      it(NORMATIVE.issuing.issue, async function() {
         this.test.link = 'https://www.w3.org/TR/vcalm-1.0/#issue-credential';
         const {issuedVc, result, error} = await endpoints.issueCredential();
         shouldReturnHttpResult({result, error});
         result.status.should.equal(201, 'Expected status code 201.');
-        shouldBeIssuedVc({issuedVc});
+        shouldBeIssuedVc({issuedVc, result});
       });
     });
   }

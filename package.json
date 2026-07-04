@@ -4,8 +4,7 @@
   "description": "Interoperability tests for VCALM (Verifiable Credential API for Lifecycle Management)",
   "type": "module",
   "scripts": {
-    "test": "node scripts/run-mocha.cjs",
-    "test:allure": "allure serve allure-results",
+    "test": "mocha 'tests/*/**/*.js' --reporter @digitalbazaar/mocha-w3c-interop-reporter --reporter-options abstract=\"$PWD/abstract.hbs\",reportDir=\"$PWD/reports\",respec=\"$PWD/respecConfig.json\",suiteLog='./suite.log',templateData=\"$PWD/reports/index.json\",title=\"VCALM Interoperability Report\" --timeout 15000 --preserve-symlinks",
     "test:schema": "node scripts/run-schemathesis.cjs",
     "schema:update-oas": "node scripts/update-oas.cjs",
     "lint": "eslint ."
@@ -33,8 +32,8 @@
     "vc-test-suite-implementations": "github:w3c/vc-test-suite-implementations"
   },
   "devDependencies": {
-    "allure-commandline": "^2.43.0",
-    "allure-mocha": "^3.10.2",
+    "@apidevtools/swagger-parser": "^12.1.0",
+    "chai-openapi-response-validator": "^0.14.2",
     "eslint": "^8.57.1",
     "eslint-config-digitalbazaar": "^5.0.1",
     "eslint-plugin-jsdoc": "^48.11.0",

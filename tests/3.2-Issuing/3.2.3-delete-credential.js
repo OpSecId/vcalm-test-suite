@@ -9,13 +9,14 @@ import {
 } from '../assertions.js';
 import chai from 'chai';
 import {filterByTag} from 'vc-test-suite-implementations';
+import {NORMATIVE} from '../normative-statements.js';
 import {TestEndpoints} from '../TestEndpoints.js';
 
 const should = chai.should();
 const tag = VCALM_TAG;
 const {match} = filterByTag({property: 'issuers', tags: [tag]});
 
-describe('VCALM §3.2.3 Delete Credential', function() {
+describe('Delete Credential', function() {
   setupMatrix.call(this, match, 'Issuer');
   for(const [name, implementation] of match) {
     const endpoints = new TestEndpoints({implementation, tag});
@@ -25,7 +26,7 @@ describe('VCALM §3.2.3 Delete Credential', function() {
       before(async function() {
         issuedVc = await endpoints.issue();
       });
-      it('MUST delete a stored credential by id (HTTP 202).', async function() {
+      it(NORMATIVE.issuing.delete, async function() {
         this.test.link =
           'https://www.w3.org/TR/vcalm-1.0/#delete-a-specific-credential';
         should.exist(

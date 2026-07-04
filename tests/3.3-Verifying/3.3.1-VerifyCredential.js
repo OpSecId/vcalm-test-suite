@@ -10,6 +10,7 @@ import {
 } from '../helpers.js';
 import chai from 'chai';
 import {filterByTag} from 'vc-test-suite-implementations';
+import {NORMATIVE} from '../normative-statements.js';
 import {shouldVerifyCredential} from '../assertions.js';
 import {TestEndpoints} from '../TestEndpoints.js';
 
@@ -18,7 +19,7 @@ const tag = VCALM_TAG;
 const {match} = filterByTag({tags: [tag]});
 const paired = implementationsWithIssuerAndVerifier(match, tag);
 
-describe('VCALM §3.3.1 Verify Credential', function() {
+describe('Verify Credential', function() {
   setupMatrix.call(this, new Map(paired), 'Verifier');
   for(const [name, implementation] of paired) {
     const endpoints = new TestEndpoints({implementation, tag});
@@ -28,7 +29,7 @@ describe('VCALM §3.3.1 Verify Credential', function() {
       before(async function() {
         issuedVc = await endpoints.issue();
       });
-      it('MUST verify an issued credential (HTTP 200, verified: true).',
+      it(NORMATIVE.verifying.verifyCredential,
         async function() {
           this.test.link =
             'https://www.w3.org/TR/vcalm-1.0/#verify-credential';

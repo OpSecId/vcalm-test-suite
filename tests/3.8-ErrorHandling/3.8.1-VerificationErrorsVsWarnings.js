@@ -21,10 +21,12 @@ import {
   shouldReportVerificationFailure,
   shouldVerifyCredential,
   shouldVerifyPresentation,
-  skipIfNotImplemented
+  skipIfNotImplemented,
+  skipIfVerificationClientError
 } from '../assertions.js';
 import chai from 'chai';
 import {filterByTag} from 'vc-test-suite-implementations';
+import {NORMATIVE} from '../normative-statements.js';
 import {TestEndpoints} from '../TestEndpoints.js';
 
 const should = chai.should();
@@ -34,8 +36,8 @@ const {match} = filterByTag({tags: [tag]});
 const vcPaired = implementationsWithIssuerAndVerifier(match, tag);
 const vpPaired = implementationsWithPresentationFlow(match, tag);
 
-describe('VCALM §3.8.1 Verification Errors vs. Warnings', function() {
-  it('MUST set verified to false when errors are included.', function() {
+describe('Verification Errors vs. Warnings', function() {
+  it(NORMATIVE.errorHandling.verifiedFalse, function() {
     this.test.link =
       'https://www.w3.org/TR/vcalm-1.0/#verification-errors-vs-warnings';
     shouldReflectVerificationErrorsVsWarnings(createVerificationResultFixture({
@@ -45,23 +47,13 @@ describe('VCALM §3.8.1 Verification Errors vs. Warnings', function() {
     }));
   });
 
-  it('MUST set verified to true when only warnings are included.', function() {
+  it(NORMATIVE.errorHandling.verifiedTrue, function() {
     this.test.link =
       'https://www.w3.org/TR/vcalm-1.0/#verification-errors-vs-warnings';
     shouldReflectVerificationErrorsVsWarnings(createVerificationResultFixture({
       verified: true,
       errors: [],
       warnings: [warningFixture]
-    }));
-  });
-
-  it('MUST set verified to true when no errors are included.', function() {
-    this.test.link =
-      'https://www.w3.org/TR/vcalm-1.0/#verification-errors-vs-warnings';
-    shouldReflectVerificationErrorsVsWarnings(createVerificationResultFixture({
-      verified: true,
-      errors: [],
-      warnings: []
     }));
   });
 
@@ -75,40 +67,36 @@ describe('VCALM §3.8.1 Verification Errors vs. Warnings', function() {
         before(async function() {
           issuedVc = await endpoints.issue();
         });
-        it('MUST set verified true for a valid issued credential (HTTP 200).',
-          async function() {
-            this.test.link =
-              'https://www.w3.org/TR/vcalm-1.0/#verification-errors-vs-warnings';
-            should.exist(issuedVc, `Expected ${name} to issue a VC first.`);
-            const {data, result} = await endpoints.verifyCredential(
-              issuedVc,
-              verifyOptions
-            );
-            shouldVerifyCredential({data, result});
+        it(NORMATIVE.errorHandling.verifiedTrue, async function() {
+          this.test.link =
+            'https://www.w3.org/TR/vcalm-1.0/#verification-errors-vs-warnings';
+          should.exist(issuedVc, `Expected ${name} to issue a VC first.`);
+          const {data, result} = await endpoints.verifyCredential(
+            issuedVc,
+            verifyOptions
+          );
+          shouldVerifyCredential({data, result});
+        });
+        it(NORMATIVE.errorHandling.verifiedFalse, async function() {
+          this.test.link =
+            'https://www.w3.org/TR/vcalm-1.0/#verification-errors-vs-warnings';
+          should.exist(issuedVc, `Expected ${name} to issue a VC first.`);
+          const tampered = createTamperedVerifiableCredential(issuedVc);
+          const {data, result} = await endpoints.verifyCredential(
+            tampered,
+            verifyOptions
+          );
+          skipIfNotImplemented(this, {
+            result,
+            label: 'POST /credentials/verify (tampered credential)'
           });
-        it('MUST set verified false when verification errors are reported.',
-          async function() {
-            this.test.link =
-              'https://www.w3.org/TR/vcalm-1.0/#verification-errors-vs-warnings';
-            should.exist(issuedVc, `Expected ${name} to issue a VC first.`);
-            const tampered = createTamperedVerifiableCredential(issuedVc);
-            const {data, result} = await endpoints.verifyCredential(
-              tampered,
-              verifyOptions
-            );
-            skipIfNotImplemented(this, {
-              result,
-              label: 'POST /credentials/verify (tampered credential)'
-            });
-            if(result.status >= 400 && result.status < 500) {
-              this.skip(
-                `Verifier returned HTTP ${result.status} instead of 200 ` +
-                'with verified: false.'
-              );
-            }
-            shouldReportVerificationFailure({data, result});
-            shouldReflectVerificationErrorsVsWarnings(data);
+          skipIfVerificationClientError(this, {
+            result,
+            label: 'POST /credentials/verify (tampered credential)'
           });
+          shouldReportVerificationFailure({data, result});
+          shouldReflectVerificationErrorsVsWarnings(data);
+        });
       });
     }
   });
@@ -131,48 +119,48 @@ describe('VCALM §3.8.1 Verification Errors vs. Warnings', function() {
           });
           verifiablePresentation = created.verifiablePresentation;
         });
-        it('MUST set verified true for a valid presentation (HTTP 200).',
-          async function() {
-            this.test.link =
-              'https://www.w3.org/TR/vcalm-1.0/#verification-errors-vs-warnings';
-            should.exist(
-              verifiablePresentation,
-              `Expected ${name} to create a VP first.`
-            );
-            const {data, result} = await endpoints.verifyPresentation(
-              verifiablePresentation,
-              verifyOptions
-            );
-            shouldVerifyPresentation({data, result});
+        it(NORMATIVE.errorHandling.verifiedTrue, async function() {
+          this.test.link =
+            'https://www.w3.org/TR/vcalm-1.0/#verification-errors-vs-warnings';
+          should.exist(
+            verifiablePresentation,
+            `Expected ${name} to create a VP first.`
+          );
+          const {data, result} = await endpoints.verifyPresentation(
+            verifiablePresentation,
+            verifyOptions
+          );
+          shouldVerifyPresentation({data, result});
+        });
+        it(NORMATIVE.errorHandling.verifiedFalse, async function() {
+          this.test.link =
+            'https://www.w3.org/TR/vcalm-1.0/#verification-errors-vs-warnings';
+          should.exist(
+            verifiablePresentation,
+            `Expected ${name} to create a VP first.`
+          );
+          const tampered = createTamperedVerifiableCredential(
+            verifiablePresentation
+          );
+          const {data, result} = await endpoints.verifyPresentation(
+            tampered,
+            verifyOptions
+          );
+          skipIfNotImplemented(this, {
+            result,
+            label: 'POST /presentations/verify (tampered presentation)'
           });
-        it('MUST set verified false when presentation verification fails.',
-          async function() {
-            this.test.link =
-              'https://www.w3.org/TR/vcalm-1.0/#verification-errors-vs-warnings';
-            should.exist(
-              verifiablePresentation,
-              `Expected ${name} to create a VP first.`
-            );
-            const tampered = createTamperedVerifiableCredential(
-              verifiablePresentation
-            );
-            const {data, result} = await endpoints.verifyPresentation(
-              tampered,
-              verifyOptions
-            );
-            skipIfNotImplemented(this, {
-              result,
-              label: 'POST /presentations/verify (tampered presentation)'
-            });
-            if(result.status >= 400 && result.status < 500) {
-              this.skip(
-                `Verifier returned HTTP ${result.status} instead of 200 ` +
-                'with verified: false.'
-              );
-            }
-            shouldReportVerificationFailure({data, result});
-            shouldReflectVerificationErrorsVsWarnings(data);
+          skipIfVerificationClientError(this, {
+            result,
+            label: 'POST /presentations/verify (tampered presentation)'
           });
+          shouldReportVerificationFailure({
+            data,
+            result,
+            operation: 'verifyPresentation'
+          });
+          shouldReflectVerificationErrorsVsWarnings(data);
+        });
       });
     }
   });

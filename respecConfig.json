@@ -1,7 +1,7 @@
 {
+  "specStatus": "unofficial",
   "shortName": "vcalm-test-suite",
   "group": "vc",
-  "specStatus": "base",
   "subtitle": "VCALM Interoperability Report",
   "github": "https://github.com/OpSecId/vcalm-test-suite",
   "edDraftURI": "https://w3c.github.io/vcalm-test-suite/",
@@ -14,8 +14,20 @@
       "href": "https://www.w3.org/TR/vcalm-1.0/"
     }]
   }],
+  "editors": [
+    {
+      "name": "Patrick St. Louis",
+      "url": "https://github.com/PatStLouis",
+      "company": "OpSecId",
+      "companyURL": "https://github.com/OpSecId"
+    }
+  ],
   "authors": [
-    { "name": "Patrick St. Louis", "url": "https://github.com/PatStLouis",
-      "company": "OpSecId", "companyURL": "https://github.com/OpSecId" }
+    {
+      "name": "Patrick St. Louis",
+      "url": "https://github.com/PatStLouis",
+      "company": "OpSecId",
+      "companyURL": "https://github.com/OpSecId"
+    }
   ]
 }

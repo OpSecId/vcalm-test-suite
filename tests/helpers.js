@@ -4,6 +4,16 @@
 
 export const VCALM_TAG = 'VCALM';
 
+/** §2.4 interoperability baseline (10 MiB per verifiable credential). */
+export const RECOMMENDED_VC_PAYLOAD_BYTES = 10 * 1024 * 1024;
+
+/** §3.2.1 issuer configuration modes for credentials with existing proofs. */
+export const PROOF_HANDLING_MODES = [
+  'proofSets',
+  'proofChains',
+  'errorHandling'
+];
+
 export function setupMatrix(match, columnLabel) {
   this.matrix = true;
   this.report = true;
@@ -33,7 +43,7 @@ export function implementationsWithPresentationFlow(match, tag = VCALM_TAG) {
   return [...match].filter(([, implementation]) =>
     hasTaggedEndpoint(implementation, 'issuers', tag) &&
     hasTaggedEndpoint(implementation, 'holders', tag) &&
-    hasTaggedEndpoint(implementation, 'vpVerifiers', tag));
+    hasTaggedEndpoint(implementation, 'verifiers', tag));
 }
 
 export function implementationsWithIssuerAndHolder(match, tag = VCALM_TAG) {
@@ -83,6 +93,40 @@ export function resolveVerifierResourceUrl(verifierEndpoint, resourcePath) {
     resourcePath :
     `/${resourcePath}`;
   return `${base}${suffix}`;
+}
+
+/**
+ * Resolve POST /credentials/verify from a verifier endpoint setting.
+ *
+ * @param {string} verifierEndpoint - Verifier POST URL or instance root.
+ * @returns {string} Verify credential URL.
+ */
+export function resolveVerifyCredentialUrl(verifierEndpoint) {
+  const trimmed = verifierEndpoint.replace(/\/+$/, '');
+  if(trimmed.endsWith('/credentials/verify')) {
+    return trimmed;
+  }
+  if(trimmed.endsWith('/presentations/verify')) {
+    return trimmed.replace(/\/presentations\/verify$/, '/credentials/verify');
+  }
+  return `${trimmed}/credentials/verify`;
+}
+
+/**
+ * Resolve POST /presentations/verify from a verifier endpoint setting.
+ *
+ * @param {string} verifierEndpoint - Verifier POST URL or instance root.
+ * @returns {string} Verify presentation URL.
+ */
+export function resolveVerifyPresentationUrl(verifierEndpoint) {
+  const trimmed = verifierEndpoint.replace(/\/+$/, '');
+  if(trimmed.endsWith('/presentations/verify')) {
+    return trimmed;
+  }
+  if(trimmed.endsWith('/credentials/verify')) {
+    return trimmed.replace(/\/credentials\/verify$/, '/presentations/verify');
+  }
+  return `${trimmed}/presentations/verify`;
 }
 
 /**
@@ -234,4 +278,52 @@ export function parseInteractionSchemeUrl(schemeUrl) {
     throw new Error('Expected interaction: scheme URL.');
   }
   return new URL(schemeUrl.slice(prefix.length));
+}
+
+/**
+ * Remove proof types that are not on the holder allow list (Appendix B.1).
+ *
+ * @param {object} credential - Credential or presentation.
+ * @param {string[]} acceptedProofTypes - Allowed proof type strings.
+ * @returns {object} Credential with unrecognized proofs removed.
+ */
+export function stripUnrecognizedProofs(credential, acceptedProofTypes) {
+  const copy = structuredClone(credential);
+  if(!copy.proof) {
+    return copy;
+  }
+  const proofs = Array.isArray(copy.proof) ? copy.proof : [copy.proof];
+  const kept = proofs.filter(proof => acceptedProofTypes.includes(proof.type));
+  if(kept.length === 0) {
+    delete copy.proof;
+  } else if(kept.length === 1) {
+    copy.proof = kept[0];
+  } else {
+    copy.proof = kept;
+  }
+  return copy;
+}
+
+const ENDPOINT_PROPERTIES = [
+  'issuers',
+  'verifiers',
+  'holders',
+  'workflows',
+  'interactions'
+];
+
+/**
+ * Collect registered endpoint wrappers from an implementation manifest entry.
+ *
+ * @param {object} implementation - Implementation entry.
+ * @returns {object[]} Endpoint instances.
+ */
+export function listImplementationEndpoints(implementation) {
+  const endpoints = [];
+  for(const property of ENDPOINT_PROPERTIES) {
+    for(const endpoint of implementation[property] ?? []) {
+      endpoints.push(endpoint);
+    }
+  }
+  return endpoints;
 }

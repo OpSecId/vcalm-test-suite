@@ -105,6 +105,16 @@ function main() {
     }
   }
 
+  if (cfg.run?.tlsVerify === false) {
+    args.push('--tls-verify=false');
+  }
+
+  if (cfg.run?.suppressHealthChecks?.length) {
+    for (const check of cfg.run.suppressHealthChecks) {
+      args.push('--suppress-health-check', check);
+    }
+  }
+
   if (cfg.auth?.enabled && cfg.auth.bearerToken) {
     args.push('-H', `Authorization: Bearer ${cfg.auth.bearerToken}`);
   }
@@ -118,11 +128,58 @@ function main() {
 
   const result = spawnSync(cmd, args, {
     cwd: ROOT,
-    stdio: 'inherit',
+    encoding: 'utf8',
     env: {...process.env},
   });
 
+  if (result.stdout) {
+    process.stdout.write(result.stdout);
+  }
+  if (result.stderr) {
+    process.stderr.write(result.stderr);
+  }
+
+  writeRunMeta(cfg, profileName, result.stdout || '');
+  renderHtmlReport();
+
   process.exit(result.status ?? 1);
+}
+
+function writeRunMeta(cfg, profileName, stdout) {
+  const seedMatch = stdout.match(/Seed:\s+(\S+)/);
+  const casesMatch = stdout.match(/(\d+)\s+generated,\s+(\d+)\s+passed/);
+  const warnings = [];
+  const warnBlock = stdout.match(/Schema validation mismatch:[\s\S]*?(?=\n\n|$)/);
+  if (warnBlock) {
+    for (const line of warnBlock[0].split('\n')) {
+      const trimmed = line.replace(/\u001b\[[0-9;]*m/g, '').trim();
+      if (trimmed.startsWith('- POST ')) {
+        warnings.push(trimmed.slice(2));
+      }
+    }
+  }
+
+  const meta = {
+    generatedAt: new Date().toISOString(),
+    baseUrl: cfg.baseUrl,
+    profile: profileName,
+    seed: seedMatch?.[1] || '',
+    warnings,
+    summary: {
+      generatedCases: casesMatch ? Number(casesMatch[1]) : null,
+      passedCases: casesMatch ? Number(casesMatch[2]) : null,
+    },
+  };
+
+  fs.writeFileSync(
+    path.join(cfg.run.reportDir, 'run-meta.json'),
+    `${JSON.stringify(meta, null, 2)}\n`
+  );
+}
+
+function renderHtmlReport() {
+  const render = path.join(__dirname, 'render-schemathesis-report.cjs');
+  spawnSync(process.execPath, [render], {cwd: ROOT, stdio: 'inherit'});
 }
 
 main();

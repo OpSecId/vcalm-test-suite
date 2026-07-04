@@ -14,21 +14,21 @@ import {
   skipIfNotImplemented
 } from '../assertions.js';
 import {filterByTag} from 'vc-test-suite-implementations';
+import {NORMATIVE} from '../normative-statements.js';
 import {TestEndpoints} from '../TestEndpoints.js';
 
 const tag = VCALM_TAG;
 const {match} = filterByTag({tags: [tag]});
 const withVerifier = [...match].filter(([, implementation]) =>
-  hasTaggedEndpoint(implementation, 'verifiers', tag) ||
-  hasTaggedEndpoint(implementation, 'vpVerifiers', tag));
+  hasTaggedEndpoint(implementation, 'verifiers', tag));
 
-describe('VCALM §3.3.3 Create Challenge', function() {
+describe('Create Challenge', function() {
   setupMatrix.call(this, new Map(withVerifier), 'Verifier');
   for(const [name, implementation] of withVerifier) {
     const endpoints = new TestEndpoints({implementation, tag});
     describe(name, function() {
       beforeEach(addPerTestMetadata);
-      it('MUST return a challenge string (HTTP 200).', async function() {
+      it(NORMATIVE.verifying.challenge, async function() {
         this.test.link =
           'https://www.w3.org/TR/vcalm-1.0/#create-challenge';
         const {data, result, error} = await endpoints.createChallenge();

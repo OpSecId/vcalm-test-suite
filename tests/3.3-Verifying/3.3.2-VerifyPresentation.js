@@ -14,6 +14,7 @@ import {
 } from '../assertions.js';
 import chai from 'chai';
 import {filterByTag} from 'vc-test-suite-implementations';
+import {NORMATIVE} from '../normative-statements.js';
 import {TestEndpoints} from '../TestEndpoints.js';
 
 const should = chai.should();
@@ -21,7 +22,7 @@ const tag = VCALM_TAG;
 const {match} = filterByTag({tags: [tag]});
 const paired = implementationsWithPresentationFlow(match, tag);
 
-describe('VCALM §3.3.2 Verify Presentation', function() {
+describe('Verify Presentation', function() {
   setupMatrix.call(this, new Map(paired), 'Verifier');
   for(const [name, implementation] of paired) {
     const endpoints = new TestEndpoints({implementation, tag});
@@ -39,7 +40,7 @@ describe('VCALM §3.3.2 Verify Presentation', function() {
         });
         verifiablePresentation = created.verifiablePresentation;
       });
-      it('MUST verify a signed presentation (HTTP 200, verified: true).',
+      it(NORMATIVE.verifying.verifyPresentation,
         async function() {
           this.test.link =
             'https://www.w3.org/TR/vcalm-1.0/#verify-presentation';

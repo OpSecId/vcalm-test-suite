@@ -15,6 +15,7 @@ import {
 } from '../assertions.js';
 import chai from 'chai';
 import {filterByTag} from 'vc-test-suite-implementations';
+import {NORMATIVE} from '../normative-statements.js';
 import {TestEndpoints} from '../TestEndpoints.js';
 
 const should = chai.should();
@@ -22,7 +23,7 @@ const tag = VCALM_TAG;
 const {match} = filterByTag({tags: [tag]});
 const paired = implementationsWithIssuerAndHolder(match, tag);
 
-describe('VCALM §3.5.4 Get a Specific Presentation', function() {
+describe('Get a Specific Presentation', function() {
   setupMatrix.call(this, new Map(paired), 'Holder');
   for(const [name, implementation] of paired) {
     const endpoints = new TestEndpoints({implementation, tag});
@@ -40,7 +41,7 @@ describe('VCALM §3.5.4 Get a Specific Presentation', function() {
         });
         presentationId = created.verifiablePresentation?.id;
       });
-      it('MUST return a stored presentation by id (HTTP 200).',
+      it(NORMATIVE.presenting.getById,
         async function() {
           this.test.link =
           'https://www.w3.org/TR/vcalm-1.0/#get-a-specific-presentation';

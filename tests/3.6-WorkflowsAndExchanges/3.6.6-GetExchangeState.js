@@ -15,6 +15,7 @@ import {
 } from '../assertions.js';
 import chai from 'chai';
 import {filterByTag} from 'vc-test-suite-implementations';
+import {NORMATIVE} from '../normative-statements.js';
 import {TestEndpoints} from '../TestEndpoints.js';
 
 const should = chai.should();
@@ -29,7 +30,7 @@ async function createWorkflowAndExchange(endpoints) {
   return {workflowId: workflow.workflowId, exchangeId: exchange.exchangeId};
 }
 
-describe('VCALM §3.6.6 Get Exchange State', function() {
+describe('Get Exchange State', function() {
   setupMatrix.call(this, match, 'Workflow');
   for(const [name, implementation] of match) {
     const endpoints = new TestEndpoints({implementation, tag});
@@ -49,7 +50,7 @@ describe('VCALM §3.6.6 Get Exchange State', function() {
         should.exist(workflowId, `Expected ${name} workflow id.`);
         should.exist(exchangeId, `Expected ${name} exchange id.`);
       });
-      it('MUST return exchange state (HTTP 200).', async function() {
+      it(NORMATIVE.workflows.getState, async function() {
         this.test.link =
           'https://www.w3.org/TR/vcalm-1.0/#get-exchange-state';
         const {state, result, error} = await endpoints.getExchangeState(

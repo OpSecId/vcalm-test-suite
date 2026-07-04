@@ -3,11 +3,14 @@
  */
 
 import {createInteractionUrl} from '../mock.data.js';
-import {shouldConformToInteractionScheme} from '../assertions.js';
+import {NORMATIVE} from '../normative-statements.js';
+import {
+  shouldConformToInteractionScheme
+} from '../assertions.js';
 import {toInteractionSchemeUrl} from '../helpers.js';
 
-describe('VCALM §3.7.3 Interaction Scheme Format', function() {
-  it('MUST use interaction: scheme with valid URL syntax.', function() {
+describe('Interaction Scheme Format', function() {
+  it(NORMATIVE.interactions.scheme, function() {
     this.test.link =
       'https://www.w3.org/TR/vcalm-1.0/#interaction-scheme-format';
     const interactionUrl = createInteractionUrl();

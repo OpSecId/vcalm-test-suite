@@ -15,6 +15,7 @@ import {
 } from '../assertions.js';
 import chai from 'chai';
 import {filterByTag} from 'vc-test-suite-implementations';
+import {NORMATIVE} from '../normative-statements.js';
 import {TestEndpoints} from '../TestEndpoints.js';
 
 const should = chai.should();
@@ -22,7 +23,7 @@ const tag = VCALM_TAG;
 const {match} = filterByTag({tags: [tag]});
 const paired = implementationsWithIssuerAndHolder(match, tag);
 
-describe('VCALM §3.5.1 Derive Credential', function() {
+describe('Derive Credential', function() {
   setupMatrix.call(this, new Map(paired), 'Holder');
   for(const [name, implementation] of paired) {
     const endpoints = new TestEndpoints({implementation, tag});
@@ -32,7 +33,7 @@ describe('VCALM §3.5.1 Derive Credential', function() {
       before(async function() {
         issuedVc = await endpoints.issue();
       });
-      it('MUST derive a credential (HTTP 201).', async function() {
+      it(NORMATIVE.presenting.derive, async function() {
         this.test.link = 'https://www.w3.org/TR/vcalm-1.0/#derive-credential';
         should.exist(issuedVc, `Expected ${name} to issue a VC first.`);
         const {derivedVc, result, error} = await endpoints.deriveCredential(
@@ -44,7 +45,11 @@ describe('VCALM §3.5.1 Derive Credential', function() {
         });
         shouldReturnHttpResult({result, error});
         result.status.should.equal(201, 'Expected status code 201.');
-        shouldBeIssuedVc({issuedVc: derivedVc});
+        shouldBeIssuedVc({
+          issuedVc: derivedVc,
+          result,
+          operation: 'deriveCredential'
+        });
       });
     });
   }

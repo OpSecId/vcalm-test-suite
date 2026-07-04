@@ -1,7 +1,7 @@
 openapi: 3.0.0
 servers:
-  - url: https://verifier.qa.veres.app/verifiers/z1A45ZhWEGMeibHrB15nv8Gk6
-    description: Veres Verifier (Quality Assurance)
+  - url: /
+    description: VCALM service root (overridden per implementation)
 info:
   version: "0.9-unstable"
   title: Verifiable Credential API for Lifecycle Management
@@ -798,7 +798,25 @@ paths:
           description: Invalid or malformed input.
 components:
   securitySchemes:
-    $ref: "./components/SecuritySchemes.yml#/components/securitySchemes"
+      networkAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: sourceIpAccessRules
+
+      zCap:
+        type: http
+        scheme: bearer
+        bearerFormat: AuthorizationCapability
+
+      didAuth:
+        type: http
+        scheme: bearer
+        bearerFormat: VerifiablePresentation
+
+      oAuth2:
+        type: http
+        scheme: bearer
+        bearerFormat: VcapiOauth2
   schemas:
     UpdateCredentialStatusRequest:
       type: object

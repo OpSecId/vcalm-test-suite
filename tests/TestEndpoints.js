@@ -5,8 +5,10 @@
 import {
   createDeriveRequestBody,
   createExchangeRequest,
+  createIssueRequestWithExistingProof,
   createPresentationRequestBody,
   createRequestBody,
+  createUnknownOptionIssueBody,
   createVerifyRequestBody,
   createVerifyVpRequestBody,
   createWorkflowRequest
@@ -23,6 +25,8 @@ import {
   resolveInteractionStartUrl,
   resolvePresentationResourceUrl,
   resolveVerifierResourceUrl,
+  resolveVerifyCredentialUrl,
+  resolveVerifyPresentationUrl,
   resolveWorkflowResourceUrl,
   resolveWorkflowsBaseUrl
 } from './helpers.js';
@@ -35,8 +39,6 @@ export class TestEndpoints {
       issuer => issuer.tags.has(tag)) || null;
     this.verifier = implementation.verifiers?.find(
       verifier => verifier.tags.has(tag)) || null;
-    this.vpVerifier = implementation.vpVerifiers?.find(
-      vpVerifier => vpVerifier.tags.has(tag)) || null;
     this.holder = implementation.holders?.find(
       holder => holder.tags.has(tag)) || null;
     this.workflow = implementation.workflows?.find(
@@ -57,6 +59,17 @@ export class TestEndpoints {
       issuedVc: extractIssuedCredential(data),
       result,
       error
+    };
+  }
+
+  async issueCredentialWithBody(body) {
+    const {data, result, error} = await this.issuer.post({json: body});
+    const httpResult = result ?? error?.response;
+    return {
+      issuedVc: extractIssuedCredential(data),
+      result: httpResult,
+      error: httpResult ? undefined : error,
+      data
     };
   }
 
@@ -101,11 +114,10 @@ export class TestEndpoints {
     const verifyBody = createVerifyRequestBody({
       verifier: this.verifier, vc, options
     });
-    const {data, result, error} = await this.verifier.post({json: verifyBody});
-    if(error) {
-      throw error;
-    }
-    return {data, result};
+    const url = resolveVerifyCredentialUrl(this.verifier.settings.endpoint);
+    const {data, result, error} = await this.verifier.post({url, json: verifyBody});
+    const httpResult = result ?? error?.response;
+    return {data, result: httpResult, error: httpResult ? undefined : error};
   }
 
   async createPresentation({issuedVc, presentation, options} = {}) {
@@ -182,15 +194,15 @@ export class TestEndpoints {
 
   async verifyPresentation(vp, options) {
     const verifyBody = createVerifyVpRequestBody({
-      vpVerifier: this.vpVerifier, vp, options
+      verifier: this.verifier, vp, options
     });
-    const {data, result, error} = await this.vpVerifier.post({
+    const url = resolveVerifyPresentationUrl(this.verifier.settings.endpoint);
+    const {data, result, error} = await this.verifier.post({
+      url,
       json: verifyBody
     });
-    if(error) {
-      throw error;
-    }
-    return {data, result};
+    const httpResult = result ?? error?.response;
+    return {data, result: httpResult, error: httpResult ? undefined : error};
   }
 
   async verifyVp(vp, options = {}) {
@@ -198,17 +210,12 @@ export class TestEndpoints {
     return data;
   }
 
-  _verifierEndpoint() {
-    return this.verifier || this.vpVerifier;
-  }
-
   async createChallenge() {
-    const verifier = this._verifierEndpoint();
     const url = resolveVerifierResourceUrl(
-      verifier.settings.endpoint,
+      this.verifier.settings.endpoint,
       '/challenges'
     );
-    const {data, result, error} = await verifier.post({url, json: {}});
+    const {data, result, error} = await this.verifier.post({url, json: {}});
     return {data, result, error};
   }
 
@@ -292,6 +299,16 @@ export class TestEndpoints {
       url,
       headers: {Accept: accept}
     });
-    return {protocols: data, result, error};
+    return {protocols: data, result, error, data};
+  }
+
+  async issueWithUnknownOption() {
+    const body = createUnknownOptionIssueBody(this.issuer);
+    return this.issueCredentialWithBody(body);
+  }
+
+  async issueCredentialWithExistingProof() {
+    const body = createIssueRequestWithExistingProof(this.issuer);
+    return this.issueCredentialWithBody(body);
   }
 }

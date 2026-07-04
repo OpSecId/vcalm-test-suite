@@ -9,19 +9,20 @@ import {
 } from '../assertions.js';
 import chai from 'chai';
 import {filterByTag} from 'vc-test-suite-implementations';
+import {NORMATIVE} from '../normative-statements.js';
 import {TestEndpoints} from '../TestEndpoints.js';
 
 chai.should();
 const tag = VCALM_TAG;
 const {match} = filterByTag({property: 'holders', tags: [tag]});
 
-describe('VCALM §3.5.3 Get Presentations', function() {
+describe('Get Presentations', function() {
   setupMatrix.call(this, match, 'Holder');
   for(const [name, implementation] of match) {
     const endpoints = new TestEndpoints({implementation, tag});
     describe(name, function() {
       beforeEach(addPerTestMetadata);
-      it('MUST return a presentation list (HTTP 200).', async function() {
+      it(NORMATIVE.presenting.getList, async function() {
         this.test.link = 'https://www.w3.org/TR/vcalm-1.0/#get-presentations';
         const {presentations, result, error} =
           await endpoints.getPresentations();

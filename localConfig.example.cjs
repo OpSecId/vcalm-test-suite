@@ -1,3 +1,6 @@
+// See docs/test-coverage.md → "VCALM tag and endpoint registration" for how
+// tags and per-role endpoint URLs are interpreted by the test harness.
+//
 // Rename to localConfig.cjs
 //
 // Two URL conventions (pick one per deployment):
@@ -30,7 +33,6 @@ const endpoint = baseUrl;
 // const endpoint = null; // unused
 // const issuersEndpoint = paths.issue;
 // const verifiersEndpoint = paths.verifyVc;
-// const vpVerifiersEndpoint = paths.verifyVp;
 // const holdersEndpoint = paths.createPresentation;
 // const workflowsEndpoint = paths.workflows;
 
@@ -38,7 +40,9 @@ const endpoint = baseUrl;
 // const schemathesis = require('./schemathesis.local.example.cjs');
 
 module.exports = {
-  settings: {},
+  settings: {
+    // instancePayloadLimitBytes: 10485760
+  },
   // schemathesis,
   implementations: [{
     name: 'credential.ninja',
@@ -49,17 +53,16 @@ module.exports = {
       id: 'did:web:credential.ninja',
       endpoint: endpoint /* or issuersEndpoint */,
       tags: ['VCALM']
+      // probes: {
+      //   multiProofIssueBody: { credential: {...}, options: {...} },
+      //   proofHandlingMode: 'proofSets' // or proofChains | errorHandling
+      // },
+      // settings: { vcPayloadLimitBytes: 10485760 }
     }],
 
-    // Verifier — §3.3.1 verify credential
+    // Verifier — §3.3.1 verify credential and §3.3.2 verify presentation
     verifiers: [{
       endpoint: endpoint /* or verifiersEndpoint */,
-      tags: ['VCALM']
-    }],
-
-    // Verifier — §3.3.2 verify presentation
-    vpVerifiers: [{
-      endpoint: endpoint /* or vpVerifiersEndpoint */,
       tags: ['VCALM']
     }],
 

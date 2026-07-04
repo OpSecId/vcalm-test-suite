@@ -14,13 +14,14 @@ import {
 } from '../assertions.js';
 import chai from 'chai';
 import {filterByTag} from 'vc-test-suite-implementations';
+import {NORMATIVE} from '../normative-statements.js';
 import {TestEndpoints} from '../TestEndpoints.js';
 
 const should = chai.should();
 const tag = VCALM_TAG;
 const {match} = filterByTag({property: 'workflows', tags: [tag]});
 
-describe('VCALM §3.6.3 Create Exchange', function() {
+describe('Create Exchange', function() {
   setupMatrix.call(this, match, 'Workflow');
   for(const [name, implementation] of match) {
     const endpoints = new TestEndpoints({implementation, tag});
@@ -37,7 +38,7 @@ describe('VCALM §3.6.3 Create Exchange', function() {
         workflowId = created.workflowId;
         should.exist(workflowId, `Expected ${name} to return a workflow id.`);
       });
-      it('MUST create an exchange (HTTP 201 or 204 + Location).',
+      it(NORMATIVE.workflows.createExchange,
         async function() {
           this.test.link = 'https://www.w3.org/TR/vcalm-1.0/#create-exchange';
           const {exchangeId, result, error} =

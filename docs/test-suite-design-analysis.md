@@ -32,8 +32,8 @@ Design the suite in **phases** (see [normative-requirements.md](normative-requir
 
 **Implication:** §3 looks like 369 “requirements” but only **~12 are prose-level protocol rules** in the TR export analyzed. The rest are **JSON Schema–style obligations** embedded in tables. Testing strategy should separate:
 
-1. **Structural conformance** — validate request/response bodies against OpenAPI or JSON Schema (few tests, high coverage).
-2. **Behavioral interop** — HTTP status codes, required endpoints, cross-service flows (many tests, targeted).
+1. **OAS Conformance** — validate request/response bodies against OpenAPI or JSON Schema (few tests, high coverage).
+2. **Mocha** — HTTP status codes, required endpoints, cross-service flows (many tests, targeted).
 
 Counting keywords without this split will over-plan the suite by an order of magnitude.
 
@@ -107,8 +107,8 @@ VCALM does not redefine VC semantics. **This suite does not run** the VCDM 2.0 o
 
 | Layer | Tool | Covers |
 |-------|------|--------|
-| **Structural** | Schemathesis | Request/response shapes, types, required fields, status codes documented in OAS — most `http`-typed MUSTs |
-| **Behavioral interop** | Mocha + `vc-test-suite-implementations` | Golden issue/verify paths, §1.3 required endpoints, `verified` / ProblemDetails semantics, proof-set behavior |
+| **OAS Conformance** | Schemathesis | Request/response shapes, types, required fields, status codes documented in OAS — most `http`-typed MUSTs |
+| **Mocha** | Mocha | Golden issue/verify paths, §1.3 required endpoints, `verified` / ProblemDetails semantics, proof-set behavior |
 
 Example (against a running implementation):
 
@@ -173,7 +173,7 @@ OAuth2, `read`/`write` scopes, base URL, and content serialization are mostly **
 
 Prose rules: HTTP 200 can mean “verification ran” with `verified: false`; distinguish errors vs warnings via ProblemDetails. This is **behavioral** and easy to get wrong across implementations.
 
-**Challenge:** Needs curated **negative fixtures** (malformed VP, wrong issuer, expired credential) and assertions on response structure, not just HTTP status.
+**Status:** Mocha covers §3.8.1 (tampered VC/VP + fixture semantics) and §3.8.2 (ProblemDetails). **Anti-stub negatives** (Phase A) live in §3.2.6 / §3.3.4–5 — foreign reference fixtures, malformed issue bodies, credentials without proof — see `tests/negative-fixtures.js`. Verifiers returning HTTP 4xx instead of 200 + `verified: false` are skipped, not failed.
 
 ### 10. Interactions (§3.7) and non-HTTP protocols
 
@@ -259,7 +259,7 @@ flowchart LR
 |----------|------------|------------|-----------|
 | P0 | §1.3, §3.2.1, §3.3.1–2 | HTTP + golden JSON | Minimum conformant product |
 | P1 | §3.2.2–3, §3.3.3, §3.5.1–2 | HTTP + schema | Common holder/issuer paths |
-| P2 | §3.8, §3.4 | Negative + ProblemDetails | Cross-cutting correctness |
+| P2 | §3.8, §3.4, §3.2.6, §3.3.4–5 | Negative + ProblemDetails | Cross-cutting correctness; anti-stub |
 | P3 | §3.6 | Stateful multi-call | Highest count, highest cost |
 | P4 | §3.7, Appendix C | Format / optional profile | Narrower audience |
 
@@ -287,6 +287,7 @@ flowchart LR
 
 | File | Purpose |
 |------|---------|
+| [README.md](README.md) | Documentation index |
 | [normative-requirements.md](normative-requirements.md) | Section-by-section requirements and phased plan |
 | [vcalm-normative-stats.json](vcalm-normative-stats.json) | Machine-readable counts and `by_type` breakdown |
 | [vcalm-normative-stats.html](vcalm-normative-stats.html) | Visual dashboard |

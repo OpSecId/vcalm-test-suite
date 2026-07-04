@@ -1,8 +1,8 @@
 # Schemathesis (local schema conformance)
 
-Property-based tests for VCALM **request/response bodies** against the pinned OpenAPI spec ([`oas.yaml`](oas.yaml)), using [Schemathesis](https://schemathesis.io/).
+Property-based tests for VCALM **request/response bodies** against the pinned OpenAPI spec ([`oas.yaml`](oas.yaml) from [w3c.github.io/vcalm](https://w3c.github.io/vcalm/oas.yaml)), using [Schemathesis](https://schemathesis.io/).
 
-This layer covers most **`http`-typed** normative statements from the [stats analysis](../vcalm-normative-stats.html#test-suite-analysis). Behavioral interop (golden issue/verify, §1.3 roles) stays in the Mocha suite (`npm test`).
+This layer covers most **`http`-typed** normative statements from the [stats analysis](../vcalm-normative-stats.html#test-suite-analysis). Mocha (golden issue/verify, §1.3 roles) is `npm test`.
 
 ## Prerequisites
 
@@ -64,7 +64,7 @@ cp schemathesis.local.example.cjs schemathesis.local.cjs
 BASE_URL=http://localhost:40443/id npm run test:schema
 ```
 
-Reports: `reports/schemathesis/junit.xml`
+Reports: `reports/schemathesis/junit.xml` and `reports/schemathesis/index.html` (rendered after each run).
 
 ## Update pinned OpenAPI
 
@@ -72,7 +72,7 @@ Reports: `reports/schemathesis/junit.xml`
 npm run schema:update-oas
 ```
 
-Pulls `oas.yaml` and `components/SecuritySchemes.yml` from [w3c/vcalm](https://github.com/w3c/vcalm).
+Pulls [`oas.yaml`](https://w3c.github.io/vcalm/oas.yaml) and `components/` from [w3c.github.io/vcalm](https://w3c.github.io/vcalm/).
 
 ## What to expect
 

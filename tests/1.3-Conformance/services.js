@@ -4,6 +4,8 @@
 
 import {
   addPerTestMetadata,
+  resolveVerifyCredentialUrl,
+  resolveVerifyPresentationUrl,
   setupMatrix,
   VCALM_TAG
 } from '../helpers.js';
@@ -13,7 +15,11 @@ import {
 } from '../service-profiles.js';
 import chai from 'chai';
 import {filterByTag} from 'vc-test-suite-implementations';
-import {shouldExposeServiceEndpoint} from '../assertions.js';
+import {NORMATIVE} from '../normative-statements.js';
+import {
+  shouldExposeServiceEndpoint,
+  shouldSatisfyConformanceProbe
+} from '../assertions.js';
 
 const should = chai.should();
 const tag = VCALM_TAG;
@@ -30,14 +36,22 @@ function joinUrl(base, suffix) {
 
 async function probeEndpoint(endpoint, {method, body, url}) {
   if(method === 'get') {
-    return endpoint.get({url});
+    const {data, result, error} = await endpoint.get({url});
+    return {data, result, error};
   }
-  return endpoint.post({url, json: body ?? {}});
+  const {data, result, error} = await endpoint.post({url, json: body ?? {}});
+  return {data, result, error};
 }
 
 function resolveProbeUrl(endpoint, requirement) {
   if(requirement.probeField) {
     return endpoint.settings.probes?.[requirement.probeField];
+  }
+  if(requirement.verifyOperation === 'credential') {
+    return resolveVerifyCredentialUrl(endpoint.settings.endpoint);
+  }
+  if(requirement.verifyOperation === 'presentation') {
+    return resolveVerifyPresentationUrl(endpoint.settings.endpoint);
   }
   if(requirement.pathSuffix) {
     return joinUrl(endpoint.settings.endpoint, requirement.pathSuffix);
@@ -45,32 +59,63 @@ function resolveProbeUrl(endpoint, requirement) {
   return endpoint.settings.endpoint;
 }
 
-describe('VCALM §1.3 Service role conformance', function() {
-  for(const role of Object.values(SERVICE_ROLES)) {
+function conformanceStatement(roleKey) {
+  switch(roleKey) {
+    case 'issuer':
+      return NORMATIVE.conformance.issuer;
+    case 'verifier':
+      return NORMATIVE.conformance.verifier;
+    default:
+      return NORMATIVE.conformance.issuer;
+  }
+}
+
+function endpointForRequirement(implementation, role, requirement) {
+  return taggedEndpoint(implementation, role.property);
+}
+
+async function probeRequirement(implementation, role, requirement, name) {
+  const endpoint = endpointForRequirement(implementation, role, requirement);
+  should.exist(
+    endpoint,
+    `Expected ${name} to register a ${role.property} endpoint.`
+  );
+  const {data, result, error} = await probeEndpoint(endpoint, {
+    method: requirement.method,
+    body: requirement.body,
+    url: resolveProbeUrl(endpoint, requirement)
+  });
+  shouldSatisfyConformanceProbe({
+    result,
+    error,
+    data,
+    label: requirement.title,
+    probeKind: requirement.probeKind
+  });
+}
+
+describe('Service role conformance', function() {
+  for(const [roleKey, role] of Object.entries(SERVICE_ROLES)) {
     const {match} = filterByTag({property: role.property, tags: [tag]});
     describe(role.label, function() {
       setupMatrix.call(this, match, 'Implementation');
       for(const [name, implementation] of match) {
-        const endpoint = taggedEndpoint(implementation, role.property);
         describe(name, function() {
           beforeEach(addPerTestMetadata);
+          if(role.groupConformance) {
+            it(conformanceStatement(roleKey), async function() {
+              this.test.link = 'https://www.w3.org/TR/vcalm-1.0/#conformance';
+              for(const requirement of role.required) {
+                await probeRequirement(implementation, role, requirement, name);
+              }
+            });
+            return;
+          }
           for(const requirement of role.required) {
-            it(`MUST expose ${requirement.title} (${requirement.section}).`,
+            it(conformanceStatement(roleKey),
               async function() {
                 this.test.link = requirement.link;
-                should.exist(
-                  endpoint,
-                  `Expected ${name} to register a ${role.property} endpoint.`
-                );
-                const {result, error} = await probeEndpoint(endpoint, {
-                  method: requirement.method,
-                  body: requirement.body
-                });
-                shouldExposeServiceEndpoint({
-                  result,
-                  error,
-                  label: requirement.title
-                });
+                await probeRequirement(implementation, role, requirement, name);
               });
           }
         });
@@ -85,20 +130,14 @@ describe('VCALM §1.3 Service role conformance', function() {
     for(const [name, implementation] of match) {
       const endpoint = taggedEndpoint(implementation, role.property);
       const probes = endpoint?.settings?.probes;
-      describe(name, function() {
+      const probesReady = Boolean(
+        probes?.exchangeProtocols && probes?.participateExchange
+      );
+      const describeImpl = probesReady ? describe : describe.skip;
+      describeImpl(name, function() {
         beforeEach(addPerTestMetadata);
-        if(!probes?.exchangeProtocols || !probes?.participateExchange) {
-          it(
-            'MAY skip holder probes until workflows[].probes is configured.',
-            function() {
-              this.test.link = 'https://www.w3.org/TR/vcalm-1.0/#conformance';
-              this.skip();
-            }
-          );
-          return;
-        }
         for(const requirement of role.required) {
-          it(`MUST expose ${requirement.title} (${requirement.section}).`,
+          it(NORMATIVE.conformance.holder,
             async function() {
               this.test.link = requirement.link;
               const url = resolveProbeUrl(endpoint, requirement);
@@ -126,16 +165,11 @@ describe('VCALM §1.3 Service role conformance', function() {
     setupMatrix.call(this, match, 'Implementation');
     for(const [name, implementation] of match) {
       const endpoint = taggedEndpoint(implementation, role.property, statusTag);
-      describe(name, function() {
+      const describeImpl = endpoint ? describe : describe.skip;
+      describeImpl(name, function() {
         beforeEach(addPerTestMetadata);
-        if(!endpoint) {
-          it(`MAY skip status tests unless tagged ${statusTag}.`, function() {
-            this.skip();
-          });
-          return;
-        }
         for(const requirement of role.required) {
-          it(`MUST expose ${requirement.title} (${requirement.section}).`,
+          it(NORMATIVE.conformance.status,
             async function() {
               this.test.link = requirement.link;
               const url = resolveProbeUrl(endpoint, requirement);

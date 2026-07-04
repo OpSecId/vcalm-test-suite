@@ -14,7 +14,7 @@ const path = require('node:path');
 /** Service root — same host as issuer/verifier endpoints in localConfig.cjs */
 const baseUrl = process.env.BASE_URL || 'http://localhost:40443/id';
 
-/** Pinned OpenAPI from https://github.com/w3c/vcalm (update via npm run schema:update-oas) */
+/** Pinned OpenAPI from https://w3c.github.io/vcalm/oas.yaml (update via npm run schema:update-oas) */
 const schemaPath = path.join(__dirname, 'docs/schemathesis/oas.yaml');
 
 /**
@@ -105,6 +105,12 @@ module.exports = {
   run: {
     maxExamples: Number(process.env.VCALM_SCHEMA_EXAMPLES || 25),
     requestTimeout: Number(process.env.VCALM_SCHEMA_TIMEOUT || 30),
+    /** Set false for local HTTPS with self-signed certs */
+    tlsVerify: process.env.VCALM_SCHEMA_TLS_VERIFY !== '0' &&
+      !/^https:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(
+        process.env.BASE_URL || 'http://localhost:40443/id'
+      ),
+    suppressHealthChecks: ['filter_too_much'],
     /** Report directory under reports/ */
     reportDir: path.join(__dirname, 'reports/schemathesis'),
     /** JUnit for CI later */

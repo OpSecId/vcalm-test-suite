@@ -196,8 +196,8 @@ For OAS request/response shape requirements, use Schemathesis against pinned [`d
 
 ## Test suite mapping
 
-- **Schemathesis** → OAS request/response shapes (`npm run test:schema`)
-- **Mocha interop** → §1.3 service roles + prose/conformance requirements (`npm test`)
+- **OAS Conformance** (Schemathesis) → OAS request/response shapes (`npm run test:schema`)
+- **Mocha** → §1.3 service roles + prose/conformance requirements (`npm test`)
 
 See [normative-mapping.md](normative-mapping.md) for a **file tree** mapping each
 statement in this document to `tests/` paths and coverage status.
