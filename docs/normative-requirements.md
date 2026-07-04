@@ -180,7 +180,8 @@ Excludes **357** `http`-typed statements from OpenAPI tables. Counts from [vcalm
 
 † §3.7–§3.8 not in automated TR export; listed manually from editor draft.
 
-For OAS request/response shape requirements, use Schemathesis against pinned [`docs/schemathesis/oas.yaml`](schemathesis/oas.yaml).
+For OAS request/response shape requirements, use Schemathesis on branch
+`feature/vcalm-oas-pin` (see `docs/schemathesis/README.md` there).
 
 ---
 
