@@ -10,8 +10,44 @@ import {v4 as uuidv4} from 'uuid';
 const require = createRequire(import.meta.url);
 const validVc = require('./validVc.json');
 
-export function createRequestBody({issuer, vc = validVc}) {
-  const {settings: {id, options} = {}} = issuer;
+/**
+ * @param {string|string[]|undefined} cryptosuite - Issuer options.cryptosuite.
+ * @returns {boolean} True when config requests a proof set (≥2 suites).
+ */
+export function isProofSetCryptosuite(cryptosuite) {
+  return Array.isArray(cryptosuite) && cryptosuite.length >= 2;
+}
+
+/**
+ * Map localConfig issue options to the VCALM request shape.
+ * `cryptosuite` may be a string or string[]; an array means proof set
+ * (first suite primary, remainder as additionalCryptosuites).
+ *
+ * @param {object} [options] - Raw issuer options from localConfig.
+ * @returns {object|undefined} Options for POST /credentials/issue.
+ */
+export function normalizeIssueOptions(options) {
+  if(!options || typeof options !== 'object') {
+    return options;
+  }
+  const normalized = {...options};
+  if(!Array.isArray(normalized.cryptosuite)) {
+    return normalized;
+  }
+  const suites = normalized.cryptosuite.filter(suite => typeof suite === 'string');
+  delete normalized.cryptosuite;
+  if(suites.length === 0) {
+    return normalized;
+  }
+  normalized.cryptosuite = suites[0];
+  if(suites.length > 1) {
+    normalized.additionalCryptosuites = suites.slice(1);
+  }
+  return normalized;
+}
+
+export function createRequestBody({issuer, vc = validVc, options: optionsOverride}) {
+  const {settings: {id, options: issuerOptions} = {}} = issuer;
   const credential = klona(vc);
   credential.id = credential.id || `urn:uuid:${uuidv4()}`;
   if(credential.issuer !== null && typeof credential.issuer === 'object') {
@@ -21,6 +57,10 @@ export function createRequestBody({issuer, vc = validVc}) {
   } else if(!('issuer' in credential && credential.issuer === null)) {
     credential.issuer = credential?.issuer || id;
   }
+  const rawOptions = optionsOverride ?
+    {...issuerOptions, ...optionsOverride} :
+    issuerOptions;
+  const options = normalizeIssueOptions(rawOptions);
   return {credential, options};
 }
 

@@ -4,12 +4,13 @@
 
 import chai from 'chai';
 import {createVerifiablePresentationRequest} from '../mock.data.js';
+import {describeFixtureSuite} from '../helpers.js';
 import {NORMATIVE} from '../normative-statements.js';
 import {shouldSatisfyVprQueryRequirements} from '../assertions.js';
 
 const should = chai.should();
 
-describe('Verifiable Presentation Request', function() {
+describeFixtureSuite('Verifiable Presentation Request', function() {
   it(NORMATIVE.requestingPresentation.queryRequired, function() {
     this.test.link =
       'https://www.w3.org/TR/vcalm-1.0/#verifiable-presentation-request';

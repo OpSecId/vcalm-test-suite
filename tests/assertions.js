@@ -84,6 +84,18 @@ export function shouldRejectMalformedIssueRequest({result}) {
   );
 }
 
+export function shouldRejectMalformedWorkflowRequest({result}) {
+  should.exist(result, 'Expected an HTTP result.');
+  result.status.should.be.at.least(
+    400,
+    'Expected client error for malformed workflow request.'
+  );
+  result.status.should.be.below(
+    500,
+    'Expected client error for malformed workflow request.'
+  );
+}
+
 export function shouldSatisfyConformanceProbe({
   result,
   error,
@@ -229,27 +241,63 @@ export function shouldCreateWorkflow({result, error}) {
   should.exist(location, 'Expected Location header.');
 }
 
-export function shouldGetWorkflowConfiguration({data, result, error}) {
+export function shouldGetWorkflowConfiguration({data, result, error, sent}) {
   shouldReturnHttpResult({result, error});
   result.status.should.equal(200, 'Expected status code 200.');
   data.should.be.an('object');
   data.should.have.property('steps');
+  if(sent) {
+    shouldRoundTripWorkflowConfiguration({sent, configuration: data});
+  }
 }
 
-export function shouldGetExchangeState({data, result, error}) {
+export function shouldRoundTripWorkflowConfiguration({sent, configuration}) {
+  if(sent.id) {
+    configuration.should.have.property('id', sent.id);
+  }
+  if(sent.initialStep) {
+    configuration.should.have.property('initialStep', sent.initialStep);
+  }
+  for(const stepName of Object.keys(sent.steps ?? {})) {
+    configuration.steps.should.have.property(stepName);
+  }
+}
+
+export function shouldReturnExchangeState({data, result, error, exchangeId}) {
   shouldReturnHttpResult({result, error});
   result.status.should.equal(200, 'Expected status code 200.');
   data.should.be.an('object');
+  if(exchangeId) {
+    const reportedId = data.exchangeId ?? data.id;
+    if(reportedId !== undefined) {
+      reportedId.should.equal(exchangeId);
+    }
+  }
+}
+
+export function shouldGetExchangeState({data, result, error, exchangeId}) {
+  shouldReturnExchangeState({data, result, error, exchangeId});
 }
 
 export function shouldGetExchangeProtocols({data, result, error}) {
   shouldGetExchangeState({data, result, error});
 }
 
-export function shouldParticipateInExchange({data, result, error}) {
+export function shouldParticipateInExchange({
+  data,
+  result,
+  error,
+  referenceId
+} = {}) {
   shouldReturnHttpResult({result, error});
   result.status.should.equal(200, 'Expected status code 200.');
   data.should.be.an('object');
+  shouldAllowServerReferenceId(data);
+  if(referenceId) {
+    data.should.have.property('referenceId', referenceId);
+  } else if(data.referenceId) {
+    shouldUseUrnUuidReferenceId(data.referenceId);
+  }
 }
 
 export function shouldSatisfyInteractionUrlFormat(interactionUrl) {
@@ -555,25 +603,23 @@ export function shouldAllowServerReferenceId(message) {
   message.referenceId.should.be.a('string').and.not.be.empty;
 }
 
-export function shouldHandlePreProofedCredentialIssue({
-  expectedMode,
-  issuedVc,
-  result
-}) {
+export function shouldHandlePreProofedCredentialIssue({issuedVc, result}) {
   should.exist(result, 'Expected an HTTP result.');
-  switch(expectedMode) {
-    case 'errorHandling':
-      result.status.should.be.at.least(400);
-      break;
-    case 'proofSets':
-      result.status.should.equal(201);
-      shouldAttachMultipleProofsInSingleResponse(issuedVc);
-      break;
-    case 'proofChains':
-      result.status.should.equal(201);
-      should.exist(issuedVc?.proof, 'Expected a proof on the issued VC.');
-      break;
-    default:
-      throw new Error(`Unknown proof handling mode: ${expectedMode}`);
+  if(result.status >= 400) {
+    return;
   }
+  result.status.should.equal(201);
+  should.exist(issuedVc?.proof, 'Expected a proof on the issued VC.');
+  const proofs = Array.isArray(issuedVc.proof) ?
+    issuedVc.proof :
+    issuedVc.proof ? [issuedVc.proof] : [];
+  const hasProofChain = proofs.some(
+    proof => proof?.previousProof !== undefined && proof?.previousProof !== null
+  );
+  const hasProofSet = proofs.length >= 2;
+  (hasProofChain || hasProofSet).should.equal(
+    true,
+    'Expected proof sets (multiple proofs) or proof chains (previousProof) ' +
+    'when existing proofs are accepted.'
+  );
 }

@@ -10,9 +10,10 @@ import {
   shouldBeDidAuthenticationPresentation,
   shouldBeDidAuthenticationQuery
 } from '../assertions.js';
+import {describeFixtureSuite} from '../helpers.js';
 import {NORMATIVE} from '../normative-statements.js';
 
-describe('DID Authentication', function() {
+describeFixtureSuite('DID Authentication', function() {
   const challenge = 'urn:uuid:did-auth-challenge';
   const domain = 'vcalm.test';
   const holderDid = 'did:web:holder.example';

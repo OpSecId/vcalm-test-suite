@@ -8,9 +8,10 @@ import {
   shouldUseUrnUuidReferenceId
 } from '../assertions.js';
 import {createInviteResponseFixture} from '../mock.data.js';
+import {describeFixtureSuite} from '../helpers.js';
 import {NORMATIVE} from '../normative-statements.js';
 
-describe('Exchange referenceId', function() {
+describeFixtureSuite('Exchange referenceId (fixture)', function() {
   it(NORMATIVE.workflows.referenceIdServerMay, function() {
     this.test.link =
       'https://www.w3.org/TR/vcalm-1.0/#participate-in-an-exchange';

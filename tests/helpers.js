@@ -7,6 +7,13 @@ export const VCALM_TAG = 'VCALM';
 /** §2.4 interoperability baseline (10 MiB per verifiable credential). */
 export const RECOMMENDED_VC_PAYLOAD_BYTES = 10 * 1024 * 1024;
 
+/**
+ * §1.3 holder conformance uses fixed workflow/exchange ids. Implementations
+ * under test SHOULD accept these resources (stubs may pre-seed them).
+ */
+export const CONFORMANCE_WORKFLOW_ID = 'urn:uuid:vcalm-probe-workflow';
+export const CONFORMANCE_EXCHANGE_ID = 'urn:uuid:vcalm-probe-exchange';
+
 /** §3.2.1 issuer configuration modes for credentials with existing proofs. */
 export const PROOF_HANDLING_MODES = [
   'proofSets',
@@ -27,6 +34,17 @@ export function addPerTestMetadata() {
     columnId: this.currentTest.parent.title,
     rowId: this.currentTest.title
   };
+}
+
+/**
+ * Fixture-only tests (§3.4 VPR shapes, etc.) run when `VCALM_FIXTURE=1`.
+ *
+ * @param {string} title - Mocha suite title.
+ * @param {Function} fn - Suite body.
+ */
+export function describeFixtureSuite(title, fn) {
+  const run = process.env.VCALM_FIXTURE === '1';
+  (run ? describe : describe.skip)(title, fn);
 }
 
 export function hasTaggedEndpoint(implementation, property, tag = VCALM_TAG) {
@@ -217,6 +235,33 @@ export function resolveWorkflowResourceUrl(
     url += `/${path}`;
   }
   return url;
+}
+
+/**
+ * §1.3 holder service URLs under `/workflows/{id}/exchanges/{id}`.
+ *
+ * @param {string} workflowEndpoint - Workflow POST URL or instance root.
+ * @param {'exchangeProtocols'|'participateExchange'} requirementId
+ * @returns {string} Exchange-scoped URL.
+ */
+export function resolveHolderExchangeUrl(workflowEndpoint, requirementId) {
+  switch(requirementId) {
+    case 'exchangeProtocols':
+      return resolveWorkflowResourceUrl(
+        workflowEndpoint,
+        CONFORMANCE_WORKFLOW_ID,
+        CONFORMANCE_EXCHANGE_ID,
+        'protocols'
+      );
+    case 'participateExchange':
+      return resolveWorkflowResourceUrl(
+        workflowEndpoint,
+        CONFORMANCE_WORKFLOW_ID,
+        CONFORMANCE_EXCHANGE_ID
+      );
+    default:
+      throw new Error(`Unknown holder conformance requirement: ${requirementId}`);
+  }
 }
 
 /**

@@ -233,9 +233,13 @@ export class TestEndpoints {
   }
 
   async createWorkflow(body = createWorkflowRequest()) {
+    return this.createWorkflowWithBody(body);
+  }
+
+  async createWorkflowWithBody(body) {
     const {data, result, error} = await this.workflow.post({json: body});
     return {
-      workflowId: body.id ?? extractLocationResourceId(result),
+      workflowId: body?.id ?? extractLocationResourceId(result),
       result,
       error,
       data
@@ -292,8 +296,8 @@ export class TestEndpoints {
 
   async startInteraction({interactionId, accept = 'application/json'} = {}) {
     const settings = this.interaction.settings;
-    const id = interactionId ?? settings.probes?.interactionId;
-    const url = settings.probes?.interactionStart ??
+    const id = interactionId ?? settings.interactionId;
+    const url = settings.interactionStart ??
       resolveInteractionStartUrl(settings.endpoint, id);
     const {data, result, error} = await this.interaction.get({
       url,

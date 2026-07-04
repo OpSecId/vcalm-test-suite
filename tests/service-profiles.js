@@ -54,28 +54,25 @@ export const SERVICE_ROLES = {
 
 /**
  * Holder / workflow / status roles need stateful paths.
- * Optional `probes` on a workflow endpoint setting in localConfig.
+ * Holder §1.3 checks use suite fixture workflow/exchange ids (see helpers.js).
  */
 export const OPTIONAL_SERVICE_ROLES = {
   holder: {
     label: 'Holder service',
     property: 'workflows',
-    probeKey: 'holder',
     required: [{
       id: 'exchangeProtocols',
       title: 'Get Exchange Protocols',
       section: '§3.6.4',
       link: 'https://www.w3.org/TR/vcalm-1.0/#get-exchange-protocols',
-      method: 'get',
-      probeField: 'exchangeProtocols'
+      method: 'get'
     }, {
       id: 'participateExchange',
       title: 'Participate in an Exchange',
       section: '§3.6.5',
       link: 'https://www.w3.org/TR/vcalm-1.0/#participate-in-an-exchange',
       method: 'post',
-      body: {},
-      probeField: 'participateExchange'
+      body: {}
     }]
   },
   status: {

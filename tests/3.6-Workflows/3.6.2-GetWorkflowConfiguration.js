@@ -15,6 +15,7 @@ import {
 } from '../assertions.js';
 import chai from 'chai';
 import {filterByTag} from 'vc-test-suite-implementations';
+import {createWorkflowRequest} from '../mock.data.js';
 import {NORMATIVE} from '../normative-statements.js';
 import {TestEndpoints} from '../TestEndpoints.js';
 
@@ -28,9 +29,11 @@ describe('Get Workflow Configuration', function() {
     const endpoints = new TestEndpoints({implementation, tag});
     describe(name, function() {
       let workflowId;
+      let sentWorkflow;
       beforeEach(addPerTestMetadata);
       before(async function() {
-        const created = await endpoints.createWorkflow();
+        sentWorkflow = createWorkflowRequest();
+        const created = await endpoints.createWorkflow(sentWorkflow);
         skipIfNotImplemented(this, {
           result: created.result,
           label: 'POST /workflows'
@@ -49,7 +52,12 @@ describe('Get Workflow Configuration', function() {
           label: 'GET /workflows/{localWorkflowId}'
         });
         shouldReturnHttpResult({result, error});
-        shouldGetWorkflowConfiguration({data: configuration, result, error});
+        shouldGetWorkflowConfiguration({
+          data: configuration,
+          result,
+          error,
+          sent: sentWorkflow
+        });
       });
     });
   }

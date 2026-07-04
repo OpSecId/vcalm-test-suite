@@ -4,6 +4,7 @@
 
 import {
   addPerTestMetadata,
+  resolveHolderExchangeUrl,
   resolveVerifyCredentialUrl,
   resolveVerifyPresentationUrl,
   setupMatrix,
@@ -43,10 +44,7 @@ async function probeEndpoint(endpoint, {method, body, url}) {
   return {data, result, error};
 }
 
-function resolveProbeUrl(endpoint, requirement) {
-  if(requirement.probeField) {
-    return endpoint.settings.probes?.[requirement.probeField];
-  }
+function resolveRequirementUrl(endpoint, requirement) {
   if(requirement.verifyOperation === 'credential') {
     return resolveVerifyCredentialUrl(endpoint.settings.endpoint);
   }
@@ -83,7 +81,7 @@ async function probeRequirement(implementation, role, requirement, name) {
   const {data, result, error} = await probeEndpoint(endpoint, {
     method: requirement.method,
     body: requirement.body,
-    url: resolveProbeUrl(endpoint, requirement)
+    url: resolveRequirementUrl(endpoint, requirement)
   });
   shouldSatisfyConformanceProbe({
     result,
@@ -123,25 +121,23 @@ describe('Service role conformance', function() {
     });
   }
 
-  describe('Holder service (optional probes)', function() {
+  describe('Holder service (optional)', function() {
     const role = OPTIONAL_SERVICE_ROLES.holder;
     const {match} = filterByTag({property: role.property, tags: [tag]});
     setupMatrix.call(this, match, 'Implementation');
     for(const [name, implementation] of match) {
       const endpoint = taggedEndpoint(implementation, role.property);
-      const probes = endpoint?.settings?.probes;
-      const probesReady = Boolean(
-        probes?.exchangeProtocols && probes?.participateExchange
-      );
-      const describeImpl = probesReady ? describe : describe.skip;
+      const describeImpl = endpoint ? describe : describe.skip;
       describeImpl(name, function() {
         beforeEach(addPerTestMetadata);
         for(const requirement of role.required) {
           it(NORMATIVE.conformance.holder,
             async function() {
               this.test.link = requirement.link;
-              const url = resolveProbeUrl(endpoint, requirement);
-              should.exist(url, `Missing probes.${requirement.probeField}.`);
+              const url = resolveHolderExchangeUrl(
+                endpoint.settings.endpoint,
+                requirement.id
+              );
               const {result, error} = await probeEndpoint(endpoint, {
                 method: requirement.method,
                 body: requirement.body,
@@ -172,7 +168,7 @@ describe('Service role conformance', function() {
           it(NORMATIVE.conformance.status,
             async function() {
               this.test.link = requirement.link;
-              const url = resolveProbeUrl(endpoint, requirement);
+              const url = resolveRequirementUrl(endpoint, requirement);
               const {result, error} = await probeEndpoint(endpoint, {
                 method: requirement.method,
                 body: requirement.body,

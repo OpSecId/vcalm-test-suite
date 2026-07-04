@@ -3,10 +3,11 @@
  */
 
 import {createGroupedQueryPresentationRequest} from '../mock.data.js';
+import {describeFixtureSuite} from '../helpers.js';
 import {NORMATIVE} from '../normative-statements.js';
 import {shouldDescribeLogicalQueryGroups} from '../assertions.js';
 
-describe('Logical Operations in Queries', function() {
+describeFixtureSuite('Logical Operations in Queries', function() {
   it(NORMATIVE.requestingPresentation.logicalOperations, function() {
     this.test.link =
       'https://www.w3.org/TR/vcalm-1.0/#logical-operations-in-queries';

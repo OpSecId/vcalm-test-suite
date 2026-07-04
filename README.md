@@ -121,6 +121,14 @@ presentation). The suite derives the sibling path from `endpoint`:
 Optional endpoints that return **404** or **501** are skipped. See
 `localConfig.example.cjs` for unified-gateway vs explicit-path templates.
 
+### Optional profiles
+
+| Tag / env | Enables |
+|-----------|---------|
+| `VCALM_FIXTURE=1` | Fixture-only §3.4 VPR shape tests and workflow config fixtures |
+
+Default `npm test` skips fixture suites unless `VCALM_FIXTURE=1`.
+
 Explicit paths:
 
 ```js

@@ -4,11 +4,12 @@
 
 import chai from 'chai';
 import {createQueryByExampleEntry} from '../mock.data.js';
+import {describeFixtureSuite} from '../helpers.js';
 import {NORMATIVE} from '../normative-statements.js';
 
 chai.should();
 
-describe('Query By Example', function() {
+describeFixtureSuite('Query By Example', function() {
   it(NORMATIVE.requestingPresentation.queryByExample,
     function() {
       this.test.link = 'https://www.w3.org/TR/vcalm-1.0/#query-by-example';

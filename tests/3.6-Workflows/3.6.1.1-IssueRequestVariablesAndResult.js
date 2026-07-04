@@ -11,9 +11,10 @@ import {
   shouldAllowIssueRequestVariables,
   shouldSatisfyIssueRequestResult
 } from '../assertions.js';
+import {describeFixtureSuite} from '../helpers.js';
 import {NORMATIVE} from '../normative-statements.js';
 
-describe('Issue request variables and result', function() {
+describeFixtureSuite('Issue request variables and result', function() {
   it(NORMATIVE.workflows.issueRequestVariables, function() {
     this.test.link =
       'https://www.w3.org/TR/vcalm-1.0/#workflow-configuration';

@@ -152,3 +152,42 @@ export const VERIFY_PRESENTATION_NEGATIVE_CASES = [
     options: verifyOptions
   }
 ];
+
+export function createWorkflowBodyStepsNotObject() {
+  return {
+    id: 'urn:uuid:00000000-0000-4000-8000-000000000001',
+    initialStep: 'start',
+    steps: 'not-a-steps-object'
+  };
+}
+
+export function createWorkflowBodyMissingSteps() {
+  return {
+    id: 'urn:uuid:00000000-0000-4000-8000-000000000002',
+    initialStep: 'start'
+  };
+}
+
+export const WORKFLOW_NEGATIVE_CASES = [
+  {
+    id: 'stepsNotObject',
+    title: NORMATIVE.negative.workflowStepsNotObject,
+    link: 'https://www.w3.org/TR/vcalm-1.0/#create-workflow',
+    body: createWorkflowBodyStepsNotObject()
+  },
+  {
+    id: 'missingSteps',
+    title: NORMATIVE.negative.workflowMissingSteps,
+    link: 'https://www.w3.org/TR/vcalm-1.0/#create-workflow',
+    body: createWorkflowBodyMissingSteps()
+  }
+];
+
+export const WORKFLOW_EXCHANGE_NEGATIVE_CASES = [
+  {
+    id: 'unknownWorkflow',
+    title: NORMATIVE.negative.workflowExchangeUnknownWorkflow,
+    link: 'https://www.w3.org/TR/vcalm-1.0/#create-exchange',
+    workflowId: 'urn:uuid:00000000-0000-4000-8000-000000009999'
+  }
+];

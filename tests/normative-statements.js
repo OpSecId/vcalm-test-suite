@@ -259,6 +259,12 @@ export const NORMATIVE = {
       'Issue Credential endpoint rejects a malformed issue request.',
     conformanceProbeVerify:
       'Verify endpoint processes a malformed verify request and reports ' +
-      'verification failure.'
+      'verification failure.',
+    workflowStepsNotObject:
+      'POST /workflows with invalid steps returns a client error.',
+    workflowMissingSteps:
+      'POST /workflows without steps returns a client error.',
+    workflowExchangeUnknownWorkflow:
+      'POST exchanges for an unknown workflow returns a client error.'
   }
 };

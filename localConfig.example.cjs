@@ -50,9 +50,9 @@ module.exports = {
       id: 'did:web:credential.ninja',
       endpoint: endpoint /* or issuersEndpoint */,
       tags: ['VCALM']
-      // probes: {
-      //   multiProofIssueBody: { credential: {...}, options: {...} },
-      //   proofHandlingMode: 'proofSets' // or proofChains | errorHandling
+      // options: {
+      //   cryptosuite: ['eddsa-jcs-2022', 'eddsa-rdfc-2022'], // proof set
+      //   // cryptosuite: 'eddsa-jcs-2022' // single proof
       // },
       // settings: { vcPayloadLimitBytes: 10485760 }
     }],
@@ -69,27 +69,19 @@ module.exports = {
       tags: ['VCALM']
     }],
 
-    // Workflow — optional; §1.3 holder probes use `probes` when set
+    // Workflow — optional; §3.6 and §1.3 holder checks when registered
     workflows: [{
       endpoint: endpoint /* or workflowsEndpoint */,
-      tags: ['VCALM'],
-      // probes: {
-      //   exchangeProtocols:
-      //     `${baseUrl}/workflows/{workflowId}/exchanges/{exchangeId}/protocols`,
-      //   participateExchange:
-      //     `${baseUrl}/workflows/{workflowId}/exchanges/{exchangeId}`
-      // }
+      tags: ['VCALM']
     }],
 
     // Interaction — optional; §3.7.4 GET protocols (skips if not implemented)
     interactions: [{
       endpoint: endpoint /* or paths.interactions */,
-      tags: ['VCALM'],
-      // probes: {
-      //   interactionId: 'urn:uuid:interaction-fixture',
-      //   interactionStart:
-      //     `${baseUrl}/interactions/urn:uuid:interaction-fixture?iuv=1`
-      // }
+      tags: ['VCALM']
+      // interactionId: 'urn:uuid:interaction-fixture',
+      // interactionStart:
+      //   `${baseUrl}/interactions/urn:uuid:interaction-fixture?iuv=1`
     }]
 
     // Status profile (optional): tag issuer entry with VCALM:status and use

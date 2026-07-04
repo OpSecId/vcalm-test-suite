@@ -30,16 +30,10 @@ describe('Proof sets and chains configuration', function() {
   setupMatrix.call(this, match, 'Issuer');
   for(const [name, implementation] of match) {
     const endpoints = new TestEndpoints({implementation, tag});
-    const expectedMode = endpoints.issuer?.settings?.probes?.proofHandlingMode;
     describe(`${name} (HTTP)`, function() {
       beforeEach(addPerTestMetadata);
       it(NORMATIVE.issuing.proofHandling, async function() {
         this.test.link = 'https://www.w3.org/TR/vcalm-1.0/#issue-credential';
-        if(!expectedMode) {
-          this.skip(
-            'Configure issuers[].settings.probes.proofHandlingMode to run.'
-          );
-        }
         const {issuedVc, result, error} =
           await endpoints.issueCredentialWithExistingProof();
         skipIfNotImplemented(this, {
@@ -47,11 +41,7 @@ describe('Proof sets and chains configuration', function() {
           label: 'POST /credentials/issue (credential with existing proof)'
         });
         shouldReturnHttpResult({result, error});
-        shouldHandlePreProofedCredentialIssue({
-          expectedMode,
-          issuedVc,
-          result
-        });
+        shouldHandlePreProofedCredentialIssue({issuedVc, result});
       });
     });
   }
