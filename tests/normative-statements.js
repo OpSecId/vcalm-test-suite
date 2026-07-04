@@ -6,7 +6,7 @@
  * Exact normative statement text for Mocha `it()` titles.
  * Source: VCALM TR / editor draft, plus suite-defined `negative.*` titles.
  *
- * @see docs/normative-requirements.md
+ * @see branch feature/vcalm-docs — docs/normative-requirements.md
  */
 
 export const UNKNOWN_OPTION_PROBE_KEY = 'vcalmInteropUnknownOptionProbe';
