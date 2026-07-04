@@ -4,13 +4,26 @@ Interoperability tests for implementations of
 [VCALM](https://www.w3.org/TR/vcalm-1.0/) (Verifiable Credential API for
 Lifecycle Management).
 
+## Branches
+
+| Branch | Contents |
+|--------|----------|
+| `feature/vcalm-interop-suite` | Mocha tests, `docs/test-coverage.md`, run instructions (this branch) |
+| `feature/vcalm-oas-pin` | Schemathesis, pinned OpenAPI (`docs/schemathesis/`), `npm run test:schema` |
+| `feature/vcalm-docs` | Normative traceability, stats, spec-to-test mapping (`docs/` tree) |
+
+```sh
+git checkout feature/vcalm-oas-pin -- docs/schemathesis/ schemathesis.local.example.cjs schemathesis.toml scripts/
+git checkout feature/vcalm-docs -- docs/
+```
+
 ## Strategy
 
-| Layer | Tool | Purpose |
-|-------|------|---------|
-| OAS Conformance | Schemathesis | Request/response schemas from [w3c.github.io/vcalm/oas.yaml](https://w3c.github.io/vcalm/oas.yaml) (generate locally or use branch `feature/vcalm-oas-pin`) |
-| OAS (optional) | Chai OpenAPI | Response envelope checks on happy paths (`tests/openapi.js`; off when `VCALM_OPENAPI=0`) |
-| Mocha | Mocha | §1.3 roles, happy paths, negative inputs, `verified` / ProblemDetails semantics |
+| Layer | Tool | Branch |
+|-------|------|--------|
+| Mocha | Mocha | `feature/vcalm-interop-suite` |
+| OAS (optional) | Chai OpenAPI | Checkout `oas.bundled.json` from `feature/vcalm-oas-pin` (`tests/openapi.js`; off when `VCALM_OPENAPI=0`) |
+| OAS Conformance | Schemathesis | `feature/vcalm-oas-pin` |
 
 Mocha tests are adapted from the CCG
 [vc-api-issuer-test-suite](https://github.com/w3c-ccg/vc-api-issuer-test-suite)
@@ -18,13 +31,13 @@ and
 [vc-api-verifier-test-suite](https://github.com/w3c-ccg/vc-api-verifier-test-suite),
 extended with **negative fixtures** (malformed issue requests, foreign
 credentials/presentations) to catch stub implementations. Field-level HTTP
-validation is covered by Schemathesis. This suite does **not** run VCDM or crypto
-interop suites — it uses minimal fixture credentials sufficient to exercise the
-API.
+validation is covered by Schemathesis on `feature/vcalm-oas-pin`. This suite does
+**not** run VCDM or crypto interop suites — it uses minimal fixture credentials
+sufficient to exercise the API.
 
 Mocha tests under `tests/<section>/` mirror the VCALM TOC (helpers live at
 `tests/*.js` and are excluded from the `tests/*/**/*.js` glob). See
-[docs/test-coverage.md](docs/test-coverage.md) and [docs/README.md](docs/README.md).
+[docs/test-coverage.md](docs/test-coverage.md).
 
 ## Install
 
@@ -70,14 +83,12 @@ Terminal 2 — run the suite (point `localConfig.cjs` at `https://localhost:8000
 ```sh
 cd test-suites/vcalm-test-suite
 NODE_TLS_REJECT_UNAUTHORIZED=0 VCALM_OPENAPI=0 npm test
-NODE_TLS_REJECT_UNAUTHORIZED=0 BASE_URL=https://localhost:8000 npm run test:schema
 ```
 
 | Variable | Default | Meaning |
 |----------|---------|---------|
 | `NODE_TLS_REJECT_UNAUTHORIZED=0` | — | Allow self-signed HTTPS for local dev |
 | `VCALM_OPENAPI=0` | Chai on | Disable Chai OpenAPI (nested VC schemas in OAS are stricter than JSON-LD) |
-| `BASE_URL` | from `localConfig.cjs` | Instance root for Schemathesis |
 
 ### Role registration
 
@@ -110,19 +121,15 @@ with tag `VCALM` on issuer, verifier, and holder endpoints (and
 
 ## OAS conformance (Schemathesis)
 
-Property-based tests against the OpenAPI bundle in `docs/schemathesis/` (run
-`npm run schema:update-oas` first, or check out branch `feature/vcalm-oas-pin`).
+On branch **`feature/vcalm-oas-pin`**:
 
 ```sh
-npm run schema:update-oas   # refresh oas.yaml from https://w3c.github.io/vcalm/oas.yaml
+git checkout feature/vcalm-oas-pin -- docs/schemathesis/ schemathesis.local.example.cjs schemathesis.toml scripts/
 cp schemathesis.local.example.cjs schemathesis.local.cjs
-BASE_URL=http://localhost:40443/id npm run test:schema
+BASE_URL=https://localhost:8000 npm run test:schema
 ```
 
-See [docs/schemathesis/README.md](docs/schemathesis/README.md),
-[docs/normative-requirements.md](docs/normative-requirements.md), and
-[docs/test-coverage.md](docs/test-coverage.md) for profiles, auth, and
-normative-to-test mapping.
+See `docs/schemathesis/README.md` on that branch for profiles and auth.
 
 ## Report
 

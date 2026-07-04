@@ -5,8 +5,6 @@
   "type": "module",
   "scripts": {
     "test": "mocha 'tests/*/**/*.js' --reporter @digitalbazaar/mocha-w3c-interop-reporter --reporter-options abstract=\"$PWD/abstract.hbs\",reportDir=\"$PWD/reports\",respec=\"$PWD/respecConfig.json\",suiteLog='./suite.log',templateData=\"$PWD/reports/index.json\",title=\"VCALM Interoperability Report\" --timeout 15000 --preserve-symlinks",
-    "test:schema": "node scripts/run-schemathesis.cjs",
-    "schema:update-oas": "node scripts/update-oas.cjs",
     "lint": "eslint ."
   },
   "repository": {

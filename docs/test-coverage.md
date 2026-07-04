@@ -1,22 +1,23 @@
 # VCALM test coverage matrix
 
 Maps each test file to normative statements. OAS field-level MUSTs are covered
-by Schemathesis (`npm run test:schema`), not listed here.
+by Schemathesis on branch `feature/vcalm-oas-pin`, not listed here.
 
 `it()` titles come from [`tests/normative-statements.js`](../tests/normative-statements.js):
 verbatim VCALM TR / OAS text, plus suite-defined `negative.*` keys for anti-stub tests.
 
+Normative inventory and file-tree mapping: branch `feature/vcalm-docs`.
+
 ## Coverage summary (prose / conformance / config)
 
-Excludes **357+** OAS table MUSTs (Schemathesis). Inventory from
-[normative-requirements.md](normative-requirements.md) (~61 statements).
+Excludes **357+** OAS table MUSTs (Schemathesis on `feature/vcalm-oas-pin`).
 
 | Status | Approx. | Notes |
 |--------|--------:|-------|
 | ✅ Active Mocha | **~92%** of testable prose | Fixture + HTTP happy paths + negatives |
 | ⏭ Skipped / deferred | **4** | §3.4.4, §3.6.8, §3.7.5, §3.7.6 |
 | ❌ Not covered | **0** | — |
-| 🔷 Schemathesis only | **357+** | `npm run test:schema` |
+| 🔷 Schemathesis only | **357+** | `feature/vcalm-oas-pin` → `npm run test:schema` |
 
 ## Test layout
 
@@ -302,14 +303,14 @@ endpoint = https://example/              (unified gateway)
 
 ## Configuration guide
 
-### Two configs, two jobs
+### Configuration
 
-| File | Used by | `endpoint` / `baseUrl` meaning |
-|------|---------|--------------------------------|
+| File | Used by | `endpoint` meaning |
+|------|---------|-------------------|
 | `localConfig.cjs` | **Mocha** (`npm test`) | Each role's `endpoint` is the **operation URL** (POST/GET target), or a **unified gateway root** when the deployment routes by path |
-| `schemathesis.local.cjs` | **Schemathesis** (`npm run test:schema`) | `baseUrl` is the **instance root**; paths come from `oas.yaml` |
 
-Use the same host for both; only the path depth differs.
+Schemathesis uses `schemathesis.local.cjs` on branch `feature/vcalm-oas-pin`
+(instance `baseUrl` + paths from `oas.yaml`). See `docs/schemathesis/README.md` there.
 
 ### Mocha: what to register
 
@@ -328,71 +329,12 @@ Register only roles your deployment implements. Tests skip missing pairings
 
 See `localConfig.example.cjs` for unified-gateway vs explicit-path templates.
 
-### Schemathesis: testing all endpoints
-
-Mocha does **not** iterate every OAS operation — use Schemathesis profiles:
-
-```sh
-cp schemathesis.local.example.cjs schemathesis.local.cjs
-BASE_URL=http://localhost:40443/my-instance npm run test:schema                    # §1.3 core (3 ops)
-VCALM_SCHEMA_PROFILE=issuer npm run test:schema                                    # §3.2 + status
-VCALM_SCHEMA_PROFILE=verifier npm run test:schema                                  # §3.3
-VCALM_SCHEMA_PROFILE=holder npm run test:schema                                    # §3.5
-VCALM_SCHEMA_PROFILE=workflow npm run test:schema                                  # §3.6
-VCALM_SCHEMA_PROFILE=full npm run test:schema                                      # all 22 operations
-```
-
-Run profiles against a **throwaway instance** — `full` and workflow ops may create
-or mutate state. Many 4xx responses are expected (fuzzed invalid bodies).
-
-To cover everything in CI, run `phase1-core` on every PR and `full` (or per-role
-profiles) on a schedule or manual workflow.
-
-### All OAS operations (Schemathesis `full` profile)
-
-| operationId | Path | Area |
-|-------------|------|------|
-| `issueCredential` | POST `/credentials/issue` | §3.2 |
-| `getCredential` | GET `/credentials/{id}` | §3.2 |
-| `deleteCredential` | DELETE `/credentials/{id}` | §3.2 |
-| `updateCredentialStatus` | POST `/credentials/status` | status |
-| `createStatusList` | POST `/status-lists` | status |
-| `getStatusList` | GET `/status-lists/{id}` | status |
-| `verifyCredential` | POST `/credentials/verify` | §3.3 |
-| `verifyPresentation` | POST `/presentations/verify` | §3.3 |
-| `challenge` | POST `/challenges` | §3.3 |
-| `deriveCredential` | POST `/credentials/derive` | §3.5 |
-| `createPresentation` | POST `/presentations` | §3.5 |
-| `getPresentations` | GET `/presentations` | §3.5 |
-| `getPresentation` | GET `/presentations/{id}` | §3.5 |
-| `deletePresentation` | DELETE `/presentations/{id}` | §3.5 |
-| `createWorkflow` | POST `/workflows` | §3.6 |
-| `getWorkflowConfiguration` | GET `/workflows/{localWorkflowId}` | §3.6 |
-| `createExchange` | POST `.../exchanges` | §3.6 |
-| `getExchangeConfiguration` | GET `.../exchanges/{localExchangeId}` | §3.6 |
-| `participateInExchange` | POST `.../exchanges/{localExchangeId}` | §3.6 |
-| `getSupportedProtocolsConfiguration` | GET `.../protocols` | §3.6 |
-| `callback` | POST `/callbacks/{localCallbackId}` | §3.6 |
-| `startInteraction` | GET interaction URL | §3.7 |
-| `receiveInvitationResponse` | POST invitation | §3.7 |
-
-### Schemathesis profile summary
-
-| Profile | Operations | Normative source |
-|---------|------------|------------------|
-| `phase1-core` (default) | issue, verify VC, verify VP | §1.3 minimum |
-| `issuer` | §3.2 + status lists | OAS |
-| `verifier` | §3.3 | OAS |
-| `holder` | §3.5 | OAS |
-| `workflow` | §3.6 + callbacks | OAS |
-| `full` | all 22 operations | OAS |
-
 ## Not ported from CCG vc-api suites
 
 | CCG test pattern | Reason | Covered by |
 |------------------|--------|------------|
-| `credential MUST have @context` negatives | OAS / VCDM field rules | Schemathesis |
-| `MUST not verify if proof missing` negatives | Verifier must reject bad input | Mocha §3.3.4–5 + §3.8.1; Schemathesis for OAS tables |
+| `credential MUST have @context` negatives | OAS / VCDM field rules | Schemathesis (`feature/vcalm-oas-pin`) |
+| `MUST not verify if proof missing` negatives | Verifier must reject bad input | Mocha §3.3.4–5 + §3.8.1 |
 | JWT / enveloped profiles | deferred profile | future optional suite |
 
 ## Planned (prose normative)
@@ -403,6 +345,4 @@ profiles) on a schedule or manual workflow.
 | §3.6.8 normative exchange examples | §3.6.8 | `it.skip` |
 | §3.7.5 / §3.7.6 live protocol flows | §3.7 | `it.skip` |
 
-See [normative-requirements.md](normative-requirements.md) for the full prose inventory.
-See [normative-mapping.md](normative-mapping.md) for a file-tree map of statements → tests.
-See [README.md](README.md) for the documentation index.
+Full normative inventory and file-tree mapping: `git checkout feature/vcalm-docs -- docs/`.
