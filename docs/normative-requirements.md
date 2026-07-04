@@ -112,7 +112,7 @@ Normative text is everything except sections marked *non-normative*, authoring g
 
 ---
 
-### §3.7 Initiating Interactions *(editor draft)*
+### §3.7 Interactions *(editor draft)*
 
 #### §3.7.1 Interaction URL format
 
