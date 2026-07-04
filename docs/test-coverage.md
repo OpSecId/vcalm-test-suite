@@ -35,9 +35,9 @@ Mocha runs `tests/*/**/*.js` only — helpers at `tests/*.js` (e.g.
 | `2.4-Configurations/` | §2.4 Configurations | `2.4.1-ContentSerialization.js`, `2.4.2-UnknownOptions.js`, `2.4.3-Authorization.js`, `2.4.4-RecommendedVcPayloadSize.js` |
 | `3.2-Issuing/` | §3.2 Issuing | `3.2.1` … `3.2.6-IssueCredentialNegatives.js` |
 | `3.3-Verifying/` | §3.3 Verifying | `3.3.1` … `3.3.5-VerifyPresentationNegatives.js` |
-| `3.4-RequestingAPresentation/` | §3.4 Requesting a Presentation | `3.4.1` … `3.4.5-LogicalOperationsInQueries.js` |
+| `3.4-Requesting/` | §3.4 Requesting | `3.4.1` … `3.4.5-LogicalOperationsInQueries.js` |
 | `3.5-Presenting/` | §3.5 Presenting | `3.5.1` … `3.5.5-DeleteASpecificPresentation.js` |
-| `3.6-WorkflowsAndExchanges/` | §3.6 Workflows and Exchanges | `3.6.1` … `3.6.8-ExchangeExamples.js`, `3.6.1.1-IssueRequestVariablesAndResult.js`, `3.6.5.1-ExchangeReferenceId.js` |
+| `3.6-Workflows/` | §3.6 Workflows | `3.6.1` … `3.6.8-ExchangeExamples.js`, `3.6.1.1-IssueRequestVariablesAndResult.js`, `3.6.5.1-ExchangeReferenceId.js` |
 | `3.7-InitiatingInteractions/` | §3.7 Initiating Interactions | `3.7.1` … `3.7.6-vcapiInteractionProtocol.js` |
 | `3.8-ErrorHandling/` | §3.8 Error Handling | `3.8.1-VerificationErrorsVsWarnings.js`, `3.8.2-ProblemDetails.js` |
 | `appendix-B-Security/` | Appendix B (selected) | `B.1-StripUnrecognizedProofs.js`, `B.4-InstancePayloadLimits.js` |
@@ -89,15 +89,15 @@ Legend: **fixture** = no live endpoint; **HTTP** = matrix against `localConfig.c
 | `3.3-Verifying/3.3.4-VerifyCredentialNegatives.js` | `negative.verifyCredential*` | HTTP | [#verify-credential](https://www.w3.org/TR/vcalm-1.0/#verify-credential) |
 | `3.3-Verifying/3.3.5-VerifyPresentationNegatives.js` | `negative.verifyPresentation*` | HTTP | [#verify-presentation](https://www.w3.org/TR/vcalm-1.0/#verify-presentation) |
 
-### §3.4 Requesting a Presentation
+### §3.4 Requesting
 
 | Test file | `NORMATIVE` key | Layer | Spec link |
 |-----------|-----------------|-------|-----------|
-| `3.4-RequestingAPresentation/3.4.1-VerifiablePresentationRequest.js` | `requestingPresentation.queryRequired`, `queryType` | fixture | [#verifiable-presentation-request](https://www.w3.org/TR/vcalm-1.0/#verifiable-presentation-request) |
-| `3.4-RequestingAPresentation/3.4.2-QueryByExample.js` | `requestingPresentation.queryByExample` | fixture | [#query-by-example](https://www.w3.org/TR/vcalm-1.0/#query-by-example) |
-| `3.4-RequestingAPresentation/3.4.3-DIDAuthentication.js` | `didAuthenticationQueryType`, `didAuthentication` | fixture | [#did-authentication](https://www.w3.org/TR/vcalm-1.0/#did-authentication) |
-| `3.4-RequestingAPresentation/3.4.4-AuthorizationCapabilityRequest.js` | `authorizationCapability` | ⏭ `describe.skip` | [#authorization-capability-request](https://www.w3.org/TR/vcalm-1.0/#authorization-capability-request) |
-| `3.4-RequestingAPresentation/3.4.5-LogicalOperationsInQueries.js` | `logicalOperations` | fixture | [#logical-operations-in-queries](https://www.w3.org/TR/vcalm-1.0/#logical-operations-in-queries) |
+| `3.4-Requesting/3.4.1-VerifiablePresentationRequest.js` | `requestingPresentation.queryRequired`, `queryType` | fixture | [#verifiable-presentation-request](https://www.w3.org/TR/vcalm-1.0/#verifiable-presentation-request) |
+| `3.4-Requesting/3.4.2-QueryByExample.js` | `requestingPresentation.queryByExample` | fixture | [#query-by-example](https://www.w3.org/TR/vcalm-1.0/#query-by-example) |
+| `3.4-Requesting/3.4.3-DIDAuthentication.js` | `didAuthenticationQueryType`, `didAuthentication` | fixture | [#did-authentication](https://www.w3.org/TR/vcalm-1.0/#did-authentication) |
+| `3.4-Requesting/3.4.4-AuthorizationCapabilityRequest.js` | `authorizationCapability` | ⏭ `describe.skip` | [#authorization-capability-request](https://www.w3.org/TR/vcalm-1.0/#authorization-capability-request) |
+| `3.4-Requesting/3.4.5-LogicalOperationsInQueries.js` | `logicalOperations` | fixture | [#logical-operations-in-queries](https://www.w3.org/TR/vcalm-1.0/#logical-operations-in-queries) |
 
 ### §3.5 Presenting
 
@@ -109,20 +109,20 @@ Legend: **fixture** = no live endpoint; **HTTP** = matrix against `localConfig.c
 | `3.5-Presenting/3.5.4-GetASpecificPresentation.js` | `presenting.getById` | HTTP | [#get-a-specific-presentation](https://www.w3.org/TR/vcalm-1.0/#get-a-specific-presentation) |
 | `3.5-Presenting/3.5.5-DeleteASpecificPresentation.js` | `presenting.deleteById` | HTTP | [#delete-a-specific-presentation](https://www.w3.org/TR/vcalm-1.0/#delete-a-specific-presentation) |
 
-### §3.6 Workflows and Exchanges
+### §3.6 Workflows
 
 | Test file | `NORMATIVE` key | Layer | Spec link |
 |-----------|-----------------|-------|-----------|
-| `3.6-WorkflowsAndExchanges/3.6.1-CreateWorkflow.js` | `workflows.create` | HTTP | [#create-workflow](https://www.w3.org/TR/vcalm-1.0/#create-workflow) |
-| `3.6-WorkflowsAndExchanges/3.6.1.1-IssueRequestVariablesAndResult.js` | `issueRequestVariables`, `issueRequestResult` | fixture | [#workflow-configuration](https://www.w3.org/TR/vcalm-1.0/#workflow-configuration) |
-| `3.6-WorkflowsAndExchanges/3.6.2-GetWorkflowConfiguration.js` | `workflows.getConfiguration` | HTTP | [#get-workflow-configuration](https://www.w3.org/TR/vcalm-1.0/#get-workflow-configuration) |
-| `3.6-WorkflowsAndExchanges/3.6.3-CreateExchange.js` | `workflows.createExchange` | HTTP | [#create-exchange](https://www.w3.org/TR/vcalm-1.0/#create-exchange) |
-| `3.6-WorkflowsAndExchanges/3.6.4-GetExchangeProtocols.js` | `workflows.getProtocols` | HTTP | [#get-exchange-protocols](https://www.w3.org/TR/vcalm-1.0/#get-exchange-protocols) |
-| `3.6-WorkflowsAndExchanges/3.6.5-ParticipateInAnExchange.js` | `workflows.participate` | HTTP | [#participate-in-an-exchange](https://www.w3.org/TR/vcalm-1.0/#participate-in-an-exchange) |
-| `3.6-WorkflowsAndExchanges/3.6.5.1-ExchangeReferenceId.js` | `referenceIdServerMay`, `referenceIdUrnUuid`, `referenceIdEcho` | fixture | [#participate-in-an-exchange](https://www.w3.org/TR/vcalm-1.0/#participate-in-an-exchange) |
-| `3.6-WorkflowsAndExchanges/3.6.6-GetExchangeState.js` | `workflows.getState` | HTTP | [#get-exchange-state](https://www.w3.org/TR/vcalm-1.0/#get-exchange-state) |
-| `3.6-WorkflowsAndExchanges/3.6.7-ExchangeStepCallbacks.js` | `workflows.callbacks` | HTTP | [#exchange-step-callbacks](https://www.w3.org/TR/vcalm-1.0/#exchange-step-callbacks) |
-| `3.6-WorkflowsAndExchanges/3.6.8-ExchangeExamples.js` | `workflows.examples` | ⏭ `it.skip` | [#exchange-examples](https://www.w3.org/TR/vcalm-1.0/#exchange-examples) |
+| `3.6-Workflows/3.6.1-CreateWorkflow.js` | `workflows.create` | HTTP | [#create-workflow](https://www.w3.org/TR/vcalm-1.0/#create-workflow) |
+| `3.6-Workflows/3.6.1.1-IssueRequestVariablesAndResult.js` | `issueRequestVariables`, `issueRequestResult` | fixture | [#workflow-configuration](https://www.w3.org/TR/vcalm-1.0/#workflow-configuration) |
+| `3.6-Workflows/3.6.2-GetWorkflowConfiguration.js` | `workflows.getConfiguration` | HTTP | [#get-workflow-configuration](https://www.w3.org/TR/vcalm-1.0/#get-workflow-configuration) |
+| `3.6-Workflows/3.6.3-CreateExchange.js` | `workflows.createExchange` | HTTP | [#create-exchange](https://www.w3.org/TR/vcalm-1.0/#create-exchange) |
+| `3.6-Workflows/3.6.4-GetExchangeProtocols.js` | `workflows.getProtocols` | HTTP | [#get-exchange-protocols](https://www.w3.org/TR/vcalm-1.0/#get-exchange-protocols) |
+| `3.6-Workflows/3.6.5-ParticipateInAnExchange.js` | `workflows.participate` | HTTP | [#participate-in-an-exchange](https://www.w3.org/TR/vcalm-1.0/#participate-in-an-exchange) |
+| `3.6-Workflows/3.6.5.1-ExchangeReferenceId.js` | `referenceIdServerMay`, `referenceIdUrnUuid`, `referenceIdEcho` | fixture | [#participate-in-an-exchange](https://www.w3.org/TR/vcalm-1.0/#participate-in-an-exchange) |
+| `3.6-Workflows/3.6.6-GetExchangeState.js` | `workflows.getState` | HTTP | [#get-exchange-state](https://www.w3.org/TR/vcalm-1.0/#get-exchange-state) |
+| `3.6-Workflows/3.6.7-ExchangeStepCallbacks.js` | `workflows.callbacks` | HTTP | [#exchange-step-callbacks](https://www.w3.org/TR/vcalm-1.0/#exchange-step-callbacks) |
+| `3.6-Workflows/3.6.8-ExchangeExamples.js` | `workflows.examples` | ⏭ `it.skip` | [#exchange-examples](https://www.w3.org/TR/vcalm-1.0/#exchange-examples) |
 
 ### §3.7 Initiating Interactions
 
