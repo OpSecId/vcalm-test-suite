@@ -38,11 +38,5 @@ python3 "$SKILL/generate_stats_html.py" docs/vcalm-normative-stats.json \
   -o docs/vcalm-normative-stats.html --footer vcalm-test-suite
 ```
 
-Prose inventory: `docs/scripts/extract_requirements.py` or edit
-[normative-requirements.md](normative-requirements.md) directly.
-
-## Checkout this tree from another branch
-
-```sh
-git checkout feature/vcalm-docs -- docs/
-```
+Edit [normative-requirements.md](normative-requirements.md) directly for the prose
+inventory.
