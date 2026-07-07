@@ -32,8 +32,8 @@ npm run lint
 
 `npm test` runs Mocha with the glob `tests/*/**/*.js` and the W3C interop
 reporter (`abstract.hbs`, `respecConfig.json`). Reports are written under
-`reports/`. A single fixture test under `tests/3.4-Requesting/` exercises the
-harness today; additional behavioral tests land in follow-up PRs.
+`reports/`. A skipped placeholder test keeps the harness runnable until
+behavioral tests land in follow-up PRs.
 
 ## Planned test layout
 
