@@ -4,12 +4,16 @@ Interoperability tests for implementations of
 [VCALM](https://www.w3.org/TR/vcalm-1.0/) (Verifiable Credential API for
 Lifecycle Management).
 
-The suite exercises **API behavior** — endpoints, workflows, configuration rules,
-and VCALM-specific prose. It does not replace VCDM or cryptosuite interop
-suites; fixtures are minimal credentials sufficient to call the API.
+This branch is an **initial scaffold**: npm dependencies, project README, and a
+curated normative statement inventory. Behavioral Mocha tests are added in a
+follow-up change.
 
-Normative requirement text for Mocha `it()` titles lives in
-[`tests/normative-statements.js`](tests/normative-statements.js).
+## What's in this repo
+
+| Path | Purpose |
+|------|---------|
+| [`tests/normative-statements.js`](tests/normative-statements.js) | RFC 2119 strings for future Mocha `it()` titles |
+| `package.json` / `package-lock.json` | Mocha, Chai, W3C interop reporter, `vc-test-suite-implementations` |
 
 ## Install
 
@@ -17,28 +21,27 @@ Normative requirement text for Mocha `it()` titles lives in
 npm install --legacy-peer-deps
 ```
 
-## Run
-
-Create **`localConfig.cjs`** (gitignored) listing your implementations, then:
+## Lint
 
 ```sh
-npm test
+npm run lint
 ```
 
-Override the base URL:
+## Run tests
 
-```sh
-BASE_URL=https://localhost:8000 npm test
-```
+`npm test` runs Mocha with the glob `tests/*/**/*.js`. **No behavioral test
+files are present yet**, so the command completes with zero tests. Once section
+directories are added under `tests/`, the same script will execute them.
 
-## Test layout
+## Planned test layout
 
-Tests mirror the VCALM table of contents. Mocha loads `tests/*/**/*.js` only;
-shared helpers at `tests/*.js` are not test files.
+Tests will mirror the VCALM table of contents. Mocha will load
+`tests/*/**/*.js` only; shared helpers at `tests/*.js` (including
+`normative-statements.js`) are not test files.
 
 ```
 tests/
-  normative-statements.js   # RFC 2119 strings used as it() titles
+  normative-statements.js   # RFC 2119 strings (present now)
   helpers.js                # matrix setup, VCALM tag, fixtures
   negative-fixtures.js      # malformed / foreign VC·VP cases
   1.3-Conformance/          # §1.3 service role probes
@@ -53,10 +56,10 @@ tests/
   appendix-B-Security/      # selected appendix B guidance
 ```
 
-## Implementation config
+## Implementation config (when tests land)
 
-Implementations are registered in **`localConfig.cjs`**. Each **role** you
-support gets an `endpoint` and **`tags: ['VCALM']`**. Register only what you
+Implementations will be registered in **`localConfig.cjs`** (gitignored). Each
+role gets an `endpoint` and **`tags: ['VCALM']`**. Register only what you
 implement — tests skip missing pairings (for example, presentation verify needs
 both `holders` and `verifiers`).
 
@@ -68,12 +71,9 @@ both `holders` and `verifiers`).
 | `workflows` | §3.6 workflows (optional) | `…/workflows` or gateway root |
 | `interactions` | §3.7 interaction URL fetch (optional) | gateway root or `…/interactions` |
 
-**One `verifiers` entry covers both verify operations.** The suite derives the
-sibling path from `endpoint` (for example `…/credentials/verify` →
-`…/presentations/verify`).
-
-**Issuers** may set `options.cryptosuite` to a string or string array. An array
-requests a proof set and enables the §3.2.4 multi-proof test when length ≥ 2.
+One `verifiers` entry covers both verify operations. Issuers may set
+`options.cryptosuite` to a string or string array (array enables §3.2.4
+multi-proof when length ≥ 2).
 
 ```javascript
 module.exports = {
@@ -98,26 +98,24 @@ module.exports = {
 };
 ```
 
-Use one URL for every role (gateway) or point each role at an explicit path
-(`…/credentials/issue`, `…/credentials/verify`, etc.).
+Override the base URL: `BASE_URL=https://localhost:8000 npm test`
 
 ## The `VCALM` tag
 
-Every endpoint that should run this suite must include **`VCALM`** in `tags`.
-The harness uses
+Endpoints that participate in this suite include **`VCALM`** in `tags`. The
+harness uses
 [`vc-test-suite-implementations`](https://github.com/w3c/vc-test-suite-implementations)
 `filterByTag({ tags: ['VCALM'] })` to build the Mocha matrix.
 
-## Mocha and OpenAPI testing
+## Mocha and OpenAPI (planned)
 
-**Mocha** runs behavioral interop against live endpoints: HTTP status, VCALM
-response envelopes (`verifiableCredential` / `verifiablePresentation`), and
-spec-specific fields. `it()` titles use strings from `tests/normative-statements.js`.
+**Mocha** will run behavioral interop: HTTP status, VCALM response envelopes
+(`verifiableCredential` / `verifiablePresentation`), and spec-specific fields.
+`it()` titles will use strings from `tests/normative-statements.js`.
 
-**OpenAPI (optional)** — when a bundled OAS is present, selected tests validate
-responses with Chai OpenAPI. Disable with `VCALM_OPENAPI=0 npm test`. Bulk
-request/response fuzzing can use Schemathesis separately (`npm run test:schema`
-when configured).
+**OpenAPI (optional, later)** — selected tests may validate responses against
+the VCALM OAS via Chai OpenAPI (`VCALM_OPENAPI=0` to disable). Bulk shape
+fuzzing may use Schemathesis separately.
 
 ## License
 
