@@ -114,8 +114,7 @@ harness uses
 `it()` titles will use strings from `tests/normative-statements.js`.
 
 **OpenAPI (optional, later)** — selected tests may validate responses against
-the VCALM OAS via Chai OpenAPI (`VCALM_OPENAPI=0` to disable). Bulk shape
-fuzzing may use Schemathesis separately.
+the VCALM OAS via Chai OpenAPI (`VCALM_OPENAPI=0` to disable).
 
 ## License
 
