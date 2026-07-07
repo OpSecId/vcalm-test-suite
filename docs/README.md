@@ -1,18 +1,15 @@
-# VCALM test suite — normative documentation
+# VCALM test suite — documentation
 
-Branch **`feature/vcalm-docs`** holds the coverage matrix, spec traceability, and
-planning artifacts. Mocha tests: **`feature/vcalm-interop-suite`**. Schemathesis:
-**`feature/vcalm-oas-pin`**.
+Planning artifacts, normative traceability, and coverage matrices for the
+[VCALM interop suite](../README.md).
 
 ## Start here
 
 | If you want to… | Read |
 |-----------------|------|
-| Install and run tests | [../README.md](../README.md) on `feature/vcalm-interop-suite` |
-| Configure `localConfig.cjs` / profiles | [test-coverage.md](test-coverage.md) → VCALM tag and endpoint registration |
+| Install, configure, and run tests | [../README.md](../README.md) |
 | See which test file maps to which spec section | [test-coverage.md](test-coverage.md) |
 | Understand scope and phased rollout | [test-suite-design-analysis.md](test-suite-design-analysis.md) |
-| Run Schemathesis / OAS fuzzing | `feature/vcalm-oas-pin` → [schemathesis/README.md](schemathesis/README.md) |
 
 ## Normative traceability
 
@@ -20,8 +17,8 @@ planning artifacts. Mocha tests: **`feature/vcalm-interop-suite`**. Schemathesis
 |------|---------|
 | [normative-requirements.md](normative-requirements.md) | Prose / conformance / config inventory (excludes OAS tables) |
 | [normative-mapping.md](normative-mapping.md) | File-tree map: requirements → tests (✅ / 🔷 / ⏭) |
-| [test-coverage.md](test-coverage.md) | Per-file matrix, config keys, Schemathesis profiles |
-| [../tests/normative-statements.js](../tests/normative-statements.js) | Canonical RFC 2119 `it()` title strings (prose/conformance/config only) |
+| [test-coverage.md](test-coverage.md) | Per-file matrix and config keys |
+| [../tests/normative-statements.js](../tests/normative-statements.js) | Canonical RFC 2119 `it()` title strings |
 
 ## Stats and analysis
 
