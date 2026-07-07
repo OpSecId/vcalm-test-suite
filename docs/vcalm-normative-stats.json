@@ -1,0 +1,543 @@
+{
+  "title": "VCALM 1.0",
+  "source": "https://www.w3.org/TR/vcalm-1.0/ (WD 2026-05-05); \u00a73.7\u20133.8 from editor draft",
+  "inputs": {
+    "primary": "/home/development/.cursor/projects/home-development-w3c/uploads/vcalm-1.0-0.md",
+    "supplements": []
+  },
+  "method": "Automated count of capitalized RFC 2119 keywords per markdown heading. Strips markdown emphasis (_MUST_). Statements are classified: http = OpenAPI request/response body schema tables; conformance = \u00a71.3-style conformance classes; config = architecture/configuration prose; prose = all other normative text.",
+  "statement_types": [
+    "http",
+    "prose",
+    "conformance",
+    "config"
+  ],
+  "grand_total": 399,
+  "keywords_total": {
+    "must": 271,
+    "should_not": 20,
+    "should": 47,
+    "may": 43,
+    "must_not": 6,
+    "required": 10,
+    "recommended": 2
+  },
+  "by_type": [
+    {
+      "name": "http",
+      "total": 357,
+      "must": 260,
+      "should": 62,
+      "required": 7,
+      "recommended": 0,
+      "may": 28,
+      "breakdown": {
+        "must": 256,
+        "should_not": 19,
+        "should": 43,
+        "may": 28,
+        "must_not": 4,
+        "required": 7
+      }
+    },
+    {
+      "name": "conformance",
+      "total": 19,
+      "must": 9,
+      "should": 3,
+      "required": 2,
+      "recommended": 1,
+      "may": 4,
+      "breakdown": {
+        "must_not": 1,
+        "must": 8,
+        "should_not": 1,
+        "should": 2,
+        "required": 2,
+        "recommended": 1,
+        "may": 4
+      }
+    },
+    {
+      "name": "prose",
+      "total": 12,
+      "must": 4,
+      "should": 2,
+      "required": 1,
+      "recommended": 0,
+      "may": 5,
+      "breakdown": {
+        "must": 4,
+        "required": 1,
+        "should": 2,
+        "may": 5
+      }
+    },
+    {
+      "name": "config",
+      "total": 11,
+      "must": 4,
+      "should": 0,
+      "required": 0,
+      "recommended": 1,
+      "may": 6,
+      "breakdown": {
+        "may": 6,
+        "must_not": 1,
+        "must": 3,
+        "recommended": 1
+      }
+    }
+  ],
+  "chapters": [
+    {
+      "name": "\u00a73 HTTP API",
+      "total": 369,
+      "must": 264,
+      "should": 64,
+      "required": 8,
+      "recommended": 0,
+      "may": 33,
+      "breakdown": {
+        "must": 260,
+        "should_not": 19,
+        "should": 45,
+        "may": 33,
+        "must_not": 4,
+        "required": 8
+      },
+      "types": {
+        "http": 357,
+        "prose": 12
+      }
+    },
+    {
+      "name": "\u00a71 Introduction",
+      "total": 19,
+      "must": 9,
+      "should": 3,
+      "required": 2,
+      "recommended": 1,
+      "may": 4,
+      "breakdown": {
+        "must_not": 1,
+        "must": 8,
+        "should_not": 1,
+        "should": 2,
+        "required": 2,
+        "recommended": 1,
+        "may": 4
+      },
+      "types": {
+        "conformance": 19
+      }
+    },
+    {
+      "name": "\u00a72 Architecture",
+      "total": 11,
+      "must": 4,
+      "should": 0,
+      "required": 0,
+      "recommended": 1,
+      "may": 6,
+      "breakdown": {
+        "may": 6,
+        "must_not": 1,
+        "must": 3,
+        "recommended": 1
+      },
+      "types": {
+        "config": 11
+      }
+    }
+  ],
+  "subsections": [
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.6 Workflows and Exchanges > 3.6.5 Participate in an Exchange",
+      "total": 67,
+      "must": 35,
+      "should": 23,
+      "required": 0,
+      "recommended": 0,
+      "may": 9,
+      "breakdown": {
+        "should": 21,
+        "may": 9,
+        "must": 35,
+        "should_not": 2
+      },
+      "types": {
+        "prose": 2,
+        "http": 65
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.3 Verifying > 3.3.2 Verify Presentation",
+      "total": 56,
+      "must": 48,
+      "should": 4,
+      "required": 0,
+      "recommended": 0,
+      "may": 4,
+      "breakdown": {
+        "must": 46,
+        "should_not": 2,
+        "should": 2,
+        "may": 4,
+        "must_not": 2
+      },
+      "types": {
+        "http": 56
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.6 Workflows and Exchanges > 3.6.1 Create Workflow",
+      "total": 45,
+      "must": 34,
+      "should": 4,
+      "required": 2,
+      "recommended": 0,
+      "may": 5,
+      "breakdown": {
+        "required": 2,
+        "must": 33,
+        "must_not": 1,
+        "should_not": 1,
+        "should": 3,
+        "may": 5
+      },
+      "types": {
+        "http": 40,
+        "prose": 5
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.6 Workflows and Exchanges > 3.6.2 Get Workflow Configuration",
+      "total": 40,
+      "must": 34,
+      "should": 4,
+      "required": 1,
+      "recommended": 0,
+      "may": 1,
+      "breakdown": {
+        "must_not": 1,
+        "must": 33,
+        "should_not": 1,
+        "should": 3,
+        "required": 1,
+        "may": 1
+      },
+      "types": {
+        "http": 40
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.5 Presenting > 3.5.2 Create Presentation",
+      "total": 25,
+      "must": 19,
+      "should": 4,
+      "required": 0,
+      "recommended": 0,
+      "may": 2,
+      "breakdown": {
+        "must": 19,
+        "should_not": 2,
+        "should": 2,
+        "may": 2
+      },
+      "types": {
+        "http": 25
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.3 Verifying > 3.3.1 Verify Credential",
+      "total": 23,
+      "must": 20,
+      "should": 2,
+      "required": 0,
+      "recommended": 0,
+      "may": 1,
+      "breakdown": {
+        "must": 20,
+        "should_not": 1,
+        "should": 1,
+        "may": 1
+      },
+      "types": {
+        "http": 23
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.2 Issuing > 3.2.1 Issue Credential",
+      "total": 21,
+      "must": 14,
+      "should": 6,
+      "required": 0,
+      "recommended": 0,
+      "may": 1,
+      "breakdown": {
+        "must": 14,
+        "should_not": 3,
+        "should": 3,
+        "may": 1
+      },
+      "types": {
+        "http": 20,
+        "prose": 1
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.5 Presenting > 3.5.3 Get Presentations",
+      "total": 21,
+      "must": 15,
+      "should": 4,
+      "required": 0,
+      "recommended": 0,
+      "may": 2,
+      "breakdown": {
+        "must": 15,
+        "should_not": 2,
+        "should": 2,
+        "may": 2
+      },
+      "types": {
+        "http": 21
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.5 Presenting > 3.5.4 Get a Specific Presentation",
+      "total": 20,
+      "must": 14,
+      "should": 4,
+      "required": 0,
+      "recommended": 0,
+      "may": 2,
+      "breakdown": {
+        "must": 14,
+        "should_not": 2,
+        "should": 2,
+        "may": 2
+      },
+      "types": {
+        "http": 20
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 1 Introduction > 1.3 Conformance",
+      "total": 19,
+      "must": 9,
+      "should": 3,
+      "required": 2,
+      "recommended": 1,
+      "may": 4,
+      "breakdown": {
+        "must_not": 1,
+        "must": 8,
+        "should_not": 1,
+        "should": 2,
+        "required": 2,
+        "recommended": 1,
+        "may": 4
+      },
+      "types": {
+        "conformance": 19
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.4 Requesting a Presentation > 3.4.3 DID Authentication",
+      "total": 15,
+      "must": 9,
+      "should": 0,
+      "required": 4,
+      "recommended": 0,
+      "may": 2,
+      "breakdown": {
+        "must": 9,
+        "required": 4,
+        "may": 2
+      },
+      "types": {
+        "http": 14,
+        "prose": 1
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.5 Presenting > 3.5.1 Derive Credential",
+      "total": 14,
+      "must": 8,
+      "should": 4,
+      "required": 0,
+      "recommended": 0,
+      "may": 2,
+      "breakdown": {
+        "must": 8,
+        "should_not": 2,
+        "should": 2,
+        "may": 2
+      },
+      "types": {
+        "http": 14
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.2 Issuing > 3.2.2 Get a Specific Credential",
+      "total": 12,
+      "must": 9,
+      "should": 2,
+      "required": 0,
+      "recommended": 0,
+      "may": 1,
+      "breakdown": {
+        "must": 9,
+        "should_not": 1,
+        "should": 1,
+        "may": 1
+      },
+      "types": {
+        "http": 12
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.4 Requesting a Presentation > 3.4.2 Query By Example",
+      "total": 5,
+      "must": 1,
+      "should": 3,
+      "required": 0,
+      "recommended": 0,
+      "may": 1,
+      "breakdown": {
+        "may": 1,
+        "must": 1,
+        "should": 3
+      },
+      "types": {
+        "http": 4,
+        "prose": 1
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 2 Architecture > 2.4 Configurations > Authorization",
+      "total": 4,
+      "must": 2,
+      "should": 0,
+      "required": 0,
+      "recommended": 0,
+      "may": 2,
+      "breakdown": {
+        "must_not": 1,
+        "must": 1,
+        "may": 2
+      },
+      "types": {
+        "config": 4
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 2 Architecture > 2.4 Configurations > Options",
+      "total": 4,
+      "must": 1,
+      "should": 0,
+      "required": 0,
+      "recommended": 0,
+      "may": 3,
+      "breakdown": {
+        "may": 3,
+        "must": 1
+      },
+      "types": {
+        "config": 4
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.4 Requesting a Presentation > 3.4.1 Verifiable Presentation Request",
+      "total": 2,
+      "must": 1,
+      "should": 0,
+      "required": 1,
+      "recommended": 0,
+      "may": 0,
+      "breakdown": {
+        "must": 1,
+        "required": 1
+      },
+      "types": {
+        "prose": 2
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.6 Workflows and Exchanges > 3.6.4 Get Exchange Protocols",
+      "total": 2,
+      "must": 2,
+      "should": 0,
+      "required": 0,
+      "recommended": 0,
+      "may": 0,
+      "breakdown": {
+        "must": 2
+      },
+      "types": {
+        "http": 2
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 2 Architecture > 2.4 Configurations > Base URL",
+      "total": 1,
+      "must": 0,
+      "should": 0,
+      "required": 0,
+      "recommended": 0,
+      "may": 1,
+      "breakdown": {
+        "may": 1
+      },
+      "types": {
+        "config": 1
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 2 Architecture > 2.4 Configurations > Content Serialization",
+      "total": 1,
+      "must": 1,
+      "should": 0,
+      "required": 0,
+      "recommended": 0,
+      "may": 0,
+      "breakdown": {
+        "must": 1
+      },
+      "types": {
+        "config": 1
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 2 Architecture > 2.4 Configurations > Payload Sizes",
+      "total": 1,
+      "must": 0,
+      "should": 0,
+      "required": 0,
+      "recommended": 1,
+      "may": 0,
+      "breakdown": {
+        "recommended": 1
+      },
+      "types": {
+        "config": 1
+      }
+    },
+    {
+      "section": "VCALM v1.0 > 3 HTTP API > 3.3 Verifying > 3.3.3 Create Challenge",
+      "total": 1,
+      "must": 1,
+      "should": 0,
+      "required": 0,
+      "recommended": 0,
+      "may": 0,
+      "breakdown": {
+        "must": 1
+      },
+      "types": {
+        "http": 1
+      }
+    }
+  ]
+}
