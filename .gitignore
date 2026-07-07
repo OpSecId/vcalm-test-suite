@@ -3,4 +3,5 @@ localConfig.cjs
 reports/**
 !reports/.gitkeep
 suite.log
+allure-results/
 .DS_Store
