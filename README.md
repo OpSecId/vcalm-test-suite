@@ -32,10 +32,8 @@ npm run lint
 
 `npm test` runs Mocha with the glob `tests/*/**/*.js` and the W3C interop
 reporter (`abstract.hbs`, `respecConfig.json`). Reports are written under
-`reports/` when behavioral tests are present. **No behavioral test files exist
-yet**, so the command exits successfully with a scaffold message. Once section
-directories are added under `tests/`, the same script runs them and generates the
-interop report.
+`reports/`. A single fixture test under `tests/3.4-Requesting/` exercises the
+harness today; additional behavioral tests land in follow-up PRs.
 
 ## Planned test layout
 

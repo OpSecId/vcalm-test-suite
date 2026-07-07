@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "lint": "eslint tests .eslintrc.cjs",
-    "test": "bash -c 'shopt -s nullglob; files=(tests/*/**/*.js); if ((${#files[@]} == 0)); then echo \"0 passing (scaffold — no behavioral tests yet)\"; exit 0; fi; mocha \"${files[@]}\" --reporter @digitalbazaar/mocha-w3c-interop-reporter --reporter-options abstract=\"$PWD/abstract.hbs\",reportDir=\"$PWD/reports\",respec=\"$PWD/respecConfig.json\",suiteLog='./suite.log',templateData=\"$PWD/reports/index.json\",title=\"VCALM Interoperability Report\" --timeout 15000 --preserve-symlinks'"
+    "test": "mocha 'tests/*/**/*.js' --reporter @digitalbazaar/mocha-w3c-interop-reporter --reporter-options abstract=\"$PWD/abstract.hbs\",reportDir=\"$PWD/reports\",respec=\"$PWD/respecConfig.json\",suiteLog='./suite.log',templateData=\"$PWD/reports/index.json\",title=\"VCALM Interoperability Report\" --timeout 15000 --preserve-symlinks"
   },
   "repository": {
     "type": "git",
