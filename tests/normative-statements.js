@@ -5,11 +5,8 @@
 /**
  * Normative VCALM statement text (RFC 2119) for future Mocha `it()` titles.
  *
- * Scope matches docs/normative-requirements.md: prose, conformance, and
- * configuration only. OpenAPI property-table blurbs and suite-authored test
- * titles are excluded.
- *
- * @see docs/normative-requirements.md
+ * Scope: RFC 2119 prose, conformance, and configuration from the VCALM TR.
+ * OpenAPI property-table blurbs and suite-authored test titles are excluded.
  */
 
 export const NORMATIVE = {

@@ -8,6 +8,9 @@ The suite exercises **API behavior** — endpoints, workflows, configuration rul
 and VCALM-specific prose. It does not replace VCDM or cryptosuite interop
 suites; fixtures are minimal credentials sufficient to call the API.
 
+Normative requirement text for Mocha `it()` titles lives in
+[`tests/normative-statements.js`](tests/normative-statements.js).
+
 ## Install
 
 ```sh
@@ -16,20 +19,17 @@ npm install --legacy-peer-deps
 
 ## Run
 
+Create **`localConfig.cjs`** (gitignored) listing your implementations, then:
+
 ```sh
-cp localConfig.example.cjs localConfig.cjs
-# edit endpoints for your implementation, then:
 npm test
 ```
 
-Override the base URL without editing the file:
+Override the base URL:
 
 ```sh
 BASE_URL=https://localhost:8000 npm test
 ```
-
-Reports are written under `reports/` when using the W3C interop reporter (see
-`package.json` `test` script).
 
 ## Test layout
 
@@ -53,19 +53,12 @@ tests/
   appendix-B-Security/      # selected appendix B guidance
 ```
 
-`it()` titles for normative requirements come from
-[`tests/normative-statements.js`](tests/normative-statements.js). Per-file
-coverage detail: [`docs/test-coverage.md`](docs/test-coverage.md).
-
 ## Implementation config
 
-Implementations are registered in **`localConfig.cjs`** (gitignored). Copy
-[`localConfig.example.cjs`](localConfig.example.cjs) and list each deployment
-under `implementations`.
-
-Each **role** you support gets an entry with an `endpoint` and a **`tags`**
-array. Register only what you implement — tests skip missing pairings (for
-example, presentation verify needs both `holders` and `verifiers`).
+Implementations are registered in **`localConfig.cjs`**. Each **role** you
+support gets an `endpoint` and **`tags: ['VCALM']`**. Register only what you
+implement — tests skip missing pairings (for example, presentation verify needs
+both `holders` and `verifiers`).
 
 | Role key | Used for | Typical `endpoint` |
 |----------|----------|-------------------|
@@ -81,8 +74,6 @@ sibling path from `endpoint` (for example `…/credentials/verify` →
 
 **Issuers** may set `options.cryptosuite` to a string or string array. An array
 requests a proof set and enables the §3.2.4 multi-proof test when length ≥ 2.
-
-Example (unified gateway — one URL for all roles):
 
 ```javascript
 module.exports = {
@@ -107,48 +98,26 @@ module.exports = {
 };
 ```
 
-See [`localConfig.example.cjs`](localConfig.example.cjs) for explicit per-path
-endpoints (ACA-Py style) and optional `workflows` / `interactions` entries.
+Use one URL for every role (gateway) or point each role at an explicit path
+(`…/credentials/issue`, `…/credentials/verify`, etc.).
 
 ## The `VCALM` tag
 
-Tags select which implementations run which tests. Every endpoint that should
-participate in this suite must include **`VCALM`** in `tags`.
-
-The harness uses [`vc-test-suite-implementations`](https://github.com/w3c/vc-test-suite-implementations)
-`filterByTag({ tags: ['VCALM'] })` to build the Mocha matrix. Without the tag,
-an entry is ignored by VCALM tests even if paths are correct.
-
-Optional secondary tags (for example `VCALM:status`) gate niche profiles documented
-in [`docs/test-coverage.md`](docs/test-coverage.md).
+Every endpoint that should run this suite must include **`VCALM`** in `tags`.
+The harness uses
+[`vc-test-suite-implementations`](https://github.com/w3c/vc-test-suite-implementations)
+`filterByTag({ tags: ['VCALM'] })` to build the Mocha matrix.
 
 ## Mocha and OpenAPI testing
 
-**Mocha** runs behavioral interop: happy paths, normative probes, and negative
-fixtures against live endpoints. Assertions check HTTP status, VCALM response
-envelopes (`verifiableCredential` / `verifiablePresentation`), and
-spec-specific fields. Titles map to normative text in
-`tests/normative-statements.js`.
+**Mocha** runs behavioral interop against live endpoints: HTTP status, VCALM
+response envelopes (`verifiableCredential` / `verifiablePresentation`), and
+spec-specific fields. `it()` titles use strings from `tests/normative-statements.js`.
 
-**OpenAPI (optional)** — when `tests/openapi.js` and a bundled `oas.bundled.json`
-are present, selected tests validate response bodies against the VCALM OpenAPI
-schema via Chai OpenAPI. Disable with:
-
-```sh
-VCALM_OPENAPI=0 npm test
-```
-
-Useful for local dev when nested JSON-LD in the OAS is stricter than what the
-harness issues. Bulk request/response shape fuzzing is handled separately by
-**Schemathesis** against the pinned OAS (`npm run test:schema` when configured).
-
-## Documentation
-
-| Doc | Purpose |
-|-----|---------|
-| [docs/normative-requirements.md](docs/normative-requirements.md) | Curated normative inventory (excludes OAS tables) |
-| [docs/test-coverage.md](docs/test-coverage.md) | Test file ↔ spec section matrix |
-| [docs/normative-mapping.md](docs/normative-mapping.md) | Requirement traceability |
+**OpenAPI (optional)** — when a bundled OAS is present, selected tests validate
+responses with Chai OpenAPI. Disable with `VCALM_OPENAPI=0 npm test`. Bulk
+request/response fuzzing can use Schemathesis separately (`npm run test:schema`
+when configured).
 
 ## License
 
