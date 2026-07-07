@@ -5,8 +5,8 @@
 /**
  * Normative VCALM text (MUST, MUST NOT, REQUIRED) for Mocha `it()` titles.
  *
- * Scope: prose, conformance, and configuration from the VCALM TR. MAY and
- * SHOULD are excluded. OpenAPI property-table blurbs are excluded.
+ * One sentence per entry: the sentence that carries the normative keyword.
+ * MAY and SHOULD are excluded. OpenAPI property-table blurbs are excluded.
  */
 
 export const NORMATIVE = {
@@ -55,10 +55,12 @@ export const NORMATIVE = {
       'endpoint.'
   },
   requestingPresentation: {
-    query:
-      'A REQUIRED property that specifies the information requested by the ' +
-      'verifier. The value MUST be one or more maps where each map MUST ' +
-      'define a `type` property with an associated string value.',
+    queryRequired:
+      'query is a REQUIRED property that specifies the information requested ' +
+      'by the verifier.',
+    queryType:
+      'The value MUST be one or more maps where each map MUST define a ' +
+      '`type` property with an associated string value.',
     didAuthentication:
       'A DID Authentication response MUST be a verifiable presentation of ' +
       'the following form:'
@@ -97,9 +99,11 @@ export const NORMATIVE = {
     problemDetailsType:
       'The `type` map/key MUST be present and its value MUST be a URL ' +
       'identifying the type of problem.',
-    verifiedReflectsErrors:
+    verifiedFalse:
       'If an error is included, the `verified` property of the ' +
-      '`VerificationResponse` object MUST be set to `false`; if no errors ' +
-      'are included, it MUST be set to `true`.'
+      '`VerificationResponse` object MUST be set to `false`.',
+    verifiedTrue:
+      'If no errors are included, the `verified` property of the ' +
+      '`VerificationResponse` object MUST be set to `true`.'
   }
 };
