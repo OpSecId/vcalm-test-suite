@@ -4,15 +4,16 @@ Interoperability tests for implementations of
 [VCALM](https://www.w3.org/TR/vcalm-1.0/) (Verifiable Credential API for
 Lifecycle Management).
 
-This branch is an **initial scaffold**: npm dependencies, project README, and a
-curated normative statement inventory. Behavioral Mocha tests are added in a
-follow-up change.
+This repo is an **initial scaffold** (v0.1.0): npm dependencies, project README,
+and a curated normative statement inventory. Behavioral Mocha tests are added in
+a follow-up change.
 
 ## What's in this repo
 
 | Path | Purpose |
 |------|---------|
 | [`tests/normative-statements.js`](tests/normative-statements.js) | RFC 2119 strings for future Mocha `it()` titles |
+| `abstract.hbs` / `respecConfig.json` | W3C interop report metadata |
 | `package.json` / `package-lock.json` | Mocha, Chai, W3C interop reporter, `vc-test-suite-implementations` |
 
 ## Install
@@ -29,9 +30,12 @@ npm run lint
 
 ## Run tests
 
-`npm test` runs Mocha with the glob `tests/*/**/*.js`. **No behavioral test
-files are present yet**, so the command completes with zero tests. Once section
-directories are added under `tests/`, the same script will execute them.
+`npm test` runs Mocha with the glob `tests/*/**/*.js` and the W3C interop
+reporter (`abstract.hbs`, `respecConfig.json`). Reports are written under
+`reports/` when behavioral tests are present. **No behavioral test files exist
+yet**, so the command exits successfully with a scaffold message. Once section
+directories are added under `tests/`, the same script runs them and generates the
+interop report.
 
 ## Planned test layout
 

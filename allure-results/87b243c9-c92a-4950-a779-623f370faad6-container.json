@@ -1,0 +1,1 @@
+{"uuid":"87b243c9-c92a-4950-a779-623f370faad6","name":"\"before each\" hook: addPerTestMetadata","children":["af79431d-8769-4ab4-bd9c-740535fcf9e9"],"befores":[{"status":"passed","statusDetails":{},"stage":"finished","steps":[],"attachments":[],"parameters":[],"start":1783132210517,"name":"\"before each\" hook: addPerTestMetadata","stop":1783132210517}],"afters":[]}

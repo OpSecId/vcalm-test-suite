@@ -14,4 +14,5 @@ SPDX-License-Identifier: LicenseRef-w3c-3-clause-bsd-license-2008 OR LicenseRef-
 - `tests/normative-statements.js` — 23 curated MUST, MUST NOT, and REQUIRED
   strings (one sentence per entry) for future Mocha `it()` titles.
 - ESLint config (`.eslintrc.cjs`, `.eslintignore`) and `.gitignore`.
-- `respecConfig.json` for W3C interop report metadata.
+- `abstract.hbs`, `respecConfig.json`, and `reports/.gitkeep` for W3C interop
+  report output.
