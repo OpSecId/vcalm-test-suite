@@ -82,16 +82,16 @@ module.exports = {
     implementation: 'Example Corp',
     issuers: [{
       id: 'did:web:example.com',
-      endpoint: process.env.BASE_URL || 'https://credential.ninja',
+      endpoint: process.env.BASE_URL || 'https://localhost:8000',
       tags: ['VCALM'],
       options: { cryptosuite: 'eddsa-jcs-2022' }
     }],
     verifiers: [{
-      endpoint: process.env.BASE_URL || 'https://credential.ninja',
+      endpoint: process.env.BASE_URL || 'https://localhost:8000',
       tags: ['VCALM']
     }],
     holders: [{
-      endpoint: process.env.BASE_URL || 'https://credential.ninja',
+      endpoint: process.env.BASE_URL || 'https://localhost:8000',
       tags: ['VCALM']
     }]
   }]
