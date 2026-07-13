@@ -6,10 +6,13 @@ Lifecycle Management).
 
 This branch covers **§1.3 issuer and verifier conformance**: smoke probes plus
 the MUST interfaces those classes name (§3.2.1 Issue Credential, §3.3.1 Verify
-Credential, §3.3.2 Verify Presentation). §3.3.2 wraps the issued VC in a
-**suite-local `did:key` VP** (`tests/local-holder.js`); a remote holders endpoint
-is not required. Holder / status / workflow §1.3 classes and the rest of §3.x
-remain on `feature/vcalm-interop-suite`.
+Credential, §3.3.2 Verify Presentation).
+
+Verify fixtures are built **locally with two `did:key`s** (`tests/local-holder.js`:
+issuer assertionMethod + holder authentication). Remote `issuers` are only
+needed for §1.3 / §3.2.1; remote `verifiers` for §3.3.*. Holder / status /
+workflow §1.3 classes and the rest of §3.x remain on
+`feature/vcalm-interop-suite`.
 
 ## What's in this repo
 
@@ -19,7 +22,7 @@ remain on `feature/vcalm-interop-suite`.
 | [`tests/3.2-Issuing/3.2.1-issue-credential.js`](tests/3.2-Issuing/3.2.1-issue-credential.js) | §3.2.1 Issue Credential |
 | [`tests/3.3-Verifying/3.3.1-VerifyCredential.js`](tests/3.3-Verifying/3.3.1-VerifyCredential.js) | §3.3.1 Verify Credential |
 | [`tests/3.3-Verifying/3.3.2-VerifyPresentation.js`](tests/3.3-Verifying/3.3.2-VerifyPresentation.js) | §3.3.2 Verify Presentation |
-| [`tests/local-holder.js`](tests/local-holder.js) | Suite-local `did:key` VP signer for §3.3.2 |
+| [`tests/local-holder.js`](tests/local-holder.js) | Suite-local issuer + holder `did:key` fixtures for §3.3 |
 | [`tests/service-profiles.js`](tests/service-profiles.js) | Minimum HTTP interfaces per service role |
 | [`tests/normative-statements.js`](tests/normative-statements.js) | RFC 2119 strings for Mocha `it()` titles |
 | `localConfig.example.cjs` | Implementer endpoint template |

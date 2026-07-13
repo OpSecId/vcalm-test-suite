@@ -63,7 +63,7 @@ module.exports = {
       tags: ['VCALM']
     }]
 
-    // §3.3.2 builds the VP with a suite-local did:key holder (tests/local-holder.js).
+    // §3.3.* uses suite-local did:key issuer+holder fixtures (tests/local-holder.js).
     // Remote holders are only needed for §3.5 Create Presentation tests later.
     // holders: [{ endpoint: endpoint, tags: ['VCALM'] }],
   }]

@@ -4,39 +4,33 @@
 
 import {
   addPerTestMetadata,
-  implementationsWithIssuerAndVerifier,
   setupMatrix,
   VCALM_TAG
 } from '../helpers.js';
 import {shouldVerifyPresentation} from '../assertions.js';
+import chai from 'chai';
+import {filterByTag} from 'vc-test-suite-implementations';
 import {
-  createLocalDidKeyVp,
+  createLocalDidKeyPresentedVc,
   LOCAL_HOLDER_CHALLENGE,
   LOCAL_HOLDER_DOMAIN
 } from '../local-holder.js';
 import {NORMATIVE} from '../normative-statements.js';
 import {TestEndpoints} from '../TestEndpoints.js';
-import chai from 'chai';
-import {filterByTag} from 'vc-test-suite-implementations';
 
 const should = chai.should();
 const tag = VCALM_TAG;
-const {match} = filterByTag({tags: [tag]});
-const paired = implementationsWithIssuerAndVerifier(match, tag);
+const {match} = filterByTag({property: 'verifiers', tags: [tag]});
 
 describe('Verify Presentation', function() {
-  setupMatrix.call(this, new Map(paired), 'Verifier');
-  for(const [name, implementation] of paired) {
+  setupMatrix.call(this, match, 'Verifier');
+  for(const [name, implementation] of match) {
     const endpoints = new TestEndpoints({implementation, tag});
     describe(name, function() {
       let verifiablePresentation;
       beforeEach(addPerTestMetadata);
       before(async function() {
-        const issuedVc = await endpoints.issue();
-        should.exist(issuedVc, `Expected ${name} to issue a VC first.`);
-        verifiablePresentation = await createLocalDidKeyVp({
-          verifiableCredential: issuedVc
-        });
+        ({verifiablePresentation} = await createLocalDidKeyPresentedVc());
       });
       it(NORMATIVE.verifying.verifyPresentation,
         async function() {
@@ -44,7 +38,7 @@ describe('Verify Presentation', function() {
             'https://www.w3.org/TR/vcalm-1.0/#verify-presentation';
           should.exist(
             verifiablePresentation,
-            `Expected ${name} to obtain a local did:key VP.`
+            'Expected a suite-local did:key VP.'
           );
           const {data, result} = await endpoints.verifyPresentation(
             verifiablePresentation,
