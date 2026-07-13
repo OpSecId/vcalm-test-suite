@@ -61,16 +61,10 @@ module.exports = {
     verifiers: [{
       endpoint: endpoint /* or verifiersEndpoint */,
       tags: ['VCALM']
-    }],
-
-    // Holder — needed to create a VP for §3.3.2 Verify Presentation
-    holders: [{
-      endpoint: endpoint /* or holdersEndpoint */,
-      tags: ['VCALM']
     }]
 
-    // Later suites also use workflows / interactions:
-    // workflows: [{ endpoint: endpoint, tags: ['VCALM'] }],
-    // interactions: [{ endpoint: endpoint, tags: ['VCALM'] }]
+    // §3.3.2 builds the VP with a suite-local did:key holder (tests/local-holder.js).
+    // Remote holders are only needed for §3.5 Create Presentation tests later.
+    // holders: [{ endpoint: endpoint, tags: ['VCALM'] }],
   }]
 };
