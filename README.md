@@ -4,17 +4,19 @@ Interoperability tests for implementations of
 [VCALM](https://www.w3.org/TR/vcalm-1.0/) (Verifiable Credential API for
 Lifecycle Management).
 
-This repo is an **initial scaffold** (v0.1.0): npm dependencies, project README,
-and a curated normative statement inventory. Behavioral Mocha tests are added in
-a follow-up change.
+This branch adds **§1.3 service role conformance** probes (issuer and verifier
+required; holder and status optional) on top of the scaffold. Deeper §2.4 / §3.x
+behavioral suites remain on `feature/vcalm-interop-suite`.
 
 ## What's in this repo
 
 | Path | Purpose |
 |------|---------|
-| [`tests/normative-statements.js`](tests/normative-statements.js) | RFC 2119 strings for future Mocha `it()` titles |
+| [`tests/1.3-Conformance/services.js`](tests/1.3-Conformance/services.js) | §1.3 issuer / verifier / optional holder & status probes |
+| [`tests/service-profiles.js`](tests/service-profiles.js) | Minimum HTTP interfaces per service role |
+| [`tests/normative-statements.js`](tests/normative-statements.js) | RFC 2119 strings for Mocha `it()` titles |
+| `localConfig.example.cjs` | Implementer endpoint template |
 | `abstract.hbs` / `respecConfig.json` | W3C interop report metadata |
-| `package.json` / `package-lock.json` | Mocha, Chai, W3C interop reporter, `vc-test-suite-implementations` |
 
 ## Install
 
@@ -32,33 +34,28 @@ npm run lint
 
 `npm test` runs Mocha with the glob `tests/*/**/*.js` and the W3C interop
 reporter (`abstract.hbs`, `respecConfig.json`). Reports are written under
-`reports/`. A skipped placeholder test keeps the harness runnable until
-behavioral tests land in follow-up PRs.
+`reports/`.
 
-## Planned test layout
+```sh
+cp localConfig.example.cjs localConfig.cjs
+# edit issuers / verifiers endpoints, then:
+npm test
+```
 
-Tests will mirror the VCALM table of contents. Mocha will load
-`tests/*/**/*.js` only; shared helpers at `tests/*.js` (including
-`normative-statements.js`) are not test files.
+## Test layout
+
+Mocha loads `tests/*/**/*.js` only; shared helpers at `tests/*.js` are not test
+files.
 
 ```
 tests/
-  normative-statements.js   # RFC 2119 strings (present now)
-  helpers.js                # matrix setup, VCALM tag, fixtures
-  negative-fixtures.js      # malformed / foreign VC·VP cases
-  1.3-Conformance/          # §1.3 service role probes
-  2.4-Configurations/       # §2.4 JSON, options, auth, payload limits
-  3.2-Issuing/              # §3.2 issue · get · delete · multi-proof
-  3.3-Verifying/            # §3.3 verify VC/VP · challenge · negatives
-  3.4-Requesting/           # §3.4 VPR shape and query rules
-  3.5-Presenting/           # §3.5 derive · create · list · get · delete
-  3.6-Workflows/            # §3.6 workflow and exchange lifecycle
-  3.7-Interactions/         # §3.7 interaction URL · QR · protocols
-  3.8-ErrorHandling/        # §3.8 ProblemDetails · verified true/false
-  appendix-B-Security/      # selected appendix B guidance
+  normative-statements.js   # RFC 2119 strings
+  helpers.js / assertions.js / service-profiles.js / …
+  1.3-Conformance/          # §1.3 service role probes (this branch)
+  # follow-up: 2.4-, 3.2–3.8-, appendix-B- on feature/vcalm-interop-suite
 ```
 
-## Implementation config (when tests land)
+## Implementation config
 
 Implementations will be registered in **`localConfig.cjs`** (gitignored). Each
 role gets an `endpoint` and **`tags: ['VCALM']`**. Register only what you
