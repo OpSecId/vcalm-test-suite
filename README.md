@@ -4,15 +4,19 @@ Interoperability tests for implementations of
 [VCALM](https://www.w3.org/TR/vcalm-1.0/) (Verifiable Credential API for
 Lifecycle Management).
 
-This branch adds **§1.3 service role conformance** probes (issuer and verifier
-required; holder and status optional) on top of the scaffold. Deeper §2.4 / §3.x
-behavioral suites remain on `feature/vcalm-interop-suite`.
+This branch covers **§1.3 issuer and verifier conformance**: smoke probes plus
+the MUST interfaces those classes name (§3.2.1 Issue Credential, §3.3.1 Verify
+Credential, §3.3.2 Verify Presentation). Holder / status / workflow §1.3 classes
+and the rest of §3.x remain on `feature/vcalm-interop-suite`.
 
 ## What's in this repo
 
 | Path | Purpose |
 |------|---------|
-| [`tests/1.3-Conformance/services.js`](tests/1.3-Conformance/services.js) | §1.3 issuer / verifier / optional holder & status probes |
+| [`tests/1.3-Conformance/services.js`](tests/1.3-Conformance/services.js) | §1.3 issuer and verifier probes |
+| [`tests/3.2-Issuing/3.2.1-issue-credential.js`](tests/3.2-Issuing/3.2.1-issue-credential.js) | §3.2.1 Issue Credential |
+| [`tests/3.3-Verifying/3.3.1-VerifyCredential.js`](tests/3.3-Verifying/3.3.1-VerifyCredential.js) | §3.3.1 Verify Credential |
+| [`tests/3.3-Verifying/3.3.2-VerifyPresentation.js`](tests/3.3-Verifying/3.3.2-VerifyPresentation.js) | §3.3.2 Verify Presentation |
 | [`tests/service-profiles.js`](tests/service-profiles.js) | Minimum HTTP interfaces per service role |
 | [`tests/normative-statements.js`](tests/normative-statements.js) | RFC 2119 strings for Mocha `it()` titles |
 | `localConfig.example.cjs` | Implementer endpoint template |
@@ -49,10 +53,10 @@ files.
 
 ```
 tests/
-  normative-statements.js   # RFC 2119 strings
-  helpers.js / assertions.js / service-profiles.js / …
-  1.3-Conformance/          # §1.3 service role probes (this branch)
-  # follow-up: 2.4-, 3.2–3.8-, appendix-B- on feature/vcalm-interop-suite
+  helpers.js / assertions.js / TestEndpoints.js / …
+  1.3-Conformance/          # §1.3 issuer + verifier probes
+  3.2-Issuing/              # §3.2.1 only (on this branch)
+  3.3-Verifying/            # §3.3.1 + §3.3.2 only (on this branch)
 ```
 
 ## Implementation config

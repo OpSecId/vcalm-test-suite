@@ -4,23 +4,16 @@
 
 import {
   addPerTestMetadata,
-  resolveHolderExchangeUrl,
   resolveVerifyCredentialUrl,
   resolveVerifyPresentationUrl,
   setupMatrix,
   VCALM_TAG
 } from '../helpers.js';
-import {
-  OPTIONAL_SERVICE_ROLES,
-  SERVICE_ROLES
-} from '../service-profiles.js';
+import {SERVICE_ROLES} from '../service-profiles.js';
 import chai from 'chai';
 import {filterByTag} from 'vc-test-suite-implementations';
 import {NORMATIVE} from '../normative-statements.js';
-import {
-  shouldExposeServiceEndpoint,
-  shouldSatisfyConformanceProbe
-} from '../assertions.js';
+import {shouldSatisfyConformanceProbe} from '../assertions.js';
 
 const should = chai.should();
 const tag = VCALM_TAG;
@@ -68,12 +61,12 @@ function conformanceStatement(roleKey) {
   }
 }
 
-function endpointForRequirement(implementation, role, requirement) {
+function endpointForRequirement(implementation, role) {
   return taggedEndpoint(implementation, role.property);
 }
 
 async function probeRequirement(implementation, role, requirement, name) {
-  const endpoint = endpointForRequirement(implementation, role, requirement);
+  const endpoint = endpointForRequirement(implementation, role);
   should.exist(
     endpoint,
     `Expected ${name} to register a ${role.property} endpoint.`
@@ -92,6 +85,10 @@ async function probeRequirement(implementation, role, requirement, name) {
   });
 }
 
+/**
+ * §1.3 issuer and verifier conformance classes only.
+ * Holder, status, and workflow probes land in a follow-up.
+ */
 describe('Service role conformance', function() {
   for(const [roleKey, role] of Object.entries(SERVICE_ROLES)) {
     const {match} = filterByTag({property: role.property, tags: [tag]});
@@ -120,68 +117,4 @@ describe('Service role conformance', function() {
       }
     });
   }
-
-  describe('Holder service (optional)', function() {
-    const role = OPTIONAL_SERVICE_ROLES.holder;
-    const {match} = filterByTag({property: role.property, tags: [tag]});
-    setupMatrix.call(this, match, 'Implementation');
-    for(const [name, implementation] of match) {
-      const endpoint = taggedEndpoint(implementation, role.property);
-      const describeImpl = endpoint ? describe : describe.skip;
-      describeImpl(name, function() {
-        beforeEach(addPerTestMetadata);
-        for(const requirement of role.required) {
-          it(NORMATIVE.conformance.holder,
-            async function() {
-              this.test.link = requirement.link;
-              const url = resolveHolderExchangeUrl(
-                endpoint.settings.endpoint,
-                requirement.id
-              );
-              const {result, error} = await probeEndpoint(endpoint, {
-                method: requirement.method,
-                body: requirement.body,
-                url
-              });
-              shouldExposeServiceEndpoint({
-                result,
-                error,
-                label: requirement.title
-              });
-            });
-        }
-      });
-    }
-  });
-
-  describe('Status service (optional profile)', function() {
-    const role = OPTIONAL_SERVICE_ROLES.status;
-    const statusTag = role.tag;
-    const {match} = filterByTag({tags: [statusTag]});
-    setupMatrix.call(this, match, 'Implementation');
-    for(const [name, implementation] of match) {
-      const endpoint = taggedEndpoint(implementation, role.property, statusTag);
-      const describeImpl = endpoint ? describe : describe.skip;
-      describeImpl(name, function() {
-        beforeEach(addPerTestMetadata);
-        for(const requirement of role.required) {
-          it(NORMATIVE.conformance.status,
-            async function() {
-              this.test.link = requirement.link;
-              const url = resolveRequirementUrl(endpoint, requirement);
-              const {result, error} = await probeEndpoint(endpoint, {
-                method: requirement.method,
-                body: requirement.body,
-                url
-              });
-              shouldExposeServiceEndpoint({
-                result,
-                error,
-                label: requirement.title
-              });
-            });
-        }
-      });
-    }
-  });
 });

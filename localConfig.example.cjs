@@ -63,29 +63,14 @@ module.exports = {
       tags: ['VCALM']
     }],
 
-    // Holder — §3.5.2 create presentation (needed for 3.3.2 VP happy path)
+    // Holder — needed to create a VP for §3.3.2 Verify Presentation
     holders: [{
       endpoint: endpoint /* or holdersEndpoint */,
       tags: ['VCALM']
-    }],
-
-    // Workflow — optional; §3.6 and §1.3 holder checks when registered
-    workflows: [{
-      endpoint: endpoint /* or workflowsEndpoint */,
-      tags: ['VCALM']
-    }],
-
-    // Interaction — optional; §3.7.4 GET protocols (skips if not implemented)
-    interactions: [{
-      endpoint: endpoint /* or paths.interactions */,
-      tags: ['VCALM']
-      // interactionId: 'urn:uuid:interaction-fixture',
-      // interactionStart:
-      //   `${baseUrl}/interactions/urn:uuid:interaction-fixture?iuv=1`
     }]
 
-    // Status profile (optional): tag issuer entry with VCALM:status and use
-    // paths.updateStatus or pathSuffix in §1.3 status smoke test.
-    // issuers: [{ endpoint: paths.updateStatus, tags: ['VCALM', 'VCALM:status'] }]
+    // Later suites also use workflows / interactions:
+    // workflows: [{ endpoint: endpoint, tags: ['VCALM'] }],
+    // interactions: [{ endpoint: endpoint, tags: ['VCALM'] }]
   }]
 };

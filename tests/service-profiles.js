@@ -9,7 +9,8 @@ import {
 } from './negative-fixtures.js';
 
 /**
- * §1.3 service roles and their minimum required HTTP interfaces.
+ * §1.3 issuer and verifier roles and their minimum required HTTP interfaces.
+ * Holder / status / workflow conformance classes are deferred.
  * Endpoint URLs come from localConfig / vc-test-suite-implementations.
  */
 export const SERVICE_ROLES = {
@@ -48,45 +49,6 @@ export const SERVICE_ROLES = {
       verifyOperation: 'presentation',
       body: createConformanceProbeVerifyPresentationBody(),
       probeKind: 'verifyMalformed'
-    }]
-  }
-};
-
-/**
- * Holder / workflow / status roles need stateful paths.
- * Holder §1.3 checks use suite fixture workflow/exchange ids (see helpers.js).
- */
-export const OPTIONAL_SERVICE_ROLES = {
-  holder: {
-    label: 'Holder service',
-    property: 'workflows',
-    required: [{
-      id: 'exchangeProtocols',
-      title: 'Get Exchange Protocols',
-      section: '§3.6.4',
-      link: 'https://www.w3.org/TR/vcalm-1.0/#get-exchange-protocols',
-      method: 'get'
-    }, {
-      id: 'participateExchange',
-      title: 'Participate in an Exchange',
-      section: '§3.6.5',
-      link: 'https://www.w3.org/TR/vcalm-1.0/#participate-in-an-exchange',
-      method: 'post',
-      body: {}
-    }]
-  },
-  status: {
-    label: 'Status service',
-    property: 'issuers',
-    tag: 'VCALM:status',
-    required: [{
-      id: 'updateCredentialStatus',
-      title: 'Update Status',
-      section: 'Appendix C.3',
-      link: 'https://www.w3.org/TR/vcalm-1.0/#update-status',
-      method: 'post',
-      body: {},
-      pathSuffix: '/credentials/status'
     }]
   }
 };
