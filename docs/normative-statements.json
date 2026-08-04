@@ -13,6 +13,7 @@
   },
   "statements": [
     {
+      "id": "hit-1",
       "keyword": "MAY",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -21,6 +22,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-2",
       "keyword": "MUST",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -29,6 +31,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-3",
       "keyword": "MUST NOT",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -37,6 +40,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-4",
       "keyword": "OPTIONAL",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -45,6 +49,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-5",
       "keyword": "RECOMMENDED",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -53,6 +58,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-6",
       "keyword": "REQUIRED",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -61,6 +67,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-7",
       "keyword": "SHOULD",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -69,6 +76,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-8",
       "keyword": "SHOULD NOT",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -77,6 +85,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-9",
       "keyword": "MUST",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -85,6 +94,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-10",
       "keyword": "MAY",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -93,6 +103,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-11",
       "keyword": "MUST",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -101,6 +112,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-12",
       "keyword": "MAY",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -109,6 +121,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-13",
       "keyword": "MUST",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -117,6 +130,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-14",
       "keyword": "MAY",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -125,6 +139,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-15",
       "keyword": "MUST",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -133,6 +148,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-16",
       "keyword": "MUST",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -141,6 +157,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-17",
       "keyword": "MUST",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -149,6 +166,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-18",
       "keyword": "REQUIRED",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -157,6 +175,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-19",
       "keyword": "MAY",
       "section": "1.3 Conformance",
       "section_id": "conformance",
@@ -165,6 +184,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-20",
       "keyword": "MAY",
       "section": "Base URL",
       "section_id": "configurations",
@@ -173,6 +193,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-21",
       "keyword": "MUST NOT",
       "section": "Forbidden Authorization",
       "section_id": "configurations",
@@ -181,6 +202,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-22",
       "keyword": "OPTIONAL",
       "section": "Options",
       "section_id": "configurations",
@@ -189,6 +211,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-23",
       "keyword": "MAY",
       "section": "Options",
       "section_id": "configurations",
@@ -197,6 +220,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-24",
       "keyword": "MAY",
       "section": "Options",
       "section_id": "configurations",
@@ -205,6 +229,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-25",
       "keyword": "MUST",
       "section": "Options",
       "section_id": "configurations",
@@ -213,6 +238,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-26",
       "keyword": "MUST",
       "section": "Content Serialization",
       "section_id": "configurations",
@@ -221,6 +247,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-27",
       "keyword": "RECOMMENDED",
       "section": "Payload Sizes",
       "section_id": "configurations",
@@ -229,6 +256,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-28",
       "keyword": "MUST",
       "section": "3.2.1 Issue Credential",
       "section_id": "issue-credential",
@@ -237,6 +265,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-29",
       "keyword": "SHOULD",
       "section": "3.2.1 Issue Credential",
       "section_id": "issue-credential",
@@ -245,6 +274,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-30",
       "keyword": "REQUIRED",
       "section": "3.4.1 Verifiable Presentation Request",
       "section_id": "verifiable-presentation-request",
@@ -253,6 +283,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-31",
       "keyword": "MUST",
       "section": "3.4.1 Verifiable Presentation Request",
       "section_id": "verifiable-presentation-request",
@@ -261,6 +292,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-32",
       "keyword": "OPTIONAL",
       "section": "3.4.1 Verifiable Presentation Request",
       "section_id": "verifiable-presentation-request",
@@ -269,6 +301,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-33",
       "keyword": "OPTIONAL",
       "section": "3.4.1 Verifiable Presentation Request",
       "section_id": "verifiable-presentation-request",
@@ -277,6 +310,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-34",
       "keyword": "OPTIONAL",
       "section": "3.4.2 Query By Example",
       "section_id": "query-by-example",
@@ -285,6 +319,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-35",
       "keyword": "MAY",
       "section": "3.4.2 Query By Example",
       "section_id": "query-by-example",
@@ -293,6 +328,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-36",
       "keyword": "OPTIONAL",
       "section": "3.4.2 Query By Example",
       "section_id": "query-by-example",
@@ -301,6 +337,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-37",
       "keyword": "OPTIONAL",
       "section": "3.4.2 Query By Example",
       "section_id": "query-by-example",
@@ -309,6 +346,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-38",
       "keyword": "MUST",
       "section": "3.4.2 Query By Example",
       "section_id": "query-by-example",
@@ -317,6 +355,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-39",
       "keyword": "OPTIONAL",
       "section": "3.4.2 Query By Example",
       "section_id": "query-by-example",
@@ -325,6 +364,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-40",
       "keyword": "SHOULD",
       "section": "3.4.2 Query By Example",
       "section_id": "query-by-example",
@@ -333,6 +373,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-41",
       "keyword": "MAY",
       "section": "3.4.2 Query By Example",
       "section_id": "query-by-example",
@@ -341,6 +382,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-42",
       "keyword": "OPTIONAL",
       "section": "3.4.2 Query By Example",
       "section_id": "query-by-example",
@@ -349,6 +391,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-43",
       "keyword": "SHOULD",
       "section": "3.4.2 Query By Example",
       "section_id": "query-by-example",
@@ -357,6 +400,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-44",
       "keyword": "MAY",
       "section": "3.4.2 Query By Example",
       "section_id": "query-by-example",
@@ -365,6 +409,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-45",
       "keyword": "SHOULD",
       "section": "3.4.2 Query By Example",
       "section_id": "query-by-example",
@@ -373,6 +418,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-46",
       "keyword": "MUST",
       "section": "3.4.3.1 The DID Authentication Query Format",
       "section_id": "the-did-authentication-query-format",
@@ -381,6 +427,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-47",
       "keyword": "REQUIRED",
       "section": "3.4.3.1 The DID Authentication Query Format",
       "section_id": "the-did-authentication-query-format",
@@ -389,6 +436,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-48",
       "keyword": "MUST",
       "section": "3.4.3.1 The DID Authentication Query Format",
       "section_id": "the-did-authentication-query-format",
@@ -397,6 +445,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-49",
       "keyword": "MUST",
       "section": "3.4.3.1 The DID Authentication Query Format",
       "section_id": "the-did-authentication-query-format",
@@ -405,6 +454,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-50",
       "keyword": "MAY",
       "section": "3.4.3.1 The DID Authentication Query Format",
       "section_id": "the-did-authentication-query-format",
@@ -413,6 +463,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-51",
       "keyword": "MUST",
       "section": "3.4.3.1 The DID Authentication Query Format",
       "section_id": "the-did-authentication-query-format",
@@ -421,6 +472,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-52",
       "keyword": "MAY",
       "section": "3.4.3.1 The DID Authentication Query Format",
       "section_id": "the-did-authentication-query-format",
@@ -429,6 +481,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-53",
       "keyword": "MUST",
       "section": "3.4.3.2 The DID Authentication Response Format",
       "section_id": "the-did-authentication-response-format",
@@ -437,6 +490,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-54",
       "keyword": "REQUIRED",
       "section": "3.4.3.2 The DID Authentication Response Format",
       "section_id": "the-did-authentication-response-format",
@@ -445,6 +499,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-55",
       "keyword": "MUST",
       "section": "3.4.3.2 The DID Authentication Response Format",
       "section_id": "the-did-authentication-response-format",
@@ -453,6 +508,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-56",
       "keyword": "REQUIRED",
       "section": "3.4.3.2 The DID Authentication Response Format",
       "section_id": "the-did-authentication-response-format",
@@ -461,6 +517,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-57",
       "keyword": "MUST",
       "section": "3.4.3.2 The DID Authentication Response Format",
       "section_id": "the-did-authentication-response-format",
@@ -469,6 +526,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-58",
       "keyword": "REQUIRED",
       "section": "3.4.3.2 The DID Authentication Response Format",
       "section_id": "the-did-authentication-response-format",
@@ -477,6 +535,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-59",
       "keyword": "MUST",
       "section": "3.4.3.2 The DID Authentication Response Format",
       "section_id": "the-did-authentication-response-format",
@@ -485,6 +544,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-60",
       "keyword": "MAY",
       "section": "3.6 Workflows and Exchanges",
       "section_id": "workflows-and-exchanges",
@@ -493,6 +553,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-61",
       "keyword": "SHOULD",
       "section": "3.6 Workflows and Exchanges",
       "section_id": "workflows-and-exchanges",
@@ -501,6 +562,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-62",
       "keyword": "MAY",
       "section": "3.6.1 Create Workflow",
       "section_id": "create-workflow",
@@ -509,6 +571,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-63",
       "keyword": "MUST",
       "section": "3.6.1 Create Workflow",
       "section_id": "create-workflow",
@@ -517,6 +580,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-64",
       "keyword": "MAY",
       "section": "3.6.1 Create Workflow",
       "section_id": "create-workflow",
@@ -525,6 +589,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-65",
       "keyword": "MAY",
       "section": "3.6.1 Create Workflow",
       "section_id": "create-workflow",
@@ -533,6 +598,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-66",
       "keyword": "MAY",
       "section": "3.6.5 Participate in an Exchange",
       "section_id": "participate-in-an-exchange",
@@ -541,6 +607,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-67",
       "keyword": "SHOULD",
       "section": "3.6.5 Participate in an Exchange",
       "section_id": "participate-in-an-exchange",
@@ -549,6 +616,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-68",
       "keyword": "MAY",
       "section": "3.6.8 Exchange Examples",
       "section_id": "exchange-examples",
@@ -557,6 +625,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-69",
       "keyword": "MUST",
       "section": "3.7.1 Interaction URL Format",
       "section_id": "interaction-url-format",
@@ -565,6 +634,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-70",
       "keyword": "SHOULD",
       "section": "3.7.1 Interaction URL Format",
       "section_id": "interaction-url-format",
@@ -573,6 +643,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-71",
       "keyword": "SHOULD NOT",
       "section": "3.7.1 Interaction URL Format",
       "section_id": "interaction-url-format",
@@ -581,6 +652,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-72",
       "keyword": "MUST",
       "section": "3.7.2 Interaction QR Code Format",
       "section_id": "interaction-qr-code-format",
@@ -589,6 +661,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-73",
       "keyword": "SHOULD",
       "section": "3.7.2 Interaction QR Code Format",
       "section_id": "interaction-qr-code-format",
@@ -597,6 +670,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-74",
       "keyword": "SHOULD NOT",
       "section": "3.7.2 Interaction QR Code Format",
       "section_id": "interaction-qr-code-format",
@@ -605,6 +679,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-75",
       "keyword": "MUST NOT",
       "section": "3.7.2 Interaction QR Code Format",
       "section_id": "interaction-qr-code-format",
@@ -613,6 +688,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-76",
       "keyword": "MUST",
       "section": "3.7.3 Interaction Scheme Format",
       "section_id": "interaction-scheme-format",
@@ -621,6 +697,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-77",
       "keyword": "MUST",
       "section": "3.7.4 Interaction Protocols Response",
       "section_id": "interaction-protocols-response",
@@ -629,6 +706,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-78",
       "keyword": "MUST",
       "section": "3.7.4 Interaction Protocols Response",
       "section_id": "interaction-protocols-response",
@@ -637,6 +715,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-79",
       "keyword": "MUST",
       "section": "3.8 Error Handling",
       "section_id": "error-handling",
@@ -645,6 +724,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-80",
       "keyword": "SHOULD",
       "section": "3.8 Error Handling",
       "section_id": "error-handling",
@@ -653,6 +733,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-81",
       "keyword": "SHOULD",
       "section": "3.8 Error Handling",
       "section_id": "error-handling",
@@ -661,6 +742,7 @@
       "source": "https://www.w3.org/TR/vcalm-1.0/"
     },
     {
+      "id": "hit-82",
       "keyword": "MUST",
       "section": "3.8.1 Verification Errors vs. Warnings",
       "section_id": "verification-errors-vs-warnings",

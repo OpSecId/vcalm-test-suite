@@ -6,7 +6,7 @@ Artifacts generated from the published TR
 
 | File | Purpose |
 |------|---------|
-| [normative-statements.html](normative-statements.html) | Interactive report (charts + filters) |
+| [normative-statements.html](normative-statements.html) | Overview metrics + side-by-side statement/spec panes |
 | [normative-statements.md](normative-statements.md) | Section-grouped list |
 | [normative-statements.json](normative-statements.json) | Machine-readable inventory |
 | [scripts/scrape_normative.py](scripts/scrape_normative.py) | Regenerator |
