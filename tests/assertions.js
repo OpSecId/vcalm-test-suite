@@ -13,6 +13,7 @@ import {
   PROOF_HANDLING_MODES,
   RECOMMENDED_VC_PAYLOAD_BYTES
 } from './helpers.js';
+import {extractIssuedCredential} from './response.js';
 
 const should = chai.should();
 
@@ -37,12 +38,8 @@ export function shouldBeIssuedVc({
 }) {
   should.exist(data, 'Expected a response body.');
   data.should.be.an('object', 'Expected the response body to be an object.');
-  data.should.have.property('verifiableCredential');
-  const issuedVc = data.verifiableCredential;
-  issuedVc.should.be.an(
-    'object',
-    'Expected the issued verifiable credential to be an object.'
-  );
+  const issuedVc = extractIssuedCredential(data);
+  should.exist(issuedVc, 'Expected a verifiable credential.');
   issuedVc.should.have.property('@context');
   issuedVc.should.have.property('type');
   issuedVc.type.should.include(
@@ -50,7 +47,13 @@ export function shouldBeIssuedVc({
     'Expected `type` to include "VerifiableCredential".'
   );
   issuedVc.should.have.property('proof');
-  issuedVc.proof.should.be.an('object', 'Expected `proof` to be an object.');
+  const proofs = Array.isArray(issuedVc.proof) ?
+    issuedVc.proof :
+    [issuedVc.proof];
+  proofs.length.should.be.at.least(1, 'Expected at least one proof.');
+  for(const proof of proofs) {
+    proof.should.be.an('object', 'Expected each proof to be an object.');
+  }
   if(result) {
     shouldSatisfyOpenApi({result, data, operation, pathParams});
   }
@@ -188,6 +191,25 @@ export function shouldReflectVerificationErrorsVsWarnings(data) {
   }
 }
 
+export function shouldNotReportVerifiedTrue({data, result}) {
+  should.exist(result, 'Expected an HTTP result.');
+  if(result.status >= 400 && result.status < 500) {
+    if(data && Object.hasOwn(data, 'verified')) {
+      data.verified.should.equal(
+        false,
+        'Expected verified:false when a verification error is reported.'
+      );
+    }
+    return;
+  }
+  result.status.should.equal(200, 'Expected status code 200.');
+  data.should.be.an('object');
+  data.verified.should.equal(
+    false,
+    'Expected verification of invalid input to report verified:false.'
+  );
+}
+
 export function shouldReportVerificationFailure({
   data,
   result,
@@ -280,6 +302,23 @@ export function shouldGetExchangeState({data, result, error, exchangeId}) {
 
 export function shouldGetExchangeProtocols({data, result, error}) {
   shouldGetExchangeState({data, result, error});
+}
+
+export function shouldGetCurrentExchangeVpr({
+  data,
+  result,
+  error,
+  empty = false
+}) {
+  shouldReturnHttpResult({result, error});
+  result.status.should.equal(200, 'Expected status code 200.');
+  data.should.be.an('object');
+  data.should.have.property('verifiablePresentationRequest');
+  const vpr = data.verifiablePresentationRequest;
+  vpr.should.be.an('object');
+  if(empty) {
+    vpr.should.deep.equal({});
+  }
 }
 
 export function shouldParticipateInExchange({
@@ -606,7 +645,11 @@ export function shouldAllowServerReferenceId(message) {
   message.referenceId.should.be.a('string').and.not.be.empty;
 }
 
-export function shouldHandlePreProofedCredentialIssue({data, issuedVc, result}) {
+export function shouldHandlePreProofedCredentialIssue({
+  data,
+  issuedVc,
+  result
+}) {
   should.exist(result, 'Expected an HTTP result.');
   if(result.status < 400) {
     should.exist(data, 'Expected a response body.');

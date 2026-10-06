@@ -33,21 +33,26 @@ export const NORMATIVE = {
   conformance: {
     issuer:
       'A conforming issuer service implementation MUST provide the interface ' +
-      'described in Section Issue Credential. Other interfaces described in ' +
-      'Section Issuing MAY also be provided.',
-    verifier:
+      'described in Section Issue Credential.',
+    issuingMay:
+      'Other interfaces described in Section Issuing MAY also be provided.',
+    verifyCredential:
       'A conforming verifier service implementation MUST provide the ' +
-      'interface described in Section Verify Credential and Section ' +
-      'Verify Presentation. Other interfaces described in Section ' +
-      'Verifying MAY also be provided.',
+      'interface described in Section Verify Credential.',
+    verifyPresentation:
+      'A conforming verifier service implementation MUST provide the ' +
+      'interface described in Section Verify Presentation.',
+    verifyingMay:
+      'Other interfaces described in Section Verifying MAY also be provided.',
     holder:
       'A conforming holder service implementation MUST provide the interface ' +
       'described in Section Get Exchange Protocols and Section ' +
-      'Participate in an Exchange. Conformance to protocols, query ' +
-      'languages, and data formats described in Section Initiating ' +
-      'Interactions, Section Requesting a Presentation, Section Create ' +
-      'Presentation, Section Presenting, and Section Workflows and ' +
-      'Exchanges MAY also be provided.',
+      'Participate in an Exchange.',
+    holderMay:
+      'Conformance to protocols, query languages, and data formats ' +
+      'described in Section Initiating Interactions, Section Requesting a ' +
+      'Presentation, Section Create Presentation, Section Presenting, and ' +
+      'Section Workflows and Exchanges MAY also be provided.',
     status:
       'A conforming status service implementation MUST provide the interface ' +
       'described in Section Update Status.',
@@ -104,7 +109,8 @@ export const NORMATIVE = {
     didAuthenticationQueryType:
       'A REQUIRED string value that MUST be set to `DIDAuthentication`.',
     authorizationCapability:
-      'This query type would be included in a request to ask for Authorization ' +
+      'This query type would be included in a request to ask for ' +
+      'Authorization ' +
       'Capabilities or "zcaps" in the Verifiable Presentation.',
     logicalOperations:
       'Multiple queries with the same `group` value are processed as "AND" ' +
@@ -138,6 +144,19 @@ export const NORMATIVE = {
       'response header.',
     getProtocols:
       'Gets the supported protocols for interacting with a specific exchange.',
+    getCurrentVpr:
+      'This endpoint MUST return the current verifiable presentation ' +
+      'request to be returned by an exchange when accessed with an Accept ' +
+      'header value of `application/json`.',
+    getCurrentVprNoSideEffects:
+      'Processing this request SHOULD NOT advance the exchange to a new ' +
+      'step nor perform any state-changing side effects, such as ' +
+      'credential issuance.',
+    getCurrentVprEmpty:
+      'If there is no verifiable presentation request available for the ' +
+      'exchange in the current step, the value of the ' +
+      '`verifiablePresentationRequest` property returned by this endpoint ' +
+      'MUST be an empty JSON object.',
     participate:
       'Participate in an exchange. Posting an empty body will start the ' +
       'exchange or return what the exchange is expecting to complete the ' +
@@ -173,35 +192,35 @@ export const NORMATIVE = {
       'The URL SHOULD be opaque and require no URL syntax processing before ' +
       'it is fetched by the receiving system.',
     interactionNoExtraQuery:
-      'Information that belongs in the GET response body SHOULD NOT be put ' +
-      'in query parameters.',
+      'Implementers SHOULD NOT put information that can be expressed in ' +
+      'the response to a GET request for an interaction URL into the query ' +
+      'parameters of the interaction URL.',
     qrCode:
       'An interaction QR Code MUST be an interaction URL expressed as a QR ' +
       'code according to ISO 18004.',
     qrCodeMaxLength:
-      'To ensure broad interoperability, the length of the interaction URL ' +
-      'SHOULD be as short as possible, SHOULD NOT exceed 400 alphanumeric ' +
-      'characters, and MUST NOT exceed 4,296 alphanumeric characters.',
+      'The length of the interaction URL MUST NOT exceed 4,296 alphanumeric ' +
+      'characters.',
     scheme:
       'The format of the protocol scheme MUST conform to the following syntax:',
     protocolsJson:
-      'When the interaction URL is fetched using an `Accept` header of ' +
-      '`application/json`, a single JSON object containing a `protocols` map ' +
-      'MUST be returned where each map/key is a protocol identifier and each ' +
-      'map/value is a URL that can be used to initiate the interaction.',
+      'When the interaction URL is fetched using an `Accept` header value ' +
+      'of `application/json`, a single JSON object containing a `protocols` ' +
+      'map MUST be returned where each key is a protocol identifier and ' +
+      'each value is a URL that can be used to initiate the interaction.',
     protocolsHtml:
       'When the interaction URL is fetched using any unrecognized `Accept` ' +
-      'header, a `text/html` document MUST be returned with directions ' +
-      'instructing a human being to use specific software that understands ' +
-      'how to process interaction URLs.',
+      'header value, a `text/html` document MUST be returned with ' +
+      'directions instructing a human being to use specific software that ' +
+      'understands how to process interaction URLs.',
     inviteRequest:
-      'The `inviteRequest` interaction protocol is used by a local system to ' +
-      'signal to the remote system that it would like an invitation to a remote ' +
-      'system via a specific URL, such as a website where an individual can ' +
-      'engage in a use-case specific interaction.',
+      'The `inviteRequest` interaction protocol is used by a local system ' +
+      'to signal to the remote system that it would like an invitation ' +
+      'to a remote system via a specific URL, such as a website where an ' +
+      'individual can engage in a use-case specific interaction.',
     vcapi:
-      'The `vcapi` interaction protocol is used to initiate a specific exchange ' +
-      'as described in Section Participate in an Exchange.'
+      'The `vcapi` interaction protocol is used to initiate a specific ' +
+      'exchange as described in Section Participate in an Exchange.'
   },
   errorHandling: {
     problemDetailsType:

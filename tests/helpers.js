@@ -241,7 +241,7 @@ export function resolveWorkflowResourceUrl(
  * §1.3 holder service URLs under `/workflows/{id}/exchanges/{id}`.
  *
  * @param {string} workflowEndpoint - Workflow POST URL or instance root.
- * @param {'exchangeProtocols'|'participateExchange'} requirementId
+ * @param {'exchangeProtocols'|'participateExchange'} requirementId - Probe id.
  * @returns {string} Exchange-scoped URL.
  */
 export function resolveHolderExchangeUrl(workflowEndpoint, requirementId) {
@@ -260,7 +260,9 @@ export function resolveHolderExchangeUrl(workflowEndpoint, requirementId) {
         CONFORMANCE_EXCHANGE_ID
       );
     default:
-      throw new Error(`Unknown holder conformance requirement: ${requirementId}`);
+      throw new Error(
+        `Unknown holder conformance requirement: ${requirementId}`
+      );
   }
 }
 
@@ -302,25 +304,36 @@ export function resolveInteractionStartUrl(instanceRoot, interactionId) {
 }
 
 /**
- * Build a §3.7.3 `interaction:` scheme URL from an interaction HTTPS URL.
+ * Build a §3.7.3 scheme URL from an interaction HTTPS URL.
  *
  * @param {string} interactionUrl - Interaction URL.
+ * @param {string} [scheme='interaction'] - `interaction` or `web+interaction`.
  * @returns {string} Scheme URL.
  */
-export function toInteractionSchemeUrl(interactionUrl) {
-  return `interaction:${interactionUrl}`;
+export function toInteractionSchemeUrl(
+  interactionUrl,
+  scheme = 'interaction'
+) {
+  if(scheme !== 'interaction' && scheme !== 'web+interaction') {
+    throw new Error('Expected interaction or web+interaction scheme.');
+  }
+  return `${scheme}:${interactionUrl}`;
 }
 
 /**
- * Parse a §3.7.3 `interaction:` scheme URL back to an interaction URL.
+ * Parse a §3.7.3 `interaction:` or `web+interaction:` URL.
  *
- * @param {string} schemeUrl - `interaction:` URL.
+ * @param {string} schemeUrl - Scheme URL.
  * @returns {URL} Parsed interaction URL.
  */
 export function parseInteractionSchemeUrl(schemeUrl) {
-  const prefix = 'interaction:';
-  if(!schemeUrl.startsWith(prefix)) {
-    throw new Error('Expected interaction: scheme URL.');
+  const prefix = ['web+interaction:', 'interaction:'].find(
+    candidate => schemeUrl.startsWith(candidate)
+  );
+  if(!prefix) {
+    throw new Error(
+      'Expected interaction: or web+interaction: scheme URL.'
+    );
   }
   return new URL(schemeUrl.slice(prefix.length));
 }

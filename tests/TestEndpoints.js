@@ -31,6 +31,15 @@ import {
   resolveWorkflowsBaseUrl
 } from './helpers.js';
 
+function settleHttp({data, result, error}) {
+  const httpResult = result ?? error?.response;
+  return {
+    data,
+    result: httpResult,
+    error: httpResult ? undefined : error
+  };
+}
+
 export class TestEndpoints {
   constructor({implementation, tag}) {
     this.implementation = implementation;
@@ -83,12 +92,10 @@ export class TestEndpoints {
 
   async getCredential(credentialId) {
     const url = this.credentialResourceUrl(credentialId);
-    const {data, result, error} = await this.issuer.get({url});
+    const settled = settleHttp(await this.issuer.get({url}));
     return {
-      credential: extractIssuedCredential(data),
-      data,
-      result,
-      error
+      credential: extractIssuedCredential(settled.data),
+      ...settled
     };
   }
 
@@ -98,13 +105,12 @@ export class TestEndpoints {
     const {makeHttpsRequest} = await import(
       'vc-test-suite-implementations/lib/requests.js'
     );
-    const {data, result, error} = await makeHttpsRequest({
+    return settleHttp(await makeHttpsRequest({
       url,
       method: 'DELETE',
       headers: _headers,
       oauth2
-    });
-    return {data, result, error};
+    }));
   }
 
   async verify(vc, options) {
@@ -117,7 +123,10 @@ export class TestEndpoints {
       verifier: this.verifier, vc, options
     });
     const url = resolveVerifyCredentialUrl(this.verifier.settings.endpoint);
-    const {data, result, error} = await this.verifier.post({url, json: verifyBody});
+    const {data, result, error} = await this.verifier.post({
+      url,
+      json: verifyBody
+    });
     const httpResult = result ?? error?.response;
     return {data, result: httpResult, error: httpResult ? undefined : error};
   }
@@ -156,29 +165,25 @@ export class TestEndpoints {
       vc,
       options
     });
-    const {data, result, error} = await this.holder.post({url, json: body});
+    const settled = settleHttp(await this.holder.post({url, json: body}));
     return {
-      derivedVc: extractIssuedCredential(data),
-      data,
-      result,
-      error
+      derivedVc: extractIssuedCredential(settled.data),
+      ...settled
     };
   }
 
   async getPresentations() {
     const url = this.presentationsCollectionUrl();
-    const {data, result, error} = await this.holder.get({url});
-    return {presentations: data, result, error};
+    const settled = settleHttp(await this.holder.get({url}));
+    return {presentations: settled.data, ...settled};
   }
 
   async getPresentation(presentationId) {
     const url = this.presentationResourceUrl(presentationId);
-    const {data, result, error} = await this.holder.get({url});
+    const settled = settleHttp(await this.holder.get({url}));
     return {
-      presentation: extractCreatedPresentation(data),
-      data,
-      result,
-      error
+      presentation: extractCreatedPresentation(settled.data),
+      ...settled
     };
   }
 
@@ -188,13 +193,12 @@ export class TestEndpoints {
     const {makeHttpsRequest} = await import(
       'vc-test-suite-implementations/lib/requests.js'
     );
-    const {data, result, error} = await makeHttpsRequest({
+    return settleHttp(await makeHttpsRequest({
       url,
       method: 'DELETE',
       headers: _headers,
       oauth2
-    });
-    return {data, result, error};
+    }));
   }
 
   async verifyPresentation(vp, options) {
@@ -220,8 +224,8 @@ export class TestEndpoints {
       this.verifier.settings.endpoint,
       '/challenges'
     );
-    const {data, result, error} = await this.verifier.post({url, json: {}});
-    return {data, result, error};
+    const settled = settleHttp(await this.verifier.post({url, json: {}}));
+    return settled;
   }
 
   workflowsBaseUrl() {
@@ -242,52 +246,59 @@ export class TestEndpoints {
   }
 
   async createWorkflowWithBody(body) {
-    const {data, result, error} = await this.workflow.post({json: body});
+    const settled = settleHttp(await this.workflow.post({json: body}));
     return {
-      workflowId: body?.id ?? extractLocationResourceId(result),
-      result,
-      error,
-      data
+      workflowId: body?.id ?? extractLocationResourceId(settled.result),
+      ...settled
     };
   }
 
   async getWorkflowConfiguration(workflowId) {
     const url = this.workflowResourceUrl(workflowId);
-    const {data, result, error} = await this.workflow.get({url});
-    return {configuration: data, result, error};
+    const settled = settleHttp(await this.workflow.get({url}));
+    return {configuration: settled.data, ...settled};
   }
 
   async createExchange(workflowId, body = createExchangeRequest()) {
     const url = this.workflowResourceUrl(workflowId, undefined);
     const exchangesUrl = `${url}/exchanges`;
-    const {data, result, error} = await this.workflow.post({
+    const settled = settleHttp(await this.workflow.post({
       url: exchangesUrl,
       json: body
-    });
+    }));
     return {
-      exchangeId: extractLocationResourceId(result),
-      result,
-      error,
-      data
+      exchangeId: extractLocationResourceId(settled.result),
+      ...settled
     };
   }
 
   async getExchangeProtocols(workflowId, exchangeId) {
     const url = this.workflowResourceUrl(workflowId, exchangeId, 'protocols');
-    const {data, result, error} = await this.workflow.get({url});
-    return {protocols: data, result, error};
+    const settled = settleHttp(await this.workflow.get({url}));
+    return {protocols: settled.data, ...settled};
+  }
+
+  async getCurrentExchangeVpr(workflowId, exchangeId) {
+    const url = this.workflowResourceUrl(workflowId, exchangeId, 'request');
+    const settled = settleHttp(await this.workflow.get({
+      url,
+      headers: {Accept: 'application/json'}
+    }));
+    return {vpr: settled.data, ...settled};
   }
 
   async participateInExchange(workflowId, exchangeId, body = {}) {
     const url = this.workflowResourceUrl(workflowId, exchangeId);
-    const {data, result, error} = await this.workflow.post({url, json: body});
-    return {message: data, result, error};
+    const settled = settleHttp(
+      await this.workflow.post({url, json: body})
+    );
+    return {message: settled.data, ...settled};
   }
 
   async getExchangeState(workflowId, exchangeId) {
     const url = this.workflowResourceUrl(workflowId, exchangeId);
-    const {data, result, error} = await this.workflow.get({url});
-    return {state: data, result, error};
+    const settled = settleHttp(await this.workflow.get({url}));
+    return {state: settled.data, ...settled};
   }
 
   async exchangeStepCallback(callbackId, body = {event: {data: {}}}) {
@@ -295,8 +306,10 @@ export class TestEndpoints {
       this.workflow.settings.endpoint,
       callbackId
     );
-    const {data, result, error} = await this.workflow.post({url, json: body});
-    return {data, result, error};
+    const settled = settleHttp(
+      await this.workflow.post({url, json: body})
+    );
+    return settled;
   }
 
   async startInteraction({interactionId, accept = 'application/json'} = {}) {
@@ -304,11 +317,11 @@ export class TestEndpoints {
     const id = interactionId ?? settings.interactionId;
     const url = settings.interactionStart ??
       resolveInteractionStartUrl(settings.endpoint, id);
-    const {data, result, error} = await this.interaction.get({
+    const settled = settleHttp(await this.interaction.get({
       url,
       headers: {Accept: accept}
-    });
-    return {protocols: data, result, error, data};
+    }));
+    return {protocols: settled.data, ...settled};
   }
 
   async issueWithUnknownOption() {

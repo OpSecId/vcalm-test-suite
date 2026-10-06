@@ -3,40 +3,115 @@
  */
 
 import {
-  addPerTestMetadata,
-  implementationsWithIssuerAndVerifier,
-  setupMatrix,
+  createVerifyCredentialWithoutProof,
+  createVerifyPresentationWithoutProof
+} from '../negative-fixtures.js';
+import {
+  implementationsWithPresentationFlow,
   VCALM_TAG
 } from '../helpers.js';
+import {
+  shouldBeCreatedPresentation,
+  shouldNotReportVerifiedTrue,
+  shouldVerifyCredential,
+  shouldVerifyPresentation
+} from '../assertions.js';
 import chai from 'chai';
+import {describeNormativeStatement} from '../statement-suite.js';
 import {filterByTag} from 'vc-test-suite-implementations';
 import {NORMATIVE} from '../normative-statements.js';
-import {shouldVerifyCredential} from '../assertions.js';
-import {TestEndpoints} from '../TestEndpoints.js';
 
 const should = chai.should();
 const tag = VCALM_TAG;
 const {match} = filterByTag({tags: [tag]});
-const paired = implementationsWithIssuerAndVerifier(match, tag);
+const paired = implementationsWithPresentationFlow(match, tag);
+const link = 'https://www.w3.org/TR/vcalm-1.0/#conformance';
 
-describe('Verify Credential', function() {
-  setupMatrix.call(this, new Map(paired), 'Verifier');
-  for(const [name, implementation] of paired) {
-    const endpoints = new TestEndpoints({implementation, tag});
-    describe(name, function() {
-      let issuedVc;
-      beforeEach(addPerTestMetadata);
-      before(async function() {
-        issuedVc = await endpoints.issue();
-      });
-      it(NORMATIVE.verifying.verifyCredential,
-        async function() {
-          this.test.link =
-            'https://www.w3.org/TR/vcalm-1.0/#verify-credential';
-          should.exist(issuedVc, `Expected ${name} to issue a VC first.`);
-          const {data, result} = await endpoints.verifyCredential(issuedVc);
-          shouldVerifyCredential({data, result});
-        });
-    });
-  }
+describeNormativeStatement({
+  section: 'Verifier',
+  match: paired,
+  columnLabel: 'Verifier',
+  statements: [
+    {
+      statement: NORMATIVE.conformance.verifyCredential,
+      link,
+      subtests({name, endpoints}) {
+        return [
+          {
+            name: 'positive: POST /credentials/verify accepts an issued ' +
+              'credential',
+            run: async () => {
+              const issuedVc = await endpoints.issue();
+              should.exist(
+                issuedVc,
+                `Expected ${name} to issue a VC first.`
+              );
+              const verifiedVc = await endpoints.verifyCredential(issuedVc);
+              shouldVerifyCredential({
+                data: verifiedVc.data,
+                result: verifiedVc.result
+              });
+            }
+          },
+          {
+            name: 'negative: POST /credentials/verify rejects a credential ' +
+              'without proof',
+            run: async () => {
+              const {data, result, error} = await endpoints.verifyCredential(
+                createVerifyCredentialWithoutProof()
+              );
+              shouldNotReportVerifiedTrue({
+                data,
+                result: result ?? error?.response
+              });
+            }
+          }
+        ];
+      }
+    },
+    {
+      statement: NORMATIVE.conformance.verifyPresentation,
+      link,
+      subtests({name, endpoints}) {
+        return [
+          {
+            name: 'positive: POST /presentations/verify accepts a created ' +
+              'presentation',
+            run: async () => {
+              const issuedVc = await endpoints.issue();
+              should.exist(
+                issuedVc,
+                `Expected ${name} to issue a VC first.`
+              );
+              const created = await endpoints.createPresentation({issuedVc});
+              shouldBeCreatedPresentation({
+                data: created.data,
+                result: created.result,
+                error: created.error
+              });
+              const verifiedVp = await endpoints.verifyPresentation(
+                created.verifiablePresentation
+              );
+              shouldVerifyPresentation({
+                data: verifiedVp.data,
+                result: verifiedVp.result
+              });
+            }
+          },
+          {
+            name: 'negative: an unsigned presentation is not verified',
+            run: async () => {
+              const {data, result, error} = await endpoints.verifyPresentation(
+                createVerifyPresentationWithoutProof()
+              );
+              shouldNotReportVerifiedTrue({
+                data,
+                result: result ?? error?.response
+              });
+            }
+          }
+        ];
+      }
+    }
+  ]
 });

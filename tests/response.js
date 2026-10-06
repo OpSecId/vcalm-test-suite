@@ -3,16 +3,36 @@
  */
 
 /**
+ * @param {object} value - Candidate credential.
+ * @returns {boolean} Whether value is a verifiable credential object.
+ */
+function isVerifiableCredential(value) {
+  if(value == null || typeof value !== 'object' || Array.isArray(value)) {
+    return false;
+  }
+  const types = Array.isArray(value.type) ? value.type : [value.type];
+  return types.includes('VerifiableCredential');
+}
+
+/**
  * Read the issued credential from a VCALM response body.
  *
  * @param {object} data - Parsed JSON response body.
- * @returns {object|undefined} The `verifiableCredential` value when present.
+ * @returns {object|undefined} The issued verifiable credential.
  */
 export function extractIssuedCredential(data) {
-  if(data == null || typeof data !== 'object') {
+  if(data == null || typeof data !== 'object' || Array.isArray(data)) {
     return undefined;
   }
-  return data.verifiableCredential;
+  if(isVerifiableCredential(data.verifiableCredential)) {
+    return data.verifiableCredential;
+  }
+  // vc-test-suite-implementations unwraps `verifiableCredential` before
+  // the suite sees the body. The credential itself is then the payload.
+  if(isVerifiableCredential(data)) {
+    return data;
+  }
+  return undefined;
 }
 
 /**
