@@ -33,14 +33,10 @@ const endpoint = baseUrl;
 // const holdersEndpoint = paths.createPresentation;
 // const workflowsEndpoint = paths.workflows;
 
-// Optional: Schemathesis settings (npm run test:schema)
-// const schemathesis = require('./schemathesis.local.example.cjs');
-
 module.exports = {
   settings: {
     // instancePayloadLimitBytes: 10485760
   },
-  // schemathesis,
   implementations: [{
     name: 'credential.ninja',
     implementation: 'The VC DOJO',
@@ -82,10 +78,12 @@ module.exports = {
       // interactionId: 'urn:uuid:interaction-fixture',
       // interactionStart:
       //   `${baseUrl}/interactions/urn:uuid:interaction-fixture?iuv=1`
-    }]
+    }],
 
-    // Status profile (optional): tag issuer entry with VCALM:status and use
-    // paths.updateStatus or pathSuffix in §1.3 status smoke test.
-    // issuers: [{ endpoint: paths.updateStatus, tags: ['VCALM', 'VCALM:status'] }]
+    // Status — §C.3 Update Status (required for a conforming status service)
+    status: [{
+      endpoint: endpoint /* or paths.updateStatus */,
+      tags: ['VCALM']
+    }]
   }]
 };

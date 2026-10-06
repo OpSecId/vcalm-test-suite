@@ -44,10 +44,12 @@ export const NORMATIVE = {
       'interface described in Section Verify Presentation.',
     verifyingMay:
       'Other interfaces described in Section Verifying MAY also be provided.',
-    holder:
+    getExchangeProtocols:
       'A conforming holder service implementation MUST provide the interface ' +
-      'described in Section Get Exchange Protocols and Section ' +
-      'Participate in an Exchange.',
+      'described in Section 3.6.4 Get Exchange Protocols.',
+    participateInExchange:
+      'A conforming holder service implementation MUST provide the interface ' +
+      'described in Section 3.6.6 Participate in an Exchange.',
     holderMay:
       'Conformance to protocols, query languages, and data formats ' +
       'described in Section Initiating Interactions, Section Requesting a ' +
@@ -55,10 +57,10 @@ export const NORMATIVE = {
       'Section Workflows and Exchanges MAY also be provided.',
     status:
       'A conforming status service implementation MUST provide the interface ' +
-      'described in Section Update Status.',
+      'described in Section C.3 Update Status.',
     workflow:
       'A conforming workflow service implementation MUST provide all ' +
-      'interfaces Section Workflows and Exchanges.'
+      'interfaces Section 3.6 Workflows and Exchanges.'
   },
   issuing: {
     issue:

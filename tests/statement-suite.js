@@ -42,6 +42,8 @@ async function runSubtests(subtests) {
  * @param {string} [options.columnLabel] - Matrix column heading.
  * @param {string} [options.tag] - Endpoint tag.
  * @param {Function} [options.subtests] - Checks for `options.statement`.
+ * @param {boolean} [options.unimplemented] - Show the column as not
+ *   implemented and skip every statement.
  */
 export function describeNormativeStatement({
   section,
@@ -51,18 +53,29 @@ export function describeNormativeStatement({
   match,
   columnLabel = 'Implementation',
   tag = VCALM_TAG,
-  subtests
+  subtests,
+  unimplemented = false
 }) {
   const cases = statements ?? [{statement, link, subtests}];
   const matrix = match instanceof Map ? match : new Map(match);
   describe(section, function() {
     setupMatrix.call(this, matrix, columnLabel);
+    if(unimplemented) {
+      this.notImplemented = this.implemented;
+      this.implemented = [];
+    }
     for(const [name, implementation] of matrix) {
       const endpoints = new TestEndpoints({implementation, tag});
       describe(name, function() {
         beforeEach(addPerTestMetadata);
         for(const item of cases) {
-          it(item.statement, async function() {
+          const skipped = unimplemented || item.skip;
+          const run = skipped ? function() {
+            this.test.link = item.link;
+            this.test.cell.skipMessage = item.skipMessage ||
+              'Not implemented.';
+            this.skip();
+          } : async function() {
             this.test.link = item.link;
             const checks = item.subtests({
               name,
@@ -71,7 +84,8 @@ export function describeNormativeStatement({
               link: item.link
             });
             await runSubtests(checks);
-          });
+          };
+          it(item.statement, run);
         }
       });
     }

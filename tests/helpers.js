@@ -131,6 +131,20 @@ export function resolveVerifyCredentialUrl(verifierEndpoint) {
 }
 
 /**
+ * Resolve POST /credentials/status from a status endpoint setting.
+ *
+ * @param {string} statusEndpoint - Status POST URL or instance root.
+ * @returns {string} Update Status URL.
+ */
+export function resolveUpdateStatusUrl(statusEndpoint) {
+  const trimmed = statusEndpoint.replace(/\/+$/, '');
+  if(trimmed.endsWith('/credentials/status')) {
+    return trimmed;
+  }
+  return `${trimmed}/credentials/status`;
+}
+
+/**
  * Resolve POST /presentations/verify from a verifier endpoint setting.
  *
  * @param {string} verifierEndpoint - Verifier POST URL or instance root.

@@ -14,12 +14,12 @@ const chaiResponseValidator =
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SUITE_ROOT = path.join(__dirname, '..');
 
-/** Published VCALM OpenAPI (bundled copy on branch feature/vcalm-oas-pin). */
+/** Published VCALM OpenAPI document. */
 export const OPENAPI_SPEC_URL = 'https://w3c.github.io/vcalm/oas.yaml';
 
 export const OPENAPI_SPEC_PATH = path.join(
   SUITE_ROOT,
-  'docs/schemathesis/oas.bundled.json'
+  'docs/openapi/oas.bundled.json'
 );
 
 /**
@@ -57,6 +57,27 @@ export function isOpenApiValidationEnabled() {
 
 const expect = chai.expect;
 
+/**
+ * The interop HTTP client unwraps `verifiableCredential` before tests see
+ * the body. The Issue Credential response schema is that envelope.
+ *
+ * @param {string} operation - Key from OPENAPI_OPERATIONS.
+ * @param {object} data - Parsed response body.
+ * @returns {object} Body shape described by the OpenAPI response schema.
+ */
+function responseBodyForSpec(operation, data) {
+  if(operation !== 'issueCredential' || !data || typeof data !== 'object') {
+    return data;
+  }
+  if(Object.hasOwn(data, 'verifiableCredential')) {
+    return data;
+  }
+  if(data['@context'] && data.type) {
+    return {verifiableCredential: data};
+  }
+  return data;
+}
+
 function resolveOperationPath(operation, pathParams = {}) {
   const spec = OPENAPI_OPERATIONS[operation];
   if(!spec) {
@@ -91,7 +112,7 @@ export function buildOpenApiResponse({
   const op = OPENAPI_OPERATIONS[operation];
   return {
     status: result.status,
-    data: data ?? result.data ?? null,
+    data: responseBodyForSpec(operation, data ?? result.data ?? null),
     headers: result.headers,
     request: {
       method: op.method,

@@ -8,30 +8,24 @@ Lifecycle Management).
 
 | Branch | Contents |
 |--------|----------|
-| `feature/vcalm-interop-suite` | Mocha tests and run instructions (this branch) |
-| `feature/vcalm-oas-pin` | Schemathesis, pinned OpenAPI (`docs/schemathesis/`), `npm run test:schema` |
+| `feature/vcalm-required-endpoints` | Required issuer and verifier POSTs, plus Chai OpenAPI checks |
 | `feature/vcalm-docs` | Coverage matrix, normative traceability, stats (`docs/` tree) |
-
-```sh
-git checkout feature/vcalm-oas-pin -- docs/schemathesis/ schemathesis.local.example.cjs schemathesis.toml scripts/
-git checkout feature/vcalm-docs -- docs/
-```
 
 ## Strategy
 
-| Layer | Tool | Branch |
+| Layer | Tool | Where |
 |-------|------|--------|
-| Mocha | Mocha | `feature/vcalm-interop-suite` |
-| OAS (optional) | Chai OpenAPI | Checkout `oas.bundled.json` from `feature/vcalm-oas-pin` (`tests/openapi.js`; off when `VCALM_OPENAPI=0`) |
-| OAS Conformance | Schemathesis | `feature/vcalm-oas-pin` |
+| Normative statements | Mocha | `tests/3.2-Issuing`, `tests/3.3-Verifying` |
+| Response shape | Chai OpenAPI | `docs/openapi/oas.bundled.json` via `tests/openapi.js` |
 
 Mocha tests are adapted from the CCG
 [vc-api-issuer-test-suite](https://github.com/w3c-ccg/vc-api-issuer-test-suite)
 and
 [vc-api-verifier-test-suite](https://github.com/w3c-ccg/vc-api-verifier-test-suite),
 extended with **negative fixtures** (malformed issue requests, foreign
-credentials/presentations) to catch stub implementations. Field-level HTTP
-validation is covered by Schemathesis on `feature/vcalm-oas-pin`. This suite does
+credentials/presentations) to catch stub implementations. Successful responses
+for the three required POSTs are also checked against the bundled VCALM OpenAPI
+document. This suite does
 **not** run VCDM or crypto interop suites — it uses minimal fixture credentials
 sufficient to exercise the API.
 
@@ -82,13 +76,13 @@ Terminal 2 — run the suite (point `localConfig.cjs` at `https://localhost:8000
 
 ```sh
 cd test-suites/vcalm-test-suite
-NODE_TLS_REJECT_UNAUTHORIZED=0 VCALM_OPENAPI=0 npm test
+NODE_TLS_REJECT_UNAUTHORIZED=0 npm test
 ```
 
 | Variable | Default | Meaning |
 |----------|---------|---------|
 | `NODE_TLS_REJECT_UNAUTHORIZED=0` | — | Allow self-signed HTTPS for local dev |
-| `VCALM_OPENAPI=0` | Chai on | Disable Chai OpenAPI (nested VC schemas in OAS are stricter than JSON-LD) |
+| `VCALM_OPENAPI=0` | validation on | Skip OpenAPI response checks |
 
 ### Role registration
 
@@ -146,17 +140,25 @@ Register implementations in
 with tag `VCALM` on issuer, verifier, and holder endpoints (and
 `workflows` / `VCALM:status` for optional profiles).
 
-## OAS conformance (Schemathesis)
+## OpenAPI response checks
 
-On branch **`feature/vcalm-oas-pin`**:
+`npm test` checks successful responses for:
 
-```sh
-git checkout feature/vcalm-oas-pin -- docs/schemathesis/ schemathesis.local.example.cjs schemathesis.toml scripts/
-cp schemathesis.local.example.cjs schemathesis.local.cjs
-BASE_URL=https://localhost:8000 npm run test:schema
-```
+- `POST /credentials/issue` (201, `verifiableCredential`)
+- `POST /credentials/verify` (200)
+- `POST /presentations/verify` (200)
 
-See `docs/schemathesis/README.md` on that branch for profiles and auth.
+against `docs/openapi/oas.bundled.json`, bundled from
+`https://w3c.github.io/vcalm/oas.yaml` (version `0.9-unstable`). One `$ref`
+in that file points at `../components/ExchangeVerifiablePresentation.yml`;
+the bundle resolves it to
+`https://w3c.github.io/vcalm/components/ExchangeVerifiablePresentation.yml`.
+The published `servers` entry is one example host, so the bundle uses `/`
+as the service root. The test HTTP client unwraps `verifiableCredential`
+before assertions run; the checker puts that property back before comparing
+the issue response to the schema.
+
+Set `VCALM_OPENAPI=0` to skip these checks.
 
 ## Report
 

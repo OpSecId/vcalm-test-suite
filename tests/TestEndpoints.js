@@ -24,6 +24,7 @@ import {
   resolveDeriveCredentialUrl,
   resolveInteractionStartUrl,
   resolvePresentationResourceUrl,
+  resolveUpdateStatusUrl,
   resolveVerifierResourceUrl,
   resolveVerifyCredentialUrl,
   resolveVerifyPresentationUrl,
@@ -46,6 +47,8 @@ export class TestEndpoints {
     this.tag = tag;
     this.issuer = implementation.issuers?.find(
       issuer => issuer.tags.has(tag)) || null;
+    this.status = implementation.status?.find(
+      endpoint => endpoint.tags.has(tag)) || null;
     this.verifier = implementation.verifiers?.find(
       verifier => verifier.tags.has(tag)) || null;
     this.holder = implementation.holders?.find(
@@ -61,8 +64,12 @@ export class TestEndpoints {
     return issuedVc;
   }
 
-  async issueCredential(credential) {
-    const issueBody = createRequestBody({issuer: this.issuer, vc: credential});
+  async issueCredential(credential, options) {
+    const issueBody = createRequestBody({
+      issuer: this.issuer,
+      vc: credential,
+      options
+    });
     const {data, result, error} = await this.issuer.post({json: issueBody});
     return {
       issuedVc: extractIssuedCredential(data),
@@ -111,6 +118,11 @@ export class TestEndpoints {
       headers: _headers,
       oauth2
     }));
+  }
+
+  async updateCredentialStatus(body) {
+    const url = resolveUpdateStatusUrl(this.status.settings.endpoint);
+    return settleHttp(await this.status.post({url, json: body}));
   }
 
   async verify(vc, options) {

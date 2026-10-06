@@ -74,6 +74,25 @@ export function skipIfVerificationClientError(test, {result, label}) {
   }
 }
 
+export function shouldUpdateCredentialStatus({data, result}) {
+  shouldReturnHttpResult({result});
+  result.status.should.equal(200, 'Expected status code 200.');
+  should.exist(data, 'Expected a response body.');
+  data.should.be.an('object', 'Expected the response body to be an object.');
+}
+
+export function shouldRejectMalformedStatusRequest({result}) {
+  should.exist(result, 'Expected an HTTP result.');
+  result.status.should.be.at.least(
+    400,
+    'Expected client error for malformed status request.'
+  );
+  result.status.should.be.below(
+    500,
+    'Expected client error for malformed status request.'
+  );
+}
+
 export function shouldRejectMalformedIssueRequest({result}) {
   should.exist(result, 'Expected an HTTP result.');
   result.status.should.be.at.least(
